@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^6.8.2",
     "framer-motion": "^11.18.2",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.453.0",
@@ -23,7 +22,6 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
-    "prisma": "^6.8.2",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.3"
   }
