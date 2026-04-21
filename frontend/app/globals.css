@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 45 66% 52%;
+    --accent-foreground: 0 0% 9%;
+    --border: 0 0% 89.8%;
+    --radius: 0.5rem;
+  }
+}
+
+body {
+  @apply bg-background text-foreground antialiased selection:bg-accent/30;
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  @apply tracking-tight font-semibold;
+}
+
+/* 🧊 Premium Layout */
+.container {
+  @apply mx-auto max-w-7xl px-4 md:px-8 lg:px-12;
+}
+
+/* ✨ Animations */
+.transition-luxury {
+  @apply transition-all duration-500;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 🌟 CUSTOM COMPONENTS */
+@layer components {
+  .btn-premium {
+    @apply relative overflow-hidden px-8 py-3 rounded-full font-medium transition-luxury
+           bg-primary text-primary-foreground hover:scale-[1.02] hover:shadow-xl
+           active:scale-95 disabled:opacity-50;
+  }
+
+  .btn-accent {
+    @apply relative overflow-hidden px-8 py-3 rounded-full font-medium transition-luxury
+           bg-accent text-accent-foreground hover:scale-[1.02] hover:shadow-xl
+           active:scale-95;
+  }
+
+  .btn-outline {
+    @apply border border-border px-8 py-3 rounded-full font-medium transition-luxury
+           hover:bg-primary hover:text-primary-foreground hover:border-primary;
+  }
+
+  .glass {
+    @apply bg-white/70 backdrop-blur-md border border-white/20;
+  }
+
+  .product-card-hover {
+    @apply transition-luxury hover:-translate-y-2 hover:shadow-2xl;
+  }
+}
+
+/* Scrollbar Customization */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-muted;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/20 rounded-full hover:bg-primary/40;
+}
