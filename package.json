@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev -w backend\" \"npm run dev -w frontend\"",
-    "build": "npm run build -w backend && npm run build -w frontend",
+    "build": "npm run build -w frontend",
     "start": "npm run start -w backend",
     "prisma:generate": "prisma generate --schema prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema prisma/schema.prisma",
