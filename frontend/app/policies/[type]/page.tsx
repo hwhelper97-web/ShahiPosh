@@ -1,10 +1,11 @@
 'use client';
 
+import { use } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Truck, RotateCcw, Lock, ChevronRight } from 'lucide-react';
 
-export default function PolicyPage({ params }: { params: { type: string } }) {
-  const type = params.type;
+export default function PolicyPage({ params }: { params: Promise<{ type: string }> }) {
+  const { type } = use(params);
 
   const content: any = {
     returns: {
