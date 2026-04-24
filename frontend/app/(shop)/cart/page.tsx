@@ -4,12 +4,17 @@ import { useCart } from "@/components/cart-context";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2, ShoppingBag, ArrowRight, Minus, Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSettings } from "@/components/settings-context";
 
 export default function CartPage() {
   const { cart, removeFromCart } = useCart();
+  const { settings } = useSettings();
 
-  const subtotal = cart.reduce((s: number, i: any) => s + i.price * i.quantity, 0);
-  const shipping = subtotal > 5000 ? 0 : 250;
+  const subtotal = cart.reduce((s: number, i: any) => s + (i.price || i.salePrice || i.regularPrice || 0) * i.quantity, 0);
+  const shippingThreshold = Number(settings.freeShippingThreshold);
+  const shippingFee = Number(settings.shippingFee);
+  const shipping = subtotal > shippingThreshold ? 0 : shippingFee;
   const total = subtotal + shipping;
 
   return (
@@ -53,7 +58,7 @@ export default function CartPage() {
                           Size: {item.size}
                         </p>
                       </div>
-                      <p className="font-bold">Rs {item.price.toLocaleString()}</p>
+                      <p className="font-bold">{settings.currency} {(item.price || item.salePrice || item.regularPrice || 0).toLocaleString()}</p>
                     </div>
 
                     <div className="flex justify-between items-center mt-4">
@@ -84,15 +89,15 @@ export default function CartPage() {
                 <div className="space-y-4 pt-4 border-t border-white/20">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-bold">Rs {subtotal.toLocaleString()}</span>
+                    <span className="font-bold">{settings.currency} {subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
-                    <span className="font-bold">{shipping === 0 ? "FREE" : `Rs ${shipping}`}</span>
+                    <span className="font-bold">{shipping === 0 ? "FREE" : `${settings.currency} ${shipping}`}</span>
                   </div>
                   <div className="flex justify-between text-lg pt-4 border-t border-white/20">
                     <span className="font-bold">Total</span>
-                    <span className="font-bold text-accent">Rs {total.toLocaleString()}</span>
+                    <span className="font-bold text-accent">{settings.currency} {total.toLocaleString()}</span>
                   </div>
                 </div>
 

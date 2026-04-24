@@ -1,0 +1,52 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "rhel-openssl-1.1.x"]
+  output        = "../generated/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  price       Float
+  description String
+  images      String
+  category    String
+  sizes       String
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id           String   @id @default(cuid())
+  customerName String
+  phone        String
+  address      String
+  items        Json
+  totalPrice   Float
+  createdAt    DateTime @default(now())
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
+
+model Admin {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  password  String
+  createdAt DateTime @default(now())
+}

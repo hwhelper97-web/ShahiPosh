@@ -9,8 +9,14 @@ export default function Hero() {
     <section className="relative h-screen min-h-[700px] flex items-center overflow-hidden">
       {/* Background Image/Video Placeholder */}
       <div className="absolute inset-0 z-0 bg-[#f3f3f3]">
-        {/* You can replace this with a real image once you have one */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent z-10" />
+        <Image
+          src="/products/white-dress.jpg"
+          alt="ShahiPosh Hero"
+          fill
+          className="object-cover opacity-30 grayscale"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/90 to-transparent z-10" />
       </div>
 
       <div className="container relative z-20">

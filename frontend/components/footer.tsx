@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
+import { useSettings } from './settings-context';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const { settings } = useSettings();
 
   return (
     <footer className="bg-muted pt-20 pb-10">
@@ -12,20 +14,31 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Info */}
           <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold tracking-tighter">SHAHIPOSH</h2>
+            <h2 className="text-2xl font-bold tracking-tighter">{settings.storeName}</h2>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-              Elevating your style with premium, minimalist fashion. Designed for the modern individual who values quality and elegance.
+              {settings.footerAboutText}
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                <Instagram size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                <Facebook size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                <Twitter size={18} />
-              </a>
+              {settings.instagramUrl && (
+                <a href={settings.instagramUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                  <Instagram size={18} />
+                </a>
+              )}
+              {settings.facebookUrl && (
+                <a href={settings.facebookUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                  <Facebook size={18} />
+                </a>
+              )}
+              {settings.twitterUrl && (
+                <a href={settings.twitterUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                  <Twitter size={18} />
+                </a>
+              )}
+              {settings.youtubeUrl && (
+                <a href={settings.youtubeUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                  <Youtube size={18} />
+                </a>
+              )}
             </div>
           </div>
 
@@ -70,11 +83,16 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-xs text-muted-foreground">
-            © {currentYear} SHAHIPOSH. All rights reserved.
+            © {currentYear} {settings.storeName}. All rights reserved.
           </p>
-          <div className="flex gap-8 text-xs text-muted-foreground">
+          <div className="flex items-center gap-8 text-xs text-muted-foreground">
             <Link href="/policies/privacy" className="hover:text-primary transition-luxury">Privacy Policy</Link>
             <Link href="/policies/terms" className="hover:text-primary transition-luxury">Terms of Service</Link>
+            {/* Secure Admin Access Icon */}
+            <Link href="/admin/login" className="flex items-center gap-1 hover:text-primary transition-luxury ml-4">
+              <ShieldCheck size={14} />
+              <span>Admin Login</span>
+            </Link>
           </div>
         </div>
       </div>

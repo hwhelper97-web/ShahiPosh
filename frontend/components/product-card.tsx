@@ -4,16 +4,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ShoppingCart, Eye, Heart } from "lucide-react";
+import { useSettings } from "./settings-context";
 
 type Product = {
   id: string;
   name: string;
-  price: number;
-  category: string;
+  regularPrice: number;
+  salePrice?: number | null;
+  category: any;
   images: string | string[];
 };
 
 export function ProductCard({ product }: { product: Product }) {
+  const { settings } = useSettings();
   let images: string[] = [];
 
   try {
@@ -25,10 +28,17 @@ export function ProductCard({ product }: { product: Product }) {
     images = [];
   }
 
-  const imageSrc =
-    images?.[0] && images[0].startsWith("/")
-      ? images[0]
-      : "/placeholder.jpg";
+  let imageSrc = "/placeholder.jpg";
+  if (images?.[0]) {
+    const firstImg = typeof images[0] === 'string' ? images[0] : (images[0] as any).url;
+    if (firstImg) {
+      if (firstImg.startsWith("/") || firstImg.startsWith("http")) {
+        imageSrc = firstImg;
+      } else {
+        imageSrc = `/products/${firstImg}`;
+      }
+    }
+  }
 
   return (
     <motion.div
@@ -75,10 +85,17 @@ export function ProductCard({ product }: { product: Product }) {
           </h3>
         </Link>
         <p className="text-xs text-muted-foreground uppercase tracking-widest">
-          {product.category}
+          {product.category?.name || product.category}
         </p>
         <p className="text-sm font-bold mt-1">
-          Rs {product.price.toLocaleString()}
+          {product.salePrice ? (
+            <span className="flex items-center gap-2">
+              <span className="text-accent">{settings.currency} {product.salePrice.toLocaleString()}</span>
+              <span className="text-[10px] text-muted-foreground line-through decoration-muted-foreground/30">{settings.currency} {product.regularPrice.toLocaleString()}</span>
+            </span>
+          ) : (
+            <span>{settings.currency} {(product.regularPrice || 0).toLocaleString()}</span>
+          )}
         </p>
       </div>
     </motion.div>

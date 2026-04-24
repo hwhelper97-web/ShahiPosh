@@ -1,20 +1,24 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import { useCart } from '@/components/cart-context';
 import { createOrder } from '@/lib/api';
 import Image from 'next/image';
 import { ShieldCheck, Truck, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+import { useSettings } from '@/components/settings-context';
 
 export default function CheckoutPage() {
   const { cart, removeFromCart, clearCart } = useCart();
+  const { settings } = useSettings();
   const [form, setForm] = useState({ customerName: '', phone: '', address: '' });
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  const subtotal = cart.reduce((s: number, i: any) => s + i.price * i.quantity, 0);
-  const shipping = subtotal > 5000 ? 0 : 250;
+  const subtotal = cart.reduce((s: number, i: any) => s + (i.price || i.salePrice || i.regularPrice || 0) * i.quantity, 0);
+  const shippingThreshold = Number(settings.freeShippingThreshold);
+  const shippingFee = Number(settings.shippingFee);
+  const shipping = subtotal > shippingThreshold ? 0 : shippingFee;
   const total = subtotal + shipping;
 
   const onSubmit = async (e: FormEvent) => {
@@ -25,8 +29,9 @@ export default function CheckoutPage() {
       const orderItems = cart.map((item: any) => ({
         productId: item.id,
         quantity: item.quantity,
-        price: item.price,
-        size: item.size
+        price: item.price || item.salePrice || item.regularPrice || 0,
+        size: item.size,
+        name: item.name
       }));
 
       await createOrder({ ...form, items: orderItems, totalPrice: total });
@@ -142,7 +147,7 @@ export default function CheckoutPage() {
                 disabled={loading}
                 className="btn-premium w-full py-5 text-lg font-bold shadow-2xl disabled:opacity-70"
               >
-                {loading ? "Processing..." : `Place Order • Rs ${total.toLocaleString()}`}
+                {loading ? "Processing..." : `Place Order • ${settings.currency} ${total.toLocaleString()}`}
               </button>
 
               <p className="text-center text-[10px] text-muted-foreground uppercase tracking-widest flex items-center justify-center gap-2">
@@ -167,7 +172,7 @@ export default function CheckoutPage() {
                       <h3 className="text-sm font-bold truncate max-w-[200px]">{item.name}</h3>
                       <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Size: {item.size} • Qty: {item.quantity}</p>
                     </div>
-                    <p className="text-sm font-bold">Rs {(item.price * item.quantity).toLocaleString()}</p>
+                    <p className="text-sm font-bold">{settings.currency} {((item.price || item.salePrice || item.regularPrice || 0) * item.quantity).toLocaleString()}</p>
                   </div>
                 ))}
               </div>
@@ -175,15 +180,15 @@ export default function CheckoutPage() {
               <div className="space-y-4 pt-8 border-t border-border">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-bold">Rs {subtotal.toLocaleString()}</span>
+                  <span className="font-bold">{settings.currency} {subtotal.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span className="font-bold">{shipping === 0 ? "FREE" : `Rs ${shipping}`}</span>
+                  <span className="font-bold">{shipping === 0 ? "FREE" : `${settings.currency} ${shipping}`}</span>
                 </div>
                 <div className="flex justify-between text-xl pt-6 border-t border-border">
                   <span className="font-bold tracking-tighter">Total</span>
-                  <span className="font-extrabold text-accent">Rs {total.toLocaleString()}</span>
+                  <span className="font-extrabold text-accent">{settings.currency} {total.toLocaleString()}</span>
                 </div>
               </div>
             </div>

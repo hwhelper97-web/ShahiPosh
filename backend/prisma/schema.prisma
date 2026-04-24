@@ -1,29 +1,256 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../../frontend/lib/generated/client"
 }
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
-model Product {
-  id          String   @id @default(cuid())
+// RBAC & User Management
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  VENDOR
+  MANAGER
+  CUSTOMER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String?
+  phone         String?
+  role          Role      @default(CUSTOMER)
+  isActive      Boolean   @default(true)
+  lastLogin     DateTime?
+  vendorProfile Vendor?
+  orders        Order[]
+  auditLogs     AuditLog[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// Multi-Vendor Support
+model Vendor {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id])
+  storeName       String        @unique
+  slug            String        @unique
+  description     String?
+  logo            String?
+  banner          String?
+  isVerified      Boolean       @default(false)
+  commissionRate  Float         @default(10.0) // Percentage
+  status          VendorStatus  @default(PENDING)
+  products        Product[]
+  bankAccount     String?
+  contactNumber   String?
+  address         String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+// Category Management
+model Category {
+  id          String     @id @default(cuid())
   name        String
-  price       Float
-  description String
-  images      Json     // ✅ FIXED
-  category    String
-  sizes       Json     // ✅ FIXED
-  createdAt   DateTime @default(now())
+  slug        String     @unique
+  description String?
+  image       String?
+  parentId    String?
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  products    Product[]
+  order       Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
+// Product Management
+model Product {
+  id              String      @id @default(cuid())
+  name            String
+  slug            String      @unique
+  description     String
+  richDescription String?
+  sku             String      @unique
+  status          String      @default("Active")
+  regularPrice    Float
+  salePrice       Float?
+  costPrice       Float?      // For profit analysis
+  stockStatus     StockStatus @default(IN_STOCK)
+  inventory       Int         @default(0)
+  lowStockLevel   Int         @default(5)
+  images          Json        // Array of image objects {url, alt}
+  attributes      Json?       // Variations: color, size, etc.
+  variants        ProductVariant[]
+  categoryId      String
+  category        Category    @relation(fields: [categoryId], references: [id])
+  vendorId        String?
+  vendor          Vendor?     @relation(fields: [vendorId], references: [id])
+  isFeatured      Boolean     @default(false)
+  isPublished     Boolean     @default(false)
+  tags            Json?       // Array of strings
+  seoTitle        String?
+  seoDescription  String?
+  reviews         Review[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model ProductVariant {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku        String   @unique
+  price      Float?
+  inventory  Int      @default(0)
+  attributes Json     // e.g., { "size": "L", "color": "Blue" }
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  ON_BACKORDER
+}
+
+// Order Management
 model Order {
-  id           String   @id @default(cuid())
-  customerName String
-  phone        String
-  address      String
-  items        Json
-  totalPrice   Float
-  createdAt    DateTime @default(now())
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  userId          String?
+  user            User?       @relation(fields: [userId], references: [id])
+  customerName    String
+  customerEmail   String
+  customerPhone   String
+  shippingAddress String
+  city            String?
+  area            String?
+  items           Json        // [{productId, variantId, name, quantity, price}]
+  subtotal        Float
+  tax             Float       @default(0)
+  shippingFee     Float       @default(0)
+  discount        Float       @default(0)
+  totalPrice      Float
+  status          OrderStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  paymentMethod   String?
+  trackingId      String?
+  courier         String?
+  shipment        Shipment?
+  notes           String?
+  timeline        Json?       // Array of status changes [{status, timestamp, note}]
+  couponId        String?
+  coupon          Coupon?     @relation(fields: [couponId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  RETURNED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+// PostEx & Shipment Integration
+model Shipment {
+  id              String   @id @default(cuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+  trackingNumber  String?  @unique
+  courierName     String   @default("PostEx")
+  labelUrl        String?
+  status          String?
+  bookingResponse Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Marketing & Promotions
+model Coupon {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  description     String?
+  discountType    DiscountType
+  discountValue   Float
+  minPurchase     Float?
+  maxDiscount     Float?
+  startDate       DateTime?
+  endDate         DateTime?
+  usageLimit      Int?
+  usageCount      Int       @default(0)
+  isActive        Boolean   @default(true)
+  orders          Order[]
+  createdAt       DateTime  @default(now())
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
+}
+
+// CRM & Reviews
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  rating    Int
+  comment   String?
+  userName  String
+  isApproved Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// System Integrity
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String
+  entity    String
+  entityId  String?
+  oldData   Json?
+  newData   Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value Json
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  status    String   @default("UNREAD") // UNREAD, READ, REPLIED
+  createdAt DateTime @default(now())
 }

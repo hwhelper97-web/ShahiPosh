@@ -1,110 +1,145 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
-import { adminLogin } from '@/lib/api';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Shield, Mail, Lock, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function AdminLogin() {
+export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const onSubmit = async (e: FormEvent) => {
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      router.push('/admin');
+    }
+  }, [router]);
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
     try {
-      const { token } = await adminLogin(email, password);
-      localStorage.setItem('admin_token', token);
-      router.push('/admin');
-    } catch {
-      setError('Invalid admin credentials. Please try again.');
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem('admin_token', data.token);
+        setSuccess(true);
+        setTimeout(() => {
+          router.push('/admin');
+        }, 1500);
+      } else {
+        setError(data.message || 'Login failed');
+      }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center p-4">
-      <div className="w-full max-w-lg">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white p-12 md:p-16 rounded-[3rem] shadow-2xl border border-border"
-        >
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center text-accent mx-auto mb-6 border border-accent/20">
-              <ShieldCheck size={32} />
-            </div>
-            <h1 className="text-3xl font-bold tracking-tighter mb-2">Admin Gateway</h1>
-            <p className="text-muted-foreground text-sm uppercase tracking-widest font-medium">SHAHIPOSH Secure Login</p>
+    <div className="min-h-screen bg-muted/30 flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-[100px] -mr-48 -mt-48" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -ml-48 -mb-48" />
+
+      <div className="w-full max-w-md space-y-8 relative z-10">
+        <div className="text-center space-y-4">
+          <div className="w-20 h-20 bg-primary text-white rounded-3xl flex items-center justify-center mx-auto shadow-2xl shadow-primary/20 rotate-3">
+            <Shield size={40} />
           </div>
+          <div className="space-y-1">
+            <h1 className="text-4xl font-black tracking-tighter">Admin Portal</h1>
+            <p className="text-sm text-muted-foreground uppercase tracking-[0.2em] font-bold">Secure Authentication</p>
+          </div>
+        </div>
 
-          <form onSubmit={onSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Admin Email</label>
-              <div className="relative">
-                <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                <input 
-                  required
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@shahiposh.com" 
-                  className="w-full bg-muted border-none rounded-2xl px-14 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
-                />
+        <div className="bg-white rounded-[3rem] p-10 shadow-2xl border border-border">
+          {success ? (
+            <div className="py-10 text-center space-y-6 animate-in fade-in zoom-in duration-500">
+              <div className="w-20 h-20 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto border border-green-100">
+                <CheckCircle2 size={40} />
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold">Access Granted</h2>
+                <p className="text-sm text-muted-foreground">Synchronizing secure session...</p>
               </div>
             </div>
+          ) : (
+            <form onSubmit={handleLogin} className="space-y-8">
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-xs font-bold text-center animate-shake">
+                  {error}
+                </div>
+              )}
 
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-                <input 
-                  required
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••" 
-                  className="w-full bg-muted border-none rounded-2xl px-14 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
-                />
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-6">Admin Identifier</label>
+                  <div className="relative">
+                    <Mail className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                    <input 
+                      required
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="admin@shahiposh.com"
+                      className="w-full bg-muted/50 border-2 border-transparent rounded-[1.5rem] px-16 py-4 text-sm focus:border-accent focus:bg-white transition-all outline-none" 
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-6">Secure Key</label>
+                  <div className="relative">
+                    <Lock className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                    <input 
+                      required
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full bg-muted/50 border-2 border-transparent rounded-[1.5rem] px-16 py-4 text-sm focus:border-accent focus:bg-white transition-all outline-none" 
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {error && (
-              <motion.p 
-                initial={{ opacity: 0 }} 
-                animate={{ opacity: 1 }} 
-                className="text-red-500 text-xs font-bold uppercase tracking-widest text-center"
+              <button 
+                disabled={loading}
+                className="btn-premium w-full py-5 text-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl group"
               >
-                {error}
-              </motion.p>
-            )}
+                {loading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  <>
+                    Initialize Session
+                    <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
 
-            <button 
-              disabled={loading}
-              className="btn-premium w-full py-5 flex items-center justify-center gap-3 shadow-xl disabled:opacity-70"
-            >
-              {loading ? "Verifying..." : "Access Dashboard"}
-              <ArrowRight size={18} />
-            </button>
-          </form>
-
-          <div className="mt-12 text-center">
-            <Link href="/" className="text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-luxury">
-              ← Return to Storefront
-            </Link>
-          </div>
-        </motion.div>
-
-        <p className="text-center mt-12 text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-bold">
-          © 2026 SHAHIPOSH SYSTEM ADMINISTRATION
-        </p>
+        <div className="text-center">
+          <Link href="/" className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
+            Return to Public Storefront
+          </Link>
+        </div>
       </div>
     </div>
   );

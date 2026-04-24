@@ -1,12 +1,42 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Instagram, Facebook, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Instagram, Facebook, Twitter, Youtube } from 'lucide-react';
+import { useSettings } from '@/components/settings-context';
 
 export default function ContactPage() {
-  const handleSubmit = (e: any) => {
+  const { settings } = useSettings();
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: 'General Inquiry',
+    message: ''
+  });
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    alert("Message sent! Our team will contact you soon.");
+    setLoading(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      if (res.ok) {
+        alert("Message sent! Our team will contact you soon.");
+        setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
+      } else {
+        const data = await res.json();
+        alert(`Failed to send message: ${data.error || 'Please try again.'}`);
+      }
+    } catch (err) {
+      alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,8 +63,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Email Us</h3>
-                  <p className="text-muted-foreground hover:text-primary transition-luxury">support@shahiposh.com</p>
-                  <p className="text-muted-foreground hover:text-primary transition-luxury">orders@shahiposh.com</p>
+                  <p className="text-muted-foreground hover:text-primary transition-luxury">{settings.storeEmail}</p>
                 </div>
               </div>
 
@@ -44,7 +73,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Call Us</h3>
-                  <p className="text-muted-foreground hover:text-primary transition-luxury">+92 300 1234567</p>
+                  <p className="text-muted-foreground hover:text-primary transition-luxury">{settings.storePhone}</p>
                   <p className="text-muted-foreground text-xs mt-1">Mon - Sat: 9:00 AM - 6:00 PM</p>
                 </div>
               </div>
@@ -55,8 +84,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Visit Us</h3>
-                  <p className="text-muted-foreground">Office 123, Luxury Heights</p>
-                  <p className="text-muted-foreground">Gulberg III, Lahore, Pakistan</p>
+                  <p className="text-muted-foreground whitespace-pre-line">{settings.storeAddress}</p>
                 </div>
               </div>
             </div>
@@ -64,15 +92,26 @@ export default function ContactPage() {
             <div className="pt-10 border-t border-border">
               <h3 className="text-sm font-bold uppercase tracking-widest mb-6">Follow Our Journey</h3>
               <div className="flex gap-4">
-                <a href="#" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Instagram size={20} />
-                </a>
-                <a href="#" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Facebook size={20} />
-                </a>
-                <a href="#" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Twitter size={20} />
-                </a>
+                {settings.instagramUrl && (
+                  <a href={settings.instagramUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                    <Instagram size={20} />
+                  </a>
+                )}
+                {settings.facebookUrl && (
+                  <a href={settings.facebookUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                    <Facebook size={20} />
+                  </a>
+                )}
+                {settings.twitterUrl && (
+                  <a href={settings.twitterUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                    <Twitter size={20} />
+                  </a>
+                )}
+                {settings.youtubeUrl && (
+                  <a href={settings.youtubeUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
+                    <Youtube size={20} />
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -90,6 +129,8 @@ export default function ContactPage() {
                     <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Your Name</label>
                     <input 
                       required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="John Doe" 
                       className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
                     />
@@ -99,6 +140,8 @@ export default function ContactPage() {
                     <input 
                       required
                       type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="john@example.com" 
                       className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
                     />
@@ -107,7 +150,11 @@ export default function ContactPage() {
 
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Subject</label>
-                  <select className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury appearance-none">
+                  <select 
+                    value={formData.subject}
+                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                    className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury appearance-none"
+                  >
                     <option>General Inquiry</option>
                     <option>Order Support</option>
                     <option>Wholesale</option>
@@ -119,15 +166,20 @@ export default function ContactPage() {
                   <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Your Message</label>
                   <textarea 
                     required
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="How can we help you?" 
                     rows={6}
                     className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
                   />
                 </div>
 
-                <button className="btn-premium w-full py-5 flex items-center justify-center gap-3">
+                <button 
+                  disabled={loading}
+                  className="btn-premium w-full py-5 flex items-center justify-center gap-3 disabled:opacity-50"
+                >
                   <Send size={18} />
-                  Send Message
+                  {loading ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </motion.div>

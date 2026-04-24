@@ -1,8 +1,8 @@
 import "./globals.css";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import { CartProvider } from "@/components/cart-context";
+import { SettingsProvider } from "@/components/settings-context";
 import { Metadata } from "next";
+import LayoutShell from "@/components/layout-shell";
 
 export const metadata: Metadata = {
   title: "SHAHIPOSH | Premium Minimalist Fashion",
@@ -18,9 +18,9 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth">
       <body className="flex flex-col min-h-screen">
         <CartProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
+          <SettingsProvider>
+            <LayoutShell>{children}</LayoutShell>
+          </SettingsProvider>
         </CartProvider>
       </body>
     </html>

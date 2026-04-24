@@ -8,21 +8,21 @@ const collections = [
   {
     title: "Men's Wear",
     subtitle: "Tailored for Perfection",
-    image: "/collection-men.jpg", // Placeholder path
+    image: "/products/black-kurta.jpg",
     href: "/shop?category=men",
     size: "large"
   },
   {
     title: "Women's Collection",
     subtitle: "Grace & Elegance",
-    image: "/collection-women.jpg", // Placeholder path
+    image: "/products/abaya.jpg",
     href: "/shop?category=women",
     size: "small"
   },
   {
     title: "Kids' Style",
     subtitle: "Comfort Meets Cool",
-    image: "/collection-kids.jpg", // Placeholder path
+    image: "/products/hoodie.jpg",
     href: "/shop?category=kids",
     size: "small"
   }

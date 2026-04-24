@@ -24,6 +24,9 @@ export default {
           foreground: '#666666',
         },
         border: '#e5e5e5',
+      },
+      animation: {
+        'spin-slow': 'spin 3s linear infinite',
       }
     }
   },

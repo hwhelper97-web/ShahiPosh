@@ -3,15 +3,18 @@
 import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck, ChevronRight } from "lucide-react";
+import { ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck, ChevronRight, X } from "lucide-react";
 import { ProductCard } from "@/components/product-card";
 import { useCart } from "@/components/cart-context";
+import { useSettings } from "@/components/settings-context";
 
 export default function ProductClient({ product }: any) {
   const { addToCart } = useCart();
+  const { settings } = useSettings();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
   const [adding, setAdding] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
 
   let images: string[] = [];
   let sizes: string[] = [];
@@ -24,7 +27,16 @@ export default function ProductClient({ product }: any) {
     sizes = ["S", "M", "L", "XL"];
   }
 
-  if (!images || images.length === 0) images = ["/placeholder.jpg"];
+  if (!images || images.length === 0) {
+    images = ["/placeholder.jpg"];
+  } else {
+    images = images.map(img => {
+      const src = typeof img === 'string' ? img : (img as any).url;
+      if (!src) return "/placeholder.jpg";
+      if (src.startsWith("/") || src.startsWith("http")) return src;
+      return `/products/${src}`;
+    });
+  }
 
   const handleAddToCart = () => {
     if (!selectedSize) {
@@ -32,11 +44,13 @@ export default function ProductClient({ product }: any) {
       return;
     }
     setAdding(true);
-    addToCart(product, selectedSize, 1);
+    const effectivePrice = product.salePrice || product.regularPrice;
+    addToCart({ ...product, price: effectivePrice }, selectedSize, 1);
     setTimeout(() => setAdding(false), 1000);
   };
 
   return (
+    <>
     <div className="bg-background pt-32 pb-20">
       <div className="container">
         {/* Breadcrumbs */}
@@ -95,9 +109,18 @@ export default function ProductClient({ product }: any) {
           {/* Right: Product Info */}
           <div className="lg:col-span-5 space-y-10">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-4">{product.category}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-4">{product.category?.name || product.category}</p>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">{product.name}</h1>
-              <p className="text-2xl font-bold">Rs {product.price.toLocaleString()}</p>
+              <div className="flex items-center gap-4">
+                {product.salePrice ? (
+                  <>
+                    <p className="text-3xl font-black text-accent">{settings.currency} {product.salePrice.toLocaleString()}</p>
+                    <p className="text-lg text-muted-foreground line-through font-medium">{settings.currency} {product.regularPrice.toLocaleString()}</p>
+                  </>
+                ) : (
+                  <p className="text-3xl font-black">{settings.currency} {(product.regularPrice || 0).toLocaleString()}</p>
+                )}
+              </div>
             </div>
 
             <p className="text-muted-foreground leading-relaxed">
@@ -108,7 +131,12 @@ export default function ProductClient({ product }: any) {
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-sm font-bold uppercase tracking-widest">Select Size</h3>
-                <button className="text-xs font-medium underline underline-offset-4 hover:text-accent transition-luxury">Size Guide</button>
+                <button 
+                  onClick={() => setShowSizeGuide(true)}
+                  className="text-xs font-medium underline underline-offset-4 hover:text-accent transition-luxury"
+                >
+                  Size Guide
+                </button>
               </div>
               <div className="flex flex-wrap gap-3">
                 {sizes.map((s) => (
@@ -138,7 +166,7 @@ export default function ProductClient({ product }: any) {
                 {adding ? "Added to Cart!" : "Add to Cart"}
               </button>
               <a
-                href={`https://wa.me/923XXXXXXXXX?text=Hello, I'm interested in: ${product.name}`}
+                href={`https://wa.me/${settings.whatsappNumber}?text=Hello, I'm interested in: ${product.name}`}
                 target="_blank"
                 className="btn-outline w-full py-5 text-center"
               >
@@ -165,5 +193,70 @@ export default function ProductClient({ product }: any) {
         </div>
       </div>
     </div>
+
+      {/* Size Guide Modal */}
+      <AnimatePresence>
+        {showSizeGuide && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowSizeGuide(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-white rounded-[2.5rem] p-10 shadow-2xl overflow-hidden"
+            >
+              <button 
+                onClick={() => setShowSizeGuide(false)}
+                className="absolute top-8 right-8 p-2 hover:bg-muted rounded-full transition-luxury"
+              >
+                <X size={20} />
+              </button>
+
+              <h2 className="text-3xl font-bold tracking-tighter mb-8">Size Guide</h2>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Size</th>
+                      <th className="py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Chest (in)</th>
+                      <th className="py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Waist (in)</th>
+                      <th className="py-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Hips (in)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {[
+                      { s: 'S', c: '34-36', w: '28-30', h: '35-37' },
+                      { s: 'M', c: '38-40', w: '32-34', h: '39-41' },
+                      { s: 'L', c: '42-44', w: '36-38', h: '43-45' },
+                      { s: 'XL', c: '46-48', w: '40-42', h: '47-49' },
+                    ].map((row) => (
+                      <tr key={row.s} className="hover:bg-muted/30 transition-luxury">
+                        <td className="py-4 text-sm font-bold">{row.s}</td>
+                        <td className="py-4 text-sm text-muted-foreground">{row.c}</td>
+                        <td className="py-4 text-sm text-muted-foreground">{row.w}</td>
+                        <td className="py-4 text-sm text-muted-foreground">{row.h}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="mt-10 p-6 bg-muted rounded-3xl">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  <strong>Measurement Tip:</strong> For the most accurate fit, measure your body while wearing lightweight clothing. Keep the tape measure horizontal and snug, but not tight.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
