@@ -2,31 +2,44 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import nodemailer from 'nodemailer';
 
-export async function PATCH(
+export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { status } = await req.json();
-    const { id } = params;
-
-    const message = await prisma.contactMessage.update({
-      where: { id },
-      data: { status },
+    const { id } = await params;
+    const message = await prisma.contactMessage.findUnique({
+      where: { id }
     });
-
     return NextResponse.json(message);
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to update message status' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch message' }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    const message = await prisma.contactMessage.update({
+      where: { id },
+      data: body,
+    });
+    return NextResponse.json(message);
+  } catch (err) {
+    return NextResponse.json({ error: 'Failed to update message' }, { status: 500 });
   }
 }
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     await prisma.contactMessage.delete({
       where: { id },
@@ -41,10 +54,10 @@ export async function DELETE(
 // Separate POST for Replying to a message via email
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const { replyText, originalMessage, customerEmail, subject } = await req.json();
 
     const transporter = nodemailer.createTransport({
