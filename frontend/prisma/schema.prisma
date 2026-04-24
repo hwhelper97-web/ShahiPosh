@@ -18,40 +18,40 @@ enum Role {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String     @id @default(cuid())
+  email         String     @unique
   passwordHash  String
   name          String?
   phone         String?
-  role          Role      @default(CUSTOMER)
-  isActive      Boolean   @default(true)
+  role          Role       @default(CUSTOMER)
+  isActive      Boolean    @default(true)
   lastLogin     DateTime?
   vendorProfile Vendor?
   orders        Order[]
   auditLogs     AuditLog[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 // Multi-Vendor Support
 model Vendor {
-  id              String        @id @default(cuid())
-  userId          String        @unique
-  user            User          @relation(fields: [userId], references: [id])
-  storeName       String        @unique
-  slug            String        @unique
-  description     String?
-  logo            String?
-  banner          String?
-  isVerified      Boolean       @default(false)
-  commissionRate  Float         @default(10.0) // Percentage
-  status          VendorStatus  @default(PENDING)
-  products        Product[]
-  bankAccount     String?
-  contactNumber   String?
-  address         String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  user           User         @relation(fields: [userId], references: [id])
+  storeName      String       @unique
+  slug           String       @unique
+  description    String?
+  logo           String?
+  banner         String?
+  isVerified     Boolean      @default(false)
+  commissionRate Float        @default(10.0) // Percentage
+  status         VendorStatus @default(PENDING)
+  products       Product[]
+  bankAccount    String?
+  contactNumber  String?
+  address        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 enum VendorStatus {
@@ -79,44 +79,44 @@ model Category {
 
 // Product Management
 model Product {
-  id              String      @id @default(cuid())
+  id              String           @id @default(cuid())
   name            String
-  slug            String      @unique
+  slug            String           @unique
   description     String
   richDescription String?
-  sku             String      @unique
-  status          String      @default("Active")
+  sku             String           @unique
+  status          String           @default("Active")
   regularPrice    Float
   salePrice       Float?
-  costPrice       Float?      // For profit analysis
-  stockStatus     StockStatus @default(IN_STOCK)
-  inventory       Int         @default(0)
-  lowStockLevel   Int         @default(5)
-  images          Json        // Array of image objects {url, alt}
-  attributes      Json?       // Variations: color, size, etc.
+  costPrice       Float? // For profit analysis
+  stockStatus     StockStatus      @default(IN_STOCK)
+  inventory       Int              @default(0)
+  lowStockLevel   Int              @default(5)
+  images          Json // Array of image objects {url, alt}
+  attributes      Json? // Variations: color, size, etc.
   variants        ProductVariant[]
   categoryId      String
-  category        Category    @relation(fields: [categoryId], references: [id])
+  category        Category         @relation(fields: [categoryId], references: [id])
   vendorId        String?
-  vendor          Vendor?     @relation(fields: [vendorId], references: [id])
-  isFeatured      Boolean     @default(false)
-  isPublished     Boolean     @default(false)
-  tags            Json?       // Array of strings
+  vendor          Vendor?          @relation(fields: [vendorId], references: [id])
+  isFeatured      Boolean          @default(false)
+  isPublished     Boolean          @default(false)
+  tags            Json? // Array of strings
   seoTitle        String?
   seoDescription  String?
   reviews         Review[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 }
 
 model ProductVariant {
-  id         String   @id @default(cuid())
+  id         String  @id @default(cuid())
   productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sku        String   @unique
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  sku        String  @unique
   price      Float?
-  inventory  Int      @default(0)
-  attributes Json     // e.g., { "size": "L", "color": "Blue" }
+  inventory  Int     @default(0)
+  attributes Json // e.g., { "size": "L", "color": "Blue" }
 }
 
 enum StockStatus {
@@ -127,34 +127,34 @@ enum StockStatus {
 
 // Order Management
 model Order {
-  id              String      @id @default(cuid())
-  orderNumber     String      @unique
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
   userId          String?
-  user            User?       @relation(fields: [userId], references: [id])
+  user            User?         @relation(fields: [userId], references: [id])
   customerName    String
   customerEmail   String
   customerPhone   String
   shippingAddress String
   city            String?
   area            String?
-  items           Json        // [{productId, variantId, name, quantity, price}]
+  items           Json // [{productId, variantId, name, quantity, price}]
   subtotal        Float
-  tax             Float       @default(0)
-  shippingFee     Float       @default(0)
-  discount        Float       @default(0)
+  tax             Float         @default(0)
+  shippingFee     Float         @default(0)
+  discount        Float         @default(0)
   totalPrice      Float
-  status          OrderStatus @default(PENDING)
+  status          OrderStatus   @default(PENDING)
   paymentStatus   PaymentStatus @default(UNPAID)
   paymentMethod   String?
   trackingId      String?
   courier         String?
   shipment        Shipment?
   notes           String?
-  timeline        Json?       // Array of status changes [{status, timestamp, note}]
+  timeline        Json? // Array of status changes [{status, timestamp, note}]
   couponId        String?
-  coupon          Coupon?     @relation(fields: [couponId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  coupon          Coupon?       @relation(fields: [couponId], references: [id])
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 enum OrderStatus {
@@ -190,20 +190,20 @@ model Shipment {
 
 // Marketing & Promotions
 model Coupon {
-  id              String    @id @default(cuid())
-  code            String    @unique
-  description     String?
-  discountType    DiscountType
-  discountValue   Float
-  minPurchase     Float?
-  maxDiscount     Float?
-  startDate       DateTime?
-  endDate         DateTime?
-  usageLimit      Int?
-  usageCount      Int       @default(0)
-  isActive        Boolean   @default(true)
-  orders          Order[]
-  createdAt       DateTime  @now()
+  id            String       @id @default(cuid())
+  code          String       @unique
+  description   String?
+  discountType  DiscountType
+  discountValue Float
+  minPurchase   Float?
+  maxDiscount   Float?
+  startDate     DateTime?
+  endDate       DateTime?
+  usageLimit    Int?
+  usageCount    Int          @default(0)
+  isActive      Boolean      @default(true)
+  orders        Order[]
+  createdAt     DateTime     @default(now())
 }
 
 enum DiscountType {
@@ -214,14 +214,14 @@ enum DiscountType {
 
 // CRM & Reviews
 model Review {
-  id        String   @id @default(cuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  rating    Int
-  comment   String?
-  userName  String
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  rating     Int
+  comment    String?
+  userName   String
   isApproved Boolean  @default(false)
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
 }
 
 // System Integrity
