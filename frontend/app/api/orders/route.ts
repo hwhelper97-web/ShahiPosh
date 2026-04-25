@@ -23,6 +23,7 @@ export async function POST(req: Request) {
     const order = await prisma.order.create({
       data: {
         orderNumber: orderNumber,
+        customerName: body.customerName || body.name || 'Guest',
         customerEmail: body.customerEmail || 'guest@example.com',
         customerPhone: body.phone || body.customerPhone || '0000000000',
         shippingAddress: body.address || body.shippingAddress || 'No Address',
@@ -43,7 +44,7 @@ export async function POST(req: Request) {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
-      });
+      } as any);
 
       const itemsHtml = (body.items || []).map((item: any) => `
         <tr>

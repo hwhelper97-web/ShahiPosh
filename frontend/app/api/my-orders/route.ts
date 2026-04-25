@@ -11,7 +11,7 @@ export async function GET(req: Request) {
     }
 
     const orders = await prisma.order.findMany({
-      where: { phone },
+      where: { customerPhone: phone },
       orderBy: { createdAt: 'desc' }
     });
 

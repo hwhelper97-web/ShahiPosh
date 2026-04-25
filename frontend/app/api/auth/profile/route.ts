@@ -3,11 +3,11 @@ import prisma from '@/lib/prisma';
 
 export async function PATCH(req: Request) {
   try {
-    const { id, name, phone, address } = await req.json();
+    const { id, name, phone } = await req.json();
 
     const user = await prisma.user.update({
       where: { id },
-      data: { name, phone, address },
+      data: { name, phone },
     });
 
     return NextResponse.json(user);

@@ -45,7 +45,7 @@ export async function POST(req: Request) {
           pass: process.env.SMTP_PASS,
         },
         timeout: 10000 // 10 seconds timeout
-      });
+      } as any);
 
       console.log('[CONTACT] Sending mail...');
       await transporter.sendMail({

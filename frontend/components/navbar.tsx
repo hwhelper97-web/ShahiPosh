@@ -16,7 +16,7 @@ export default function Navbar() {
   const { cart } = useCart();
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const cartItemsCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+  const cartItemsCount = cart.reduce((acc: number, item: any) => acc + item.quantity, 0);
 
   useEffect(() => {
     const adminToken = localStorage.getItem('admin_token');

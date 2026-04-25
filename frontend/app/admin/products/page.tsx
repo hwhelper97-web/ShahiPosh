@@ -102,9 +102,9 @@ function AdminProductsContent() {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
     onDrop, 
-    accept: { 'image/*': [] },
+    accept: { 'image/*': ['.jpeg', '.jpg', '.png', '.webp'] },
     multiple: true 
-  });
+  } as any);
 
   const saveProduct = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +170,7 @@ function AdminProductsContent() {
       sizes: sizesArr,
       images: imagesArr,
       sku: p.sku || '',
-      stock: String(p.inventory || 0),
+      inventory: String(p.inventory || 0),
       status: p.status || 'Active'
     });
     setEditingId(p.id);
@@ -369,12 +369,12 @@ function AdminProductsContent() {
                   <div className="space-y-4">
                     <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-6">Visual Assets (Multi-Upload)</label>
                     <div 
-                      {...getRootProps()} 
+                      {...getRootProps() as any} 
                       className={`border-4 border-dashed rounded-[2.5rem] p-12 flex flex-col items-center justify-center transition-all cursor-pointer ${
                         isDragActive ? 'border-accent bg-accent/5' : 'border-muted-foreground/10 hover:border-accent/40 hover:bg-muted/30'
                       }`}
                     >
-                      <input {...getInputProps()} />
+                      <input {...getInputProps() as any} />
                       <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mb-4">
                         <Upload size={32} />
                       </div>
@@ -442,7 +442,7 @@ function AdminProductsContent() {
                     </div>
                     
                     <div className="space-y-2">
-                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-accent">{form.category?.name || form.category || 'Collection'}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-accent">{form.category || 'Collection'}</p>
                       <h4 className="text-2xl font-bold tracking-tight line-clamp-1">{form.name || 'Product Title'}</h4>
                       <div className="flex items-center gap-3">
                         <p className="text-xl font-black">{settings.currency} {(Number(form.price) || 0).toLocaleString()}</p>
