@@ -33,9 +33,10 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
-    { name: 'Categories', href: '/shop#categories' },
+    { name: 'Categories', href: '/#categories' },
     { name: 'About', href: '/about' },
   ];
+
 
 
   // Calculate total height of top bars
