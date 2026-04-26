@@ -43,9 +43,10 @@ export async function GET() {
     return NextResponse.json({ 
       success: true, 
       message: "Database initialized successfully!",
-      admin: admin.email,
+      admin: adminEmail,
       categories: categoriesData.length
     });
+
 
   } catch (error: any) {
     console.error('Setup Error:', error);
