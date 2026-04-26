@@ -15,15 +15,22 @@ export async function GET() {
     
     await prisma.user.deleteMany({ where: { email: adminEmail } });
     
+    // Create with default role first
     const admin = await prisma.user.create({
       data: {
         email: adminEmail,
         passwordHash: hashedPassword,
         name: 'Admin User',
-        role: 'SUPER_ADMIN',
         isActive: true
       }
     });
+
+    // FORCE the role using Raw SQL to bypass Prisma's type checks
+    await prisma.$executeRawUnsafe(
+      `UPDATE "User" SET "role" = 'SUPER_ADMIN' WHERE "id" = $1`,
+      admin.id
+    );
+
 
 
     // 2. Create Categories
