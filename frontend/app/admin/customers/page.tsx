@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import { AdminShell } from '@/components/admin-shell';
-import { Users, Search, Mail, Phone, Trash2, Edit3, Shield, Calendar, UserCheck } from 'lucide-react';
+import { Users, Search, Mail, Phone, Trash2, Edit3, Shield, Calendar, UserCheck, Package } from 'lucide-react';
 import { format } from 'date-fns';
+import { motion } from 'framer-motion';
+
 
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -15,6 +17,9 @@ export default function AdminCustomersPage() {
   }, []);
 
   const [filterRole, setFilterRole] = useState('All');
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', role: 'ADMIN' });
 
   const fetchCustomers = async () => {
     try {
@@ -29,6 +34,32 @@ export default function AdminCustomersPage() {
       setLoading(false);
     }
   };
+
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreating(true);
+    try {
+      const res = await fetch('/api/admin/customers/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUser)
+      });
+      if (res.ok) {
+        setShowAddModal(false);
+        setNewUser({ name: '', email: '', password: '', role: 'ADMIN' });
+        fetchCustomers();
+      } else {
+        const err = await res.json();
+        alert(err.message || 'Failed to create user');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('A system error occurred');
+    } finally {
+      setCreating(false);
+    }
+  };
+
 
   const filteredCustomers = customers.filter(c => {
     const matchesRole = filterRole === 'All' || c.role === filterRole;
@@ -61,22 +92,119 @@ export default function AdminCustomersPage() {
             <p className="text-muted-foreground max-w-md">Manage system privileges and customer relationships from a unified command center.</p>
           </div>
           
-          <div className="flex gap-4 w-full lg:w-auto">
-            {['All', 'ADMIN', 'CUSTOMER'].map((role) => (
-              <button
-                key={role}
-                onClick={() => setFilterRole(role)}
-                className={`flex-1 lg:flex-none px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                  filterRole === role 
-                    ? 'bg-primary text-white shadow-xl shadow-primary/20 -translate-y-1' 
-                    : 'bg-white text-muted-foreground border-2 border-border hover:border-accent hover:text-primary'
-                }`}
-              >
-                {role === 'ADMIN' ? 'Staff/Admins' : role === 'CUSTOMER' ? 'Retail Clients' : 'Unified View'}
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
+            <div className="flex bg-white border border-border p-1 rounded-2xl shadow-sm">
+              {['All', 'ADMIN', 'CUSTOMER'].map((role) => (
+                <button
+                  key={role}
+                  onClick={() => setFilterRole(role)}
+                  className={`px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                    filterRole === role 
+                      ? 'bg-primary text-white shadow-lg' 
+                      : 'text-muted-foreground hover:bg-muted'
+                  }`}
+                >
+                  {role === 'ADMIN' ? 'Staff' : role === 'CUSTOMER' ? 'Clients' : 'All'}
+                </button>
+              ))}
+            </div>
+
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 px-8 py-4 bg-accent text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-accent/20 hover:-translate-y-0.5 transition-all"
+            >
+              <UserCheck size={14} />
+              Grant Access
+            </button>
           </div>
         </div>
+
+        {/* Create User Modal */}
+        {showAddModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-black/60">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white w-full max-w-xl rounded-[4rem] p-12 shadow-2xl relative overflow-hidden"
+            >
+              <div className="relative z-10">
+                <h2 className="text-4xl font-black tracking-tight mb-2">Grant Privileges</h2>
+                <p className="text-sm text-muted-foreground font-medium mb-10">Deploy a new administrative or staff identity to the system.</p>
+                
+                <form onSubmit={handleCreateUser} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-4">Full Identity Name</label>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="e.g. Alexander Knight"
+                      className="w-full px-8 py-5 bg-muted/30 border-2 border-transparent focus:border-accent rounded-3xl outline-none transition-all font-bold"
+                      value={newUser.name}
+                      onChange={(e) => setNewUser({...newUser, name: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-4">Electronic Mail</label>
+                    <input 
+                      required
+                      type="email" 
+                      placeholder="identity@shahiposh.com"
+                      className="w-full px-8 py-5 bg-muted/30 border-2 border-transparent focus:border-accent rounded-3xl outline-none transition-all font-bold"
+                      value={newUser.email}
+                      onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-4">Access Key</label>
+                      <input 
+                        required
+                        type="password" 
+                        placeholder="••••••••"
+                        className="w-full px-8 py-5 bg-muted/30 border-2 border-transparent focus:border-accent rounded-3xl outline-none transition-all font-bold"
+                        value={newUser.password}
+                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-foreground ml-4">Authority Level</label>
+                      <select 
+                        className="w-full px-8 py-5 bg-muted/30 border-2 border-transparent focus:border-accent rounded-3xl outline-none transition-all font-black uppercase text-[10px] appearance-none"
+                        value={newUser.role}
+                        onChange={(e) => setNewUser({...newUser, role: e.target.value})}
+                      >
+                        <option value="ADMIN">Full Administrator</option>
+                        <option value="STAFF">Operations Staff</option>
+                        <option value="MANAGER">Inventory Manager</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4 pt-6">
+                    <button 
+                      type="button"
+                      onClick={() => setShowAddModal(false)}
+                      className="flex-1 py-5 bg-muted/50 text-muted-foreground rounded-3xl text-[10px] font-black uppercase tracking-widest hover:bg-muted transition-all"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      type="submit"
+                      disabled={creating}
+                      className="flex-[2] py-5 bg-primary text-white rounded-3xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all disabled:opacity-50"
+                    >
+                      {creating ? 'Synchronizing...' : 'Initialize Identity'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-0" />
+            </motion.div>
+          </div>
+        )}
+
 
         <div className="grid grid-cols-1 gap-10">
           <div className="flex items-center gap-4 bg-white px-8 py-6 rounded-[2.5rem] border border-border shadow-2xl focus-within:ring-2 focus-within:ring-accent/20 transition-all">
