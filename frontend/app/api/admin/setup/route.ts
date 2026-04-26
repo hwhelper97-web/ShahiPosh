@@ -30,12 +30,13 @@ export async function GET() {
 
     // 2. Create Categories
     const categoriesData = [
-      { name: "Embroidered dupatta", slug: "embroidered-dupatta", description: "Beautifully handcrafted embroidered dupattas.", image: "/products/traditional_shawl_hero_4k.png" },
-      { name: "Luxury khaddar shawl", slug: "luxury-khaddar-shawl", description: "Premium quality khaddar shawls for a regal look.", image: "/products/traditional_shawl_hero.png" },
-      { name: "Chunri dupatta", slug: "chunri-dupatta", description: "Traditional chunri patterns on high-quality fabric.", image: "/products/white-dress.jpg" },
-      { name: "Velvet embroidered shawl", slug: "velvet-embroidered-shawl", description: "Luxurious velvet shawls with intricate embroidery.", image: "/products/traditional_shawl_hero_4k.png" },
-      { name: "Vintage jewelry", slug: "vintage-jewelry", description: "Exquisite vintage-style jewelry to complete your royal look.", image: "/products/traditional_shawl_hero.png" }
+      { name: "Embroidered dupatta", slug: "embroidered-dupatta", description: "Beautifully handcrafted silk and embroidered dupattas.", image: "/products/silk_embroidered_dupatta_1.png" },
+      { name: "Luxury khaddar shawl", slug: "luxury-khaddar-shawl", description: "Premium quality handcrafted khaddar shawls.", image: "/products/khaddar_shawl_brown_1.png" },
+      { name: "Chunri dupatta", slug: "chunri-dupatta", description: "Traditional chunri patterns on premium fabric.", image: "/products/chunri_pink_3.png" },
+      { name: "Velvet embroidered shawl", slug: "velvet-embroidered-shawl", description: "Luxurious velvet shawls with intricate tilla and embroidery.", image: "/products/velvet_shawl_blue_2.png" },
+      { name: "Vintage jewelry", slug: "vintage-jewelry", description: "Exquisite artisanal vintage jewelry for a royal aesthetic.", image: "/products/vintage_necklace_1.png" }
     ];
+
 
     for (const cat of categoriesData) {
       await prisma.category.upsert({
