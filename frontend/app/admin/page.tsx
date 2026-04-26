@@ -30,20 +30,21 @@ import {
 } from 'lucide-react';
 import { motion, Reorder } from 'framer-motion';
 import { useSettings } from '@/components/settings-context';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell,
-  PieChart,
-  Pie
-} from 'recharts';
+// import { 
+//   AreaChart, 
+//   Area, 
+//   XAxis, 
+//   YAxis, 
+//   CartesianGrid, 
+//   Tooltip, 
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   Cell,
+//   PieChart,
+//   Pie
+// } from 'recharts';
+
 import { AdminShell } from '@/components/admin-shell';
 import Link from 'next/link';
 
@@ -199,44 +200,10 @@ export default function AdminDashboard() {
                 </button>
               </div>
               
-              <div className="h-[400px] w-full relative z-10">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data.dailyRevenue}>
-                    <defs>
-                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis 
-                      dataKey="name" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }}
-                      dy={15}
-                    />
-                    <YAxis 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fontSize: 11, fontWeight: 800, fill: '#64748b' }}
-                    />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', fontSize: '12px', padding: '15px' }}
-                      itemStyle={{ fontWeight: 900 }}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="value" 
-                      stroke="#3b82f6" 
-                      strokeWidth={5}
-                      fillOpacity={1} 
-                      fill="url(#colorRevenue)" 
-                      animationDuration={2000}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+              <div className="h-[400px] w-full flex items-center justify-center bg-muted/20 rounded-3xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Chart Temporarily Unavailable</p>
               </div>
+
             </div>
 
             {/* AI Sales Forecasting */}
@@ -325,31 +292,10 @@ export default function AdminDashboard() {
                 <Layers size={20} className="text-purple-500" />
                 Market Share
               </h3>
-              <div className="h-64 relative">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={70}
-                      outerRadius={90}
-                      paddingAngle={8}
-                      dataKey="value"
-                      animationBegin={500}
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total</p>
-                  <p className="text-xl font-black">{data.totalCategories}</p>
-                </div>
+              <div className="h-64 relative flex items-center justify-center bg-muted/20 rounded-3xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Chart Temporarily Unavailable</p>
               </div>
+
               
               <div className="grid grid-cols-2 gap-4 mt-8">
                 {pieData.slice(0, 4).map((item, idx) => (
