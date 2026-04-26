@@ -19,20 +19,21 @@ import {
   BarChart as BarChartIcon,
   TrendingUp as TrendingUpIcon
 } from 'lucide-react';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell,
-  PieChart,
-  Pie
-} from 'recharts';
+// import { 
+//   AreaChart, 
+//   Area, 
+//   XAxis, 
+//   YAxis, 
+//   CartesianGrid, 
+//   Tooltip, 
+//   ResponsiveContainer,
+//   BarChart,
+//   Bar,
+//   Cell,
+//   PieChart,
+//   Pie
+// } from 'recharts';
+
 import { AdminShell } from '@/components/admin-shell';
 import { useSettings } from '@/components/settings-context';
 import { motion } from 'framer-motion';
@@ -162,23 +163,10 @@ export default function AnalyticsPage() {
                 </div>
              </div>
              
-             <div className="h-[400px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data.dailyRevenue}>
-                    <defs>
-                      <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} dy={10} />
-                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fontWeight: 700 }} />
-                    <Tooltip contentStyle={{ borderRadius: '20px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} />
-                    <Area type="monotone" dataKey="value" stroke="#3b82f6" strokeWidth={4} fillOpacity={1} fill="url(#colorRev)" />
-                  </AreaChart>
-                </ResponsiveContainer>
+             <div className="h-[400px] w-full flex items-center justify-center bg-muted/20 rounded-3xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Chart Temporarily Unavailable</p>
              </div>
+
           </div>
 
           {/* Market Segmentation */}
@@ -187,30 +175,10 @@ export default function AnalyticsPage() {
                 <PieChartIcon size={24} className="text-purple-500" />
                 Market Share
              </h3>
-             <div className="h-[300px] relative">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={80}
-                      outerRadius={110}
-                      paddingAngle={8}
-                      dataKey="value"
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Volume</p>
-                  <p className="text-2xl font-black">100%</p>
-                </div>
+             <div className="h-[300px] relative flex items-center justify-center bg-muted/20 rounded-3xl">
+                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Chart Temporarily Unavailable</p>
              </div>
+
              <div className="space-y-4 mt-12">
                 {pieData.slice(0, 4).map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between p-4 bg-muted/20 rounded-2xl">
