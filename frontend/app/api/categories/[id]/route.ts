@@ -10,7 +10,8 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
       data: {
         name: body.name,
         description: body.description,
-        image: body.image
+        image: body.image,
+        parentId: body.parentId || null
       }
     });
     return NextResponse.json(category);

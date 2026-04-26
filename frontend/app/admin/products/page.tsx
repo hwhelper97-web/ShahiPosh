@@ -200,9 +200,14 @@ function AdminProductsContent() {
   };
 
   const getImageUrl = (filename: any) => {
-    if (!filename || typeof filename !== 'string') return "/placeholder.jpg";
-    if (filename.startsWith("/") || filename.startsWith("http")) return filename;
-    return `/products/${filename}`;
+    if (!filename) return "/placeholder.jpg";
+    
+    // Handle object format {url: "...", alt: "..."}
+    const src = typeof filename === 'string' ? filename : (filename.url || "");
+    
+    if (!src || typeof src !== 'string') return "/placeholder.jpg";
+    if (src.startsWith("/") || src.startsWith("http")) return src;
+    return `/products/${src}`;
   };
 
   if (loading && products.length === 0) return (
@@ -331,14 +336,25 @@ function AdminProductsContent() {
                         value={form.categoryId}
                         onChange={(e) => {
                           const cat = categories.find(c => c.id === e.target.value);
-                          setForm({ ...form, categoryId: e.target.value, category: cat ? cat.name : 'Men' });
+                          setForm({ ...form, categoryId: e.target.value, category: cat ? cat.name : 'Uncategorized' });
                         }}
                         className="w-full bg-muted/50 border-2 border-transparent rounded-2xl px-8 py-4 text-sm focus:border-accent focus:bg-white transition-all outline-none appearance-none cursor-pointer"
                       >
                         <option value="">Select Category</option>
-                        {categories.map(c => (
-                          <option key={c.id} value={c.id}>{c.name}</option>
-                        ))}
+                        {categories
+                          .filter(c => !c.parentId) // Main categories
+                          .map(parent => (
+                            <>
+                              <option key={parent.id} value={parent.id} className="font-bold">{parent.name}</option>
+                              {categories
+                                .filter(c => c.parentId === parent.id) // Subcategories
+                                .map(sub => (
+                                  <option key={sub.id} value={sub.id}>&nbsp;&nbsp;-- {sub.name}</option>
+                                ))
+                              }
+                            </>
+                          ))
+                        }
                       </select>
                     </div>
                     <div className="space-y-2">

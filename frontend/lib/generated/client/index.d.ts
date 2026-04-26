@@ -44,6 +44,21 @@ export type ProductVariant = $Result.DefaultSelection<Prisma.$ProductVariantPayl
  */
 export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
 /**
+ * Model Transaction
+ * 
+ */
+export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
+/**
+ * Model PaymentGateway
+ * 
+ */
+export type PaymentGateway = $Result.DefaultSelection<Prisma.$PaymentGatewayPayload>
+/**
+ * Model PaymentReceipt
+ * 
+ */
+export type PaymentReceipt = $Result.DefaultSelection<Prisma.$PaymentReceiptPayload>
+/**
  * Model Shipment
  * 
  */
@@ -111,12 +126,15 @@ export type StockStatus = (typeof StockStatus)[keyof typeof StockStatus]
 
 export const OrderStatus: {
   PENDING: 'PENDING',
+  AWAITING_PAYMENT: 'AWAITING_PAYMENT',
+  AWAITING_BANK_VERIFICATION: 'AWAITING_BANK_VERIFICATION',
   CONFIRMED: 'CONFIRMED',
   PROCESSING: 'PROCESSING',
   SHIPPED: 'SHIPPED',
   DELIVERED: 'DELIVERED',
   RETURNED: 'RETURNED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED'
 };
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
@@ -124,9 +142,13 @@ export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 export const PaymentStatus: {
   UNPAID: 'UNPAID',
+  PENDING: 'PENDING',
   PAID: 'PAID',
+  AWAITING_VERIFICATION: 'AWAITING_VERIFICATION',
+  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED',
   REFUNDED: 'REFUNDED',
-  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED'
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
 };
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
@@ -343,6 +365,36 @@ export class PrismaClient<
     * ```
     */
   get order(): Prisma.OrderDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Transactions
+    * const transactions = await prisma.transaction.findMany()
+    * ```
+    */
+  get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentGateway`: Exposes CRUD operations for the **PaymentGateway** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentGateways
+    * const paymentGateways = await prisma.paymentGateway.findMany()
+    * ```
+    */
+  get paymentGateway(): Prisma.PaymentGatewayDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.paymentReceipt`: Exposes CRUD operations for the **PaymentReceipt** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PaymentReceipts
+    * const paymentReceipts = await prisma.paymentReceipt.findMany()
+    * ```
+    */
+  get paymentReceipt(): Prisma.PaymentReceiptDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.shipment`: Exposes CRUD operations for the **Shipment** model.
@@ -850,6 +902,9 @@ export namespace Prisma {
     Product: 'Product',
     ProductVariant: 'ProductVariant',
     Order: 'Order',
+    Transaction: 'Transaction',
+    PaymentGateway: 'PaymentGateway',
+    PaymentReceipt: 'PaymentReceipt',
     Shipment: 'Shipment',
     Coupon: 'Coupon',
     Review: 'Review',
@@ -874,7 +929,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "vendor" | "category" | "product" | "productVariant" | "order" | "shipment" | "coupon" | "review" | "auditLog" | "setting" | "contactMessage"
+      modelProps: "user" | "vendor" | "category" | "product" | "productVariant" | "order" | "transaction" | "paymentGateway" | "paymentReceipt" | "shipment" | "coupon" | "review" | "auditLog" | "setting" | "contactMessage"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1319,6 +1374,228 @@ export namespace Prisma {
           count: {
             args: Prisma.OrderCountArgs<ExtArgs>
             result: $Utils.Optional<OrderCountAggregateOutputType> | number
+          }
+        }
+      }
+      Transaction: {
+        payload: Prisma.$TransactionPayload<ExtArgs>
+        fields: Prisma.TransactionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransactionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          delete: {
+            args: Prisma.TransactionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          update: {
+            args: Prisma.TransactionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransactionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransactionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransaction>
+          }
+          groupBy: {
+            args: Prisma.TransactionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransactionCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionCountAggregateOutputType> | number
+          }
+        }
+      }
+      PaymentGateway: {
+        payload: Prisma.$PaymentGatewayPayload<ExtArgs>
+        fields: Prisma.PaymentGatewayFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentGatewayFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentGatewayFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentGatewayFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentGatewayFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentGatewayFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentGatewayCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentGatewayCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentGatewayCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentGatewayDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>
+          }
+          update: {
+            args: Prisma.PaymentGatewayUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentGatewayDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentGatewayUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentGatewayUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentGatewayUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentGatewayPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentGatewayAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentGateway>
+          }
+          groupBy: {
+            args: Prisma.PaymentGatewayGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentGatewayGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentGatewayCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentGatewayCountAggregateOutputType> | number
+          }
+        }
+      }
+      PaymentReceipt: {
+        payload: Prisma.$PaymentReceiptPayload<ExtArgs>
+        fields: Prisma.PaymentReceiptFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PaymentReceiptFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PaymentReceiptFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          findFirst: {
+            args: Prisma.PaymentReceiptFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PaymentReceiptFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          findMany: {
+            args: Prisma.PaymentReceiptFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+          }
+          create: {
+            args: Prisma.PaymentReceiptCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          createMany: {
+            args: Prisma.PaymentReceiptCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PaymentReceiptCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+          }
+          delete: {
+            args: Prisma.PaymentReceiptDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          update: {
+            args: Prisma.PaymentReceiptUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          deleteMany: {
+            args: Prisma.PaymentReceiptDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PaymentReceiptUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PaymentReceiptUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>[]
+          }
+          upsert: {
+            args: Prisma.PaymentReceiptUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PaymentReceiptPayload>
+          }
+          aggregate: {
+            args: Prisma.PaymentReceiptAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePaymentReceipt>
+          }
+          groupBy: {
+            args: Prisma.PaymentReceiptGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PaymentReceiptGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PaymentReceiptCountArgs<ExtArgs>
+            result: $Utils.Optional<PaymentReceiptCountAggregateOutputType> | number
           }
         }
       }
@@ -1868,6 +2145,9 @@ export namespace Prisma {
     product?: ProductOmit
     productVariant?: ProductVariantOmit
     order?: OrderOmit
+    transaction?: TransactionOmit
+    paymentGateway?: PaymentGatewayOmit
+    paymentReceipt?: PaymentReceiptOmit
     shipment?: ShipmentOmit
     coupon?: CouponOmit
     review?: ReviewOmit
@@ -2097,6 +2377,37 @@ export namespace Prisma {
    */
   export type ProductCountOutputTypeCountReviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ReviewWhereInput
+  }
+
+
+  /**
+   * Count Type OrderCountOutputType
+   */
+
+  export type OrderCountOutputType = {
+    transactions: number
+  }
+
+  export type OrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transactions?: boolean | OrderCountOutputTypeCountTransactionsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OrderCountOutputType
+     */
+    select?: OrderCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
   }
 
 
@@ -8685,7 +8996,10 @@ export namespace Prisma {
     updatedAt?: boolean
     user?: boolean | Order$userArgs<ExtArgs>
     shipment?: boolean | Order$shipmentArgs<ExtArgs>
+    transactions?: boolean | Order$transactionsArgs<ExtArgs>
+    receipt?: boolean | Order$receiptArgs<ExtArgs>
     coupon?: boolean | Order$couponArgs<ExtArgs>
+    _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8780,7 +9094,10 @@ export namespace Prisma {
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Order$userArgs<ExtArgs>
     shipment?: boolean | Order$shipmentArgs<ExtArgs>
+    transactions?: boolean | Order$transactionsArgs<ExtArgs>
+    receipt?: boolean | Order$receiptArgs<ExtArgs>
     coupon?: boolean | Order$couponArgs<ExtArgs>
+    _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Order$userArgs<ExtArgs>
@@ -8796,6 +9113,8 @@ export namespace Prisma {
     objects: {
       user: Prisma.$UserPayload<ExtArgs> | null
       shipment: Prisma.$ShipmentPayload<ExtArgs> | null
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      receipt: Prisma.$PaymentReceiptPayload<ExtArgs> | null
       coupon: Prisma.$CouponPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -9220,6 +9539,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     user<T extends Order$userArgs<ExtArgs> = {}>(args?: Subset<T, Order$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     shipment<T extends Order$shipmentArgs<ExtArgs> = {}>(args?: Subset<T, Order$shipmentArgs<ExtArgs>>): Prisma__ShipmentClient<$Result.GetResult<Prisma.$ShipmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    transactions<T extends Order$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Order$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    receipt<T extends Order$receiptArgs<ExtArgs> = {}>(args?: Subset<T, Order$receiptArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     coupon<T extends Order$couponArgs<ExtArgs> = {}>(args?: Subset<T, Order$couponArgs<ExtArgs>>): Prisma__CouponClient<$Result.GetResult<Prisma.$CouponPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9707,6 +10028,49 @@ export namespace Prisma {
   }
 
   /**
+   * Order.transactions
+   */
+  export type Order$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Order.receipt
+   */
+  export type Order$receiptArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    where?: PaymentReceiptWhereInput
+  }
+
+  /**
    * Order.coupon
    */
   export type Order$couponArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9741,6 +10105,3306 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Transaction
+   */
+
+  export type AggregateTransaction = {
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  export type TransactionAvgAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionSumAggregateOutputType = {
+    amount: number | null
+  }
+
+  export type TransactionMinAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    gatewayTransactionId: string | null
+    amount: number | null
+    currency: string | null
+    paymentMethod: string | null
+    status: string | null
+    provider: string | null
+    errorDetails: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransactionMaxAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    gatewayTransactionId: string | null
+    amount: number | null
+    currency: string | null
+    paymentMethod: string | null
+    status: string | null
+    provider: string | null
+    errorDetails: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TransactionCountAggregateOutputType = {
+    id: number
+    orderId: number
+    gatewayTransactionId: number
+    amount: number
+    currency: number
+    paymentMethod: number
+    status: number
+    provider: number
+    metadata: number
+    errorDetails: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TransactionAvgAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionSumAggregateInputType = {
+    amount?: true
+  }
+
+  export type TransactionMinAggregateInputType = {
+    id?: true
+    orderId?: true
+    gatewayTransactionId?: true
+    amount?: true
+    currency?: true
+    paymentMethod?: true
+    status?: true
+    provider?: true
+    errorDetails?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransactionMaxAggregateInputType = {
+    id?: true
+    orderId?: true
+    gatewayTransactionId?: true
+    amount?: true
+    currency?: true
+    paymentMethod?: true
+    status?: true
+    provider?: true
+    errorDetails?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TransactionCountAggregateInputType = {
+    id?: true
+    orderId?: true
+    gatewayTransactionId?: true
+    amount?: true
+    currency?: true
+    paymentMethod?: true
+    status?: true
+    provider?: true
+    metadata?: true
+    errorDetails?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TransactionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transaction to aggregate.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Transactions
+    **/
+    _count?: true | TransactionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransactionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransactionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransactionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type GetTransactionAggregateType<T extends TransactionAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransaction]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransaction[P]>
+      : GetScalarType<T[P], AggregateTransaction[P]>
+  }
+
+
+
+
+  export type TransactionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithAggregationInput | TransactionOrderByWithAggregationInput[]
+    by: TransactionScalarFieldEnum[] | TransactionScalarFieldEnum
+    having?: TransactionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransactionCountAggregateInputType | true
+    _avg?: TransactionAvgAggregateInputType
+    _sum?: TransactionSumAggregateInputType
+    _min?: TransactionMinAggregateInputType
+    _max?: TransactionMaxAggregateInputType
+  }
+
+  export type TransactionGroupByOutputType = {
+    id: string
+    orderId: string
+    gatewayTransactionId: string | null
+    amount: number
+    currency: string
+    paymentMethod: string
+    status: string
+    provider: string | null
+    metadata: JsonValue | null
+    errorDetails: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: TransactionCountAggregateOutputType | null
+    _avg: TransactionAvgAggregateOutputType | null
+    _sum: TransactionSumAggregateOutputType | null
+    _min: TransactionMinAggregateOutputType | null
+    _max: TransactionMaxAggregateOutputType | null
+  }
+
+  type GetTransactionGroupByPayload<T extends TransactionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransactionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransactionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+            : GetScalarType<T[P], TransactionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    gatewayTransactionId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentMethod?: boolean
+    status?: boolean
+    provider?: boolean
+    metadata?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    gatewayTransactionId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentMethod?: boolean
+    status?: boolean
+    provider?: boolean
+    metadata?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    gatewayTransactionId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentMethod?: boolean
+    status?: boolean
+    provider?: boolean
+    metadata?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["transaction"]>
+
+  export type TransactionSelectScalar = {
+    id?: boolean
+    orderId?: boolean
+    gatewayTransactionId?: boolean
+    amount?: boolean
+    currency?: boolean
+    paymentMethod?: boolean
+    status?: boolean
+    provider?: boolean
+    metadata?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "gatewayTransactionId" | "amount" | "currency" | "paymentMethod" | "status" | "provider" | "metadata" | "errorDetails" | "createdAt" | "updatedAt", ExtArgs["result"]["transaction"]>
+  export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+
+  export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Transaction"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderId: string
+      gatewayTransactionId: string | null
+      amount: number
+      currency: string
+      paymentMethod: string
+      status: string
+      provider: string | null
+      metadata: Prisma.JsonValue | null
+      errorDetails: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["transaction"]>
+    composites: {}
+  }
+
+  type TransactionGetPayload<S extends boolean | null | undefined | TransactionDefaultArgs> = $Result.GetResult<Prisma.$TransactionPayload, S>
+
+  type TransactionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransactionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransactionCountAggregateInputType | true
+    }
+
+  export interface TransactionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Transaction'], meta: { name: 'Transaction' } }
+    /**
+     * Find zero or one Transaction that matches the filter.
+     * @param {TransactionFindUniqueArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransactionFindUniqueArgs>(args: SelectSubset<T, TransactionFindUniqueArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Transaction that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransactionFindUniqueOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransactionFindUniqueOrThrowArgs>(args: SelectSubset<T, TransactionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransactionFindFirstArgs>(args?: SelectSubset<T, TransactionFindFirstArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Transaction that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindFirstOrThrowArgs} args - Arguments to find a Transaction
+     * @example
+     * // Get one Transaction
+     * const transaction = await prisma.transaction.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransactionFindFirstOrThrowArgs>(args?: SelectSubset<T, TransactionFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Transactions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Transactions
+     * const transactions = await prisma.transaction.findMany()
+     * 
+     * // Get first 10 Transactions
+     * const transactions = await prisma.transaction.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transactionWithIdOnly = await prisma.transaction.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransactionFindManyArgs>(args?: SelectSubset<T, TransactionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Transaction.
+     * @param {TransactionCreateArgs} args - Arguments to create a Transaction.
+     * @example
+     * // Create one Transaction
+     * const Transaction = await prisma.transaction.create({
+     *   data: {
+     *     // ... data to create a Transaction
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransactionCreateArgs>(args: SelectSubset<T, TransactionCreateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Transactions.
+     * @param {TransactionCreateManyArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransactionCreateManyArgs>(args?: SelectSubset<T, TransactionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Transactions and returns the data saved in the database.
+     * @param {TransactionCreateManyAndReturnArgs} args - Arguments to create many Transactions.
+     * @example
+     * // Create many Transactions
+     * const transaction = await prisma.transaction.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransactionCreateManyAndReturnArgs>(args?: SelectSubset<T, TransactionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Transaction.
+     * @param {TransactionDeleteArgs} args - Arguments to delete one Transaction.
+     * @example
+     * // Delete one Transaction
+     * const Transaction = await prisma.transaction.delete({
+     *   where: {
+     *     // ... filter to delete one Transaction
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransactionDeleteArgs>(args: SelectSubset<T, TransactionDeleteArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Transaction.
+     * @param {TransactionUpdateArgs} args - Arguments to update one Transaction.
+     * @example
+     * // Update one Transaction
+     * const transaction = await prisma.transaction.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransactionUpdateArgs>(args: SelectSubset<T, TransactionUpdateArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Transactions.
+     * @param {TransactionDeleteManyArgs} args - Arguments to filter Transactions to delete.
+     * @example
+     * // Delete a few Transactions
+     * const { count } = await prisma.transaction.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransactionDeleteManyArgs>(args?: SelectSubset<T, TransactionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransactionUpdateManyArgs>(args: SelectSubset<T, TransactionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Transactions and returns the data updated in the database.
+     * @param {TransactionUpdateManyAndReturnArgs} args - Arguments to update many Transactions.
+     * @example
+     * // Update many Transactions
+     * const transaction = await prisma.transaction.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Transactions and only return the `id`
+     * const transactionWithIdOnly = await prisma.transaction.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransactionUpdateManyAndReturnArgs>(args: SelectSubset<T, TransactionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Transaction.
+     * @param {TransactionUpsertArgs} args - Arguments to update or create a Transaction.
+     * @example
+     * // Update or create a Transaction
+     * const transaction = await prisma.transaction.upsert({
+     *   create: {
+     *     // ... data to create a Transaction
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Transaction we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransactionUpsertArgs>(args: SelectSubset<T, TransactionUpsertArgs<ExtArgs>>): Prisma__TransactionClient<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Transactions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionCountArgs} args - Arguments to filter Transactions to count.
+     * @example
+     * // Count the number of Transactions
+     * const count = await prisma.transaction.count({
+     *   where: {
+     *     // ... the filter for the Transactions we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransactionCountArgs>(
+      args?: Subset<T, TransactionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransactionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransactionAggregateArgs>(args: Subset<T, TransactionAggregateArgs>): Prisma.PrismaPromise<GetTransactionAggregateType<T>>
+
+    /**
+     * Group by Transaction.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransactionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransactionGroupByArgs['orderBy'] }
+        : { orderBy?: TransactionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransactionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransactionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Transaction model
+   */
+  readonly fields: TransactionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Transaction.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Transaction model
+   */
+  interface TransactionFieldRefs {
+    readonly id: FieldRef<"Transaction", 'String'>
+    readonly orderId: FieldRef<"Transaction", 'String'>
+    readonly gatewayTransactionId: FieldRef<"Transaction", 'String'>
+    readonly amount: FieldRef<"Transaction", 'Float'>
+    readonly currency: FieldRef<"Transaction", 'String'>
+    readonly paymentMethod: FieldRef<"Transaction", 'String'>
+    readonly status: FieldRef<"Transaction", 'String'>
+    readonly provider: FieldRef<"Transaction", 'String'>
+    readonly metadata: FieldRef<"Transaction", 'Json'>
+    readonly errorDetails: FieldRef<"Transaction", 'String'>
+    readonly createdAt: FieldRef<"Transaction", 'DateTime'>
+    readonly updatedAt: FieldRef<"Transaction", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Transaction findUnique
+   */
+  export type TransactionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findUniqueOrThrow
+   */
+  export type TransactionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction findFirst
+   */
+  export type TransactionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findFirstOrThrow
+   */
+  export type TransactionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transaction to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Transactions.
+     */
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction findMany
+   */
+  export type TransactionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter, which Transactions to fetch.
+     */
+    where?: TransactionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Transactions to fetch.
+     */
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Transactions.
+     */
+    cursor?: TransactionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Transactions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Transactions.
+     */
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
+   * Transaction create
+   */
+  export type TransactionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Transaction.
+     */
+    data: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+  }
+
+  /**
+   * Transaction createMany
+   */
+  export type TransactionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+  }
+
+  /**
+   * Transaction createManyAndReturn
+   */
+  export type TransactionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to create many Transactions.
+     */
+    data: TransactionCreateManyInput | TransactionCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction update
+   */
+  export type TransactionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Transaction.
+     */
+    data: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+    /**
+     * Choose, which Transaction to update.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction updateMany
+   */
+  export type TransactionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction updateManyAndReturn
+   */
+  export type TransactionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * The data used to update Transactions.
+     */
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyInput>
+    /**
+     * Filter which Transactions to update
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Transaction upsert
+   */
+  export type TransactionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Transaction to update in case it exists.
+     */
+    where: TransactionWhereUniqueInput
+    /**
+     * In case the Transaction found by the `where` argument doesn't exist, create a new Transaction with this data.
+     */
+    create: XOR<TransactionCreateInput, TransactionUncheckedCreateInput>
+    /**
+     * In case the Transaction was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransactionUpdateInput, TransactionUncheckedUpdateInput>
+  }
+
+  /**
+   * Transaction delete
+   */
+  export type TransactionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    /**
+     * Filter which Transaction to delete.
+     */
+    where: TransactionWhereUniqueInput
+  }
+
+  /**
+   * Transaction deleteMany
+   */
+  export type TransactionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Transactions to delete
+     */
+    where?: TransactionWhereInput
+    /**
+     * Limit how many Transactions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Transaction without action
+   */
+  export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PaymentGateway
+   */
+
+  export type AggregatePaymentGateway = {
+    _count: PaymentGatewayCountAggregateOutputType | null
+    _min: PaymentGatewayMinAggregateOutputType | null
+    _max: PaymentGatewayMaxAggregateOutputType | null
+  }
+
+  export type PaymentGatewayMinAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isEnabled: boolean | null
+    isSandbox: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentGatewayMaxAggregateOutputType = {
+    id: string | null
+    name: string | null
+    isEnabled: boolean | null
+    isSandbox: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentGatewayCountAggregateOutputType = {
+    id: number
+    name: number
+    isEnabled: number
+    config: number
+    isSandbox: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PaymentGatewayMinAggregateInputType = {
+    id?: true
+    name?: true
+    isEnabled?: true
+    isSandbox?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentGatewayMaxAggregateInputType = {
+    id?: true
+    name?: true
+    isEnabled?: true
+    isSandbox?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentGatewayCountAggregateInputType = {
+    id?: true
+    name?: true
+    isEnabled?: true
+    config?: true
+    isSandbox?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PaymentGatewayAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentGateway to aggregate.
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentGateways to fetch.
+     */
+    orderBy?: PaymentGatewayOrderByWithRelationInput | PaymentGatewayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentGatewayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentGateways from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentGateways.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentGateways
+    **/
+    _count?: true | PaymentGatewayCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentGatewayMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentGatewayMaxAggregateInputType
+  }
+
+  export type GetPaymentGatewayAggregateType<T extends PaymentGatewayAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentGateway]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentGateway[P]>
+      : GetScalarType<T[P], AggregatePaymentGateway[P]>
+  }
+
+
+
+
+  export type PaymentGatewayGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentGatewayWhereInput
+    orderBy?: PaymentGatewayOrderByWithAggregationInput | PaymentGatewayOrderByWithAggregationInput[]
+    by: PaymentGatewayScalarFieldEnum[] | PaymentGatewayScalarFieldEnum
+    having?: PaymentGatewayScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentGatewayCountAggregateInputType | true
+    _min?: PaymentGatewayMinAggregateInputType
+    _max?: PaymentGatewayMaxAggregateInputType
+  }
+
+  export type PaymentGatewayGroupByOutputType = {
+    id: string
+    name: string
+    isEnabled: boolean
+    config: JsonValue
+    isSandbox: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: PaymentGatewayCountAggregateOutputType | null
+    _min: PaymentGatewayMinAggregateOutputType | null
+    _max: PaymentGatewayMaxAggregateOutputType | null
+  }
+
+  type GetPaymentGatewayGroupByPayload<T extends PaymentGatewayGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentGatewayGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentGatewayGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentGatewayGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentGatewayGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentGatewaySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    config?: boolean
+    isSandbox?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["paymentGateway"]>
+
+  export type PaymentGatewaySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    config?: boolean
+    isSandbox?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["paymentGateway"]>
+
+  export type PaymentGatewaySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    config?: boolean
+    isSandbox?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["paymentGateway"]>
+
+  export type PaymentGatewaySelectScalar = {
+    id?: boolean
+    name?: boolean
+    isEnabled?: boolean
+    config?: boolean
+    isSandbox?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PaymentGatewayOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "isEnabled" | "config" | "isSandbox" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentGateway"]>
+
+  export type $PaymentGatewayPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentGateway"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      name: string
+      isEnabled: boolean
+      config: Prisma.JsonValue
+      isSandbox: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["paymentGateway"]>
+    composites: {}
+  }
+
+  type PaymentGatewayGetPayload<S extends boolean | null | undefined | PaymentGatewayDefaultArgs> = $Result.GetResult<Prisma.$PaymentGatewayPayload, S>
+
+  type PaymentGatewayCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentGatewayFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentGatewayCountAggregateInputType | true
+    }
+
+  export interface PaymentGatewayDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentGateway'], meta: { name: 'PaymentGateway' } }
+    /**
+     * Find zero or one PaymentGateway that matches the filter.
+     * @param {PaymentGatewayFindUniqueArgs} args - Arguments to find a PaymentGateway
+     * @example
+     * // Get one PaymentGateway
+     * const paymentGateway = await prisma.paymentGateway.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentGatewayFindUniqueArgs>(args: SelectSubset<T, PaymentGatewayFindUniqueArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentGateway that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentGatewayFindUniqueOrThrowArgs} args - Arguments to find a PaymentGateway
+     * @example
+     * // Get one PaymentGateway
+     * const paymentGateway = await prisma.paymentGateway.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentGatewayFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentGatewayFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentGateway that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayFindFirstArgs} args - Arguments to find a PaymentGateway
+     * @example
+     * // Get one PaymentGateway
+     * const paymentGateway = await prisma.paymentGateway.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentGatewayFindFirstArgs>(args?: SelectSubset<T, PaymentGatewayFindFirstArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentGateway that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayFindFirstOrThrowArgs} args - Arguments to find a PaymentGateway
+     * @example
+     * // Get one PaymentGateway
+     * const paymentGateway = await prisma.paymentGateway.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentGatewayFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentGatewayFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentGateways that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentGateways
+     * const paymentGateways = await prisma.paymentGateway.findMany()
+     * 
+     * // Get first 10 PaymentGateways
+     * const paymentGateways = await prisma.paymentGateway.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentGatewayWithIdOnly = await prisma.paymentGateway.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentGatewayFindManyArgs>(args?: SelectSubset<T, PaymentGatewayFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentGateway.
+     * @param {PaymentGatewayCreateArgs} args - Arguments to create a PaymentGateway.
+     * @example
+     * // Create one PaymentGateway
+     * const PaymentGateway = await prisma.paymentGateway.create({
+     *   data: {
+     *     // ... data to create a PaymentGateway
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentGatewayCreateArgs>(args: SelectSubset<T, PaymentGatewayCreateArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentGateways.
+     * @param {PaymentGatewayCreateManyArgs} args - Arguments to create many PaymentGateways.
+     * @example
+     * // Create many PaymentGateways
+     * const paymentGateway = await prisma.paymentGateway.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentGatewayCreateManyArgs>(args?: SelectSubset<T, PaymentGatewayCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentGateways and returns the data saved in the database.
+     * @param {PaymentGatewayCreateManyAndReturnArgs} args - Arguments to create many PaymentGateways.
+     * @example
+     * // Create many PaymentGateways
+     * const paymentGateway = await prisma.paymentGateway.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentGateways and only return the `id`
+     * const paymentGatewayWithIdOnly = await prisma.paymentGateway.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentGatewayCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentGatewayCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentGateway.
+     * @param {PaymentGatewayDeleteArgs} args - Arguments to delete one PaymentGateway.
+     * @example
+     * // Delete one PaymentGateway
+     * const PaymentGateway = await prisma.paymentGateway.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentGateway
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentGatewayDeleteArgs>(args: SelectSubset<T, PaymentGatewayDeleteArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentGateway.
+     * @param {PaymentGatewayUpdateArgs} args - Arguments to update one PaymentGateway.
+     * @example
+     * // Update one PaymentGateway
+     * const paymentGateway = await prisma.paymentGateway.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentGatewayUpdateArgs>(args: SelectSubset<T, PaymentGatewayUpdateArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentGateways.
+     * @param {PaymentGatewayDeleteManyArgs} args - Arguments to filter PaymentGateways to delete.
+     * @example
+     * // Delete a few PaymentGateways
+     * const { count } = await prisma.paymentGateway.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentGatewayDeleteManyArgs>(args?: SelectSubset<T, PaymentGatewayDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentGateways.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentGateways
+     * const paymentGateway = await prisma.paymentGateway.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentGatewayUpdateManyArgs>(args: SelectSubset<T, PaymentGatewayUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentGateways and returns the data updated in the database.
+     * @param {PaymentGatewayUpdateManyAndReturnArgs} args - Arguments to update many PaymentGateways.
+     * @example
+     * // Update many PaymentGateways
+     * const paymentGateway = await prisma.paymentGateway.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentGateways and only return the `id`
+     * const paymentGatewayWithIdOnly = await prisma.paymentGateway.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentGatewayUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentGatewayUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentGateway.
+     * @param {PaymentGatewayUpsertArgs} args - Arguments to update or create a PaymentGateway.
+     * @example
+     * // Update or create a PaymentGateway
+     * const paymentGateway = await prisma.paymentGateway.upsert({
+     *   create: {
+     *     // ... data to create a PaymentGateway
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentGateway we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentGatewayUpsertArgs>(args: SelectSubset<T, PaymentGatewayUpsertArgs<ExtArgs>>): Prisma__PaymentGatewayClient<$Result.GetResult<Prisma.$PaymentGatewayPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentGateways.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayCountArgs} args - Arguments to filter PaymentGateways to count.
+     * @example
+     * // Count the number of PaymentGateways
+     * const count = await prisma.paymentGateway.count({
+     *   where: {
+     *     // ... the filter for the PaymentGateways we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentGatewayCountArgs>(
+      args?: Subset<T, PaymentGatewayCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentGatewayCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentGateway.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentGatewayAggregateArgs>(args: Subset<T, PaymentGatewayAggregateArgs>): Prisma.PrismaPromise<GetPaymentGatewayAggregateType<T>>
+
+    /**
+     * Group by PaymentGateway.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentGatewayGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentGatewayGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentGatewayGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentGatewayGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentGatewayGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentGatewayGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentGateway model
+   */
+  readonly fields: PaymentGatewayFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentGateway.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentGatewayClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentGateway model
+   */
+  interface PaymentGatewayFieldRefs {
+    readonly id: FieldRef<"PaymentGateway", 'String'>
+    readonly name: FieldRef<"PaymentGateway", 'String'>
+    readonly isEnabled: FieldRef<"PaymentGateway", 'Boolean'>
+    readonly config: FieldRef<"PaymentGateway", 'Json'>
+    readonly isSandbox: FieldRef<"PaymentGateway", 'Boolean'>
+    readonly createdAt: FieldRef<"PaymentGateway", 'DateTime'>
+    readonly updatedAt: FieldRef<"PaymentGateway", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentGateway findUnique
+   */
+  export type PaymentGatewayFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentGateway to fetch.
+     */
+    where: PaymentGatewayWhereUniqueInput
+  }
+
+  /**
+   * PaymentGateway findUniqueOrThrow
+   */
+  export type PaymentGatewayFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentGateway to fetch.
+     */
+    where: PaymentGatewayWhereUniqueInput
+  }
+
+  /**
+   * PaymentGateway findFirst
+   */
+  export type PaymentGatewayFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentGateway to fetch.
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentGateways to fetch.
+     */
+    orderBy?: PaymentGatewayOrderByWithRelationInput | PaymentGatewayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentGateways.
+     */
+    cursor?: PaymentGatewayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentGateways from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentGateways.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentGateways.
+     */
+    distinct?: PaymentGatewayScalarFieldEnum | PaymentGatewayScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentGateway findFirstOrThrow
+   */
+  export type PaymentGatewayFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentGateway to fetch.
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentGateways to fetch.
+     */
+    orderBy?: PaymentGatewayOrderByWithRelationInput | PaymentGatewayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentGateways.
+     */
+    cursor?: PaymentGatewayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentGateways from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentGateways.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentGateways.
+     */
+    distinct?: PaymentGatewayScalarFieldEnum | PaymentGatewayScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentGateway findMany
+   */
+  export type PaymentGatewayFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * Filter, which PaymentGateways to fetch.
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentGateways to fetch.
+     */
+    orderBy?: PaymentGatewayOrderByWithRelationInput | PaymentGatewayOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentGateways.
+     */
+    cursor?: PaymentGatewayWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentGateways from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentGateways.
+     */
+    skip?: number
+    distinct?: PaymentGatewayScalarFieldEnum | PaymentGatewayScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentGateway create
+   */
+  export type PaymentGatewayCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentGateway.
+     */
+    data: XOR<PaymentGatewayCreateInput, PaymentGatewayUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentGateway createMany
+   */
+  export type PaymentGatewayCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentGateways.
+     */
+    data: PaymentGatewayCreateManyInput | PaymentGatewayCreateManyInput[]
+  }
+
+  /**
+   * PaymentGateway createManyAndReturn
+   */
+  export type PaymentGatewayCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentGateways.
+     */
+    data: PaymentGatewayCreateManyInput | PaymentGatewayCreateManyInput[]
+  }
+
+  /**
+   * PaymentGateway update
+   */
+  export type PaymentGatewayUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentGateway.
+     */
+    data: XOR<PaymentGatewayUpdateInput, PaymentGatewayUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentGateway to update.
+     */
+    where: PaymentGatewayWhereUniqueInput
+  }
+
+  /**
+   * PaymentGateway updateMany
+   */
+  export type PaymentGatewayUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentGateways.
+     */
+    data: XOR<PaymentGatewayUpdateManyMutationInput, PaymentGatewayUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentGateways to update
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * Limit how many PaymentGateways to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentGateway updateManyAndReturn
+   */
+  export type PaymentGatewayUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentGateways.
+     */
+    data: XOR<PaymentGatewayUpdateManyMutationInput, PaymentGatewayUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentGateways to update
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * Limit how many PaymentGateways to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentGateway upsert
+   */
+  export type PaymentGatewayUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentGateway to update in case it exists.
+     */
+    where: PaymentGatewayWhereUniqueInput
+    /**
+     * In case the PaymentGateway found by the `where` argument doesn't exist, create a new PaymentGateway with this data.
+     */
+    create: XOR<PaymentGatewayCreateInput, PaymentGatewayUncheckedCreateInput>
+    /**
+     * In case the PaymentGateway was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentGatewayUpdateInput, PaymentGatewayUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentGateway delete
+   */
+  export type PaymentGatewayDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+    /**
+     * Filter which PaymentGateway to delete.
+     */
+    where: PaymentGatewayWhereUniqueInput
+  }
+
+  /**
+   * PaymentGateway deleteMany
+   */
+  export type PaymentGatewayDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentGateways to delete
+     */
+    where?: PaymentGatewayWhereInput
+    /**
+     * Limit how many PaymentGateways to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentGateway without action
+   */
+  export type PaymentGatewayDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentGateway
+     */
+    select?: PaymentGatewaySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentGateway
+     */
+    omit?: PaymentGatewayOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PaymentReceipt
+   */
+
+  export type AggregatePaymentReceipt = {
+    _count: PaymentReceiptCountAggregateOutputType | null
+    _min: PaymentReceiptMinAggregateOutputType | null
+    _max: PaymentReceiptMaxAggregateOutputType | null
+  }
+
+  export type PaymentReceiptMinAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    imageUrl: string | null
+    verifiedBy: string | null
+    verifiedAt: Date | null
+    status: string | null
+    rejectionReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentReceiptMaxAggregateOutputType = {
+    id: string | null
+    orderId: string | null
+    imageUrl: string | null
+    verifiedBy: string | null
+    verifiedAt: Date | null
+    status: string | null
+    rejectionReason: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PaymentReceiptCountAggregateOutputType = {
+    id: number
+    orderId: number
+    imageUrl: number
+    verifiedBy: number
+    verifiedAt: number
+    status: number
+    rejectionReason: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PaymentReceiptMinAggregateInputType = {
+    id?: true
+    orderId?: true
+    imageUrl?: true
+    verifiedBy?: true
+    verifiedAt?: true
+    status?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentReceiptMaxAggregateInputType = {
+    id?: true
+    orderId?: true
+    imageUrl?: true
+    verifiedBy?: true
+    verifiedAt?: true
+    status?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PaymentReceiptCountAggregateInputType = {
+    id?: true
+    orderId?: true
+    imageUrl?: true
+    verifiedBy?: true
+    verifiedAt?: true
+    status?: true
+    rejectionReason?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PaymentReceiptAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentReceipt to aggregate.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PaymentReceipts
+    **/
+    _count?: true | PaymentReceiptCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PaymentReceiptMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PaymentReceiptMaxAggregateInputType
+  }
+
+  export type GetPaymentReceiptAggregateType<T extends PaymentReceiptAggregateArgs> = {
+        [P in keyof T & keyof AggregatePaymentReceipt]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePaymentReceipt[P]>
+      : GetScalarType<T[P], AggregatePaymentReceipt[P]>
+  }
+
+
+
+
+  export type PaymentReceiptGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PaymentReceiptWhereInput
+    orderBy?: PaymentReceiptOrderByWithAggregationInput | PaymentReceiptOrderByWithAggregationInput[]
+    by: PaymentReceiptScalarFieldEnum[] | PaymentReceiptScalarFieldEnum
+    having?: PaymentReceiptScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PaymentReceiptCountAggregateInputType | true
+    _min?: PaymentReceiptMinAggregateInputType
+    _max?: PaymentReceiptMaxAggregateInputType
+  }
+
+  export type PaymentReceiptGroupByOutputType = {
+    id: string
+    orderId: string
+    imageUrl: string
+    verifiedBy: string | null
+    verifiedAt: Date | null
+    status: string
+    rejectionReason: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PaymentReceiptCountAggregateOutputType | null
+    _min: PaymentReceiptMinAggregateOutputType | null
+    _max: PaymentReceiptMaxAggregateOutputType | null
+  }
+
+  type GetPaymentReceiptGroupByPayload<T extends PaymentReceiptGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PaymentReceiptGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PaymentReceiptGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PaymentReceiptGroupByOutputType[P]>
+            : GetScalarType<T[P], PaymentReceiptGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PaymentReceiptSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    imageUrl?: boolean
+    verifiedBy?: boolean
+    verifiedAt?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentReceipt"]>
+
+  export type PaymentReceiptSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    imageUrl?: boolean
+    verifiedBy?: boolean
+    verifiedAt?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentReceipt"]>
+
+  export type PaymentReceiptSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    orderId?: boolean
+    imageUrl?: boolean
+    verifiedBy?: boolean
+    verifiedAt?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["paymentReceipt"]>
+
+  export type PaymentReceiptSelectScalar = {
+    id?: boolean
+    orderId?: boolean
+    imageUrl?: boolean
+    verifiedBy?: boolean
+    verifiedAt?: boolean
+    status?: boolean
+    rejectionReason?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PaymentReceiptOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "orderId" | "imageUrl" | "verifiedBy" | "verifiedAt" | "status" | "rejectionReason" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentReceipt"]>
+  export type PaymentReceiptInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type PaymentReceiptIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+  export type PaymentReceiptIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OrderDefaultArgs<ExtArgs>
+  }
+
+  export type $PaymentReceiptPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PaymentReceipt"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      orderId: string
+      imageUrl: string
+      verifiedBy: string | null
+      verifiedAt: Date | null
+      status: string
+      rejectionReason: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["paymentReceipt"]>
+    composites: {}
+  }
+
+  type PaymentReceiptGetPayload<S extends boolean | null | undefined | PaymentReceiptDefaultArgs> = $Result.GetResult<Prisma.$PaymentReceiptPayload, S>
+
+  type PaymentReceiptCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PaymentReceiptFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PaymentReceiptCountAggregateInputType | true
+    }
+
+  export interface PaymentReceiptDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PaymentReceipt'], meta: { name: 'PaymentReceipt' } }
+    /**
+     * Find zero or one PaymentReceipt that matches the filter.
+     * @param {PaymentReceiptFindUniqueArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PaymentReceiptFindUniqueArgs>(args: SelectSubset<T, PaymentReceiptFindUniqueArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PaymentReceipt that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PaymentReceiptFindUniqueOrThrowArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PaymentReceiptFindUniqueOrThrowArgs>(args: SelectSubset<T, PaymentReceiptFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentReceipt that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptFindFirstArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PaymentReceiptFindFirstArgs>(args?: SelectSubset<T, PaymentReceiptFindFirstArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PaymentReceipt that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptFindFirstOrThrowArgs} args - Arguments to find a PaymentReceipt
+     * @example
+     * // Get one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PaymentReceiptFindFirstOrThrowArgs>(args?: SelectSubset<T, PaymentReceiptFindFirstOrThrowArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PaymentReceipts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PaymentReceipts
+     * const paymentReceipts = await prisma.paymentReceipt.findMany()
+     * 
+     * // Get first 10 PaymentReceipts
+     * const paymentReceipts = await prisma.paymentReceipt.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const paymentReceiptWithIdOnly = await prisma.paymentReceipt.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PaymentReceiptFindManyArgs>(args?: SelectSubset<T, PaymentReceiptFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PaymentReceipt.
+     * @param {PaymentReceiptCreateArgs} args - Arguments to create a PaymentReceipt.
+     * @example
+     * // Create one PaymentReceipt
+     * const PaymentReceipt = await prisma.paymentReceipt.create({
+     *   data: {
+     *     // ... data to create a PaymentReceipt
+     *   }
+     * })
+     * 
+     */
+    create<T extends PaymentReceiptCreateArgs>(args: SelectSubset<T, PaymentReceiptCreateArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PaymentReceipts.
+     * @param {PaymentReceiptCreateManyArgs} args - Arguments to create many PaymentReceipts.
+     * @example
+     * // Create many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PaymentReceiptCreateManyArgs>(args?: SelectSubset<T, PaymentReceiptCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PaymentReceipts and returns the data saved in the database.
+     * @param {PaymentReceiptCreateManyAndReturnArgs} args - Arguments to create many PaymentReceipts.
+     * @example
+     * // Create many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PaymentReceipts and only return the `id`
+     * const paymentReceiptWithIdOnly = await prisma.paymentReceipt.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PaymentReceiptCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentReceiptCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PaymentReceipt.
+     * @param {PaymentReceiptDeleteArgs} args - Arguments to delete one PaymentReceipt.
+     * @example
+     * // Delete one PaymentReceipt
+     * const PaymentReceipt = await prisma.paymentReceipt.delete({
+     *   where: {
+     *     // ... filter to delete one PaymentReceipt
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PaymentReceiptDeleteArgs>(args: SelectSubset<T, PaymentReceiptDeleteArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PaymentReceipt.
+     * @param {PaymentReceiptUpdateArgs} args - Arguments to update one PaymentReceipt.
+     * @example
+     * // Update one PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PaymentReceiptUpdateArgs>(args: SelectSubset<T, PaymentReceiptUpdateArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PaymentReceipts.
+     * @param {PaymentReceiptDeleteManyArgs} args - Arguments to filter PaymentReceipts to delete.
+     * @example
+     * // Delete a few PaymentReceipts
+     * const { count } = await prisma.paymentReceipt.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PaymentReceiptDeleteManyArgs>(args?: SelectSubset<T, PaymentReceiptDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PaymentReceiptUpdateManyArgs>(args: SelectSubset<T, PaymentReceiptUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PaymentReceipts and returns the data updated in the database.
+     * @param {PaymentReceiptUpdateManyAndReturnArgs} args - Arguments to update many PaymentReceipts.
+     * @example
+     * // Update many PaymentReceipts
+     * const paymentReceipt = await prisma.paymentReceipt.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PaymentReceipts and only return the `id`
+     * const paymentReceiptWithIdOnly = await prisma.paymentReceipt.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PaymentReceiptUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentReceiptUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PaymentReceipt.
+     * @param {PaymentReceiptUpsertArgs} args - Arguments to update or create a PaymentReceipt.
+     * @example
+     * // Update or create a PaymentReceipt
+     * const paymentReceipt = await prisma.paymentReceipt.upsert({
+     *   create: {
+     *     // ... data to create a PaymentReceipt
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PaymentReceipt we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PaymentReceiptUpsertArgs>(args: SelectSubset<T, PaymentReceiptUpsertArgs<ExtArgs>>): Prisma__PaymentReceiptClient<$Result.GetResult<Prisma.$PaymentReceiptPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PaymentReceipts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptCountArgs} args - Arguments to filter PaymentReceipts to count.
+     * @example
+     * // Count the number of PaymentReceipts
+     * const count = await prisma.paymentReceipt.count({
+     *   where: {
+     *     // ... the filter for the PaymentReceipts we want to count
+     *   }
+     * })
+    **/
+    count<T extends PaymentReceiptCountArgs>(
+      args?: Subset<T, PaymentReceiptCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PaymentReceiptCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PaymentReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PaymentReceiptAggregateArgs>(args: Subset<T, PaymentReceiptAggregateArgs>): Prisma.PrismaPromise<GetPaymentReceiptAggregateType<T>>
+
+    /**
+     * Group by PaymentReceipt.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PaymentReceiptGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PaymentReceiptGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PaymentReceiptGroupByArgs['orderBy'] }
+        : { orderBy?: PaymentReceiptGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PaymentReceiptGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPaymentReceiptGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PaymentReceipt model
+   */
+  readonly fields: PaymentReceiptFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PaymentReceipt.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PaymentReceiptClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    order<T extends OrderDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrderDefaultArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PaymentReceipt model
+   */
+  interface PaymentReceiptFieldRefs {
+    readonly id: FieldRef<"PaymentReceipt", 'String'>
+    readonly orderId: FieldRef<"PaymentReceipt", 'String'>
+    readonly imageUrl: FieldRef<"PaymentReceipt", 'String'>
+    readonly verifiedBy: FieldRef<"PaymentReceipt", 'String'>
+    readonly verifiedAt: FieldRef<"PaymentReceipt", 'DateTime'>
+    readonly status: FieldRef<"PaymentReceipt", 'String'>
+    readonly rejectionReason: FieldRef<"PaymentReceipt", 'String'>
+    readonly createdAt: FieldRef<"PaymentReceipt", 'DateTime'>
+    readonly updatedAt: FieldRef<"PaymentReceipt", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PaymentReceipt findUnique
+   */
+  export type PaymentReceiptFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt findUniqueOrThrow
+   */
+  export type PaymentReceiptFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt findFirst
+   */
+  export type PaymentReceiptFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentReceipts.
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentReceipts.
+     */
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentReceipt findFirstOrThrow
+   */
+  export type PaymentReceiptFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipt to fetch.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PaymentReceipts.
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PaymentReceipts.
+     */
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentReceipt findMany
+   */
+  export type PaymentReceiptFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter, which PaymentReceipts to fetch.
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PaymentReceipts to fetch.
+     */
+    orderBy?: PaymentReceiptOrderByWithRelationInput | PaymentReceiptOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PaymentReceipts.
+     */
+    cursor?: PaymentReceiptWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PaymentReceipts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PaymentReceipts.
+     */
+    skip?: number
+    distinct?: PaymentReceiptScalarFieldEnum | PaymentReceiptScalarFieldEnum[]
+  }
+
+  /**
+   * PaymentReceipt create
+   */
+  export type PaymentReceiptCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PaymentReceipt.
+     */
+    data: XOR<PaymentReceiptCreateInput, PaymentReceiptUncheckedCreateInput>
+  }
+
+  /**
+   * PaymentReceipt createMany
+   */
+  export type PaymentReceiptCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PaymentReceipts.
+     */
+    data: PaymentReceiptCreateManyInput | PaymentReceiptCreateManyInput[]
+  }
+
+  /**
+   * PaymentReceipt createManyAndReturn
+   */
+  export type PaymentReceiptCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to create many PaymentReceipts.
+     */
+    data: PaymentReceiptCreateManyInput | PaymentReceiptCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentReceipt update
+   */
+  export type PaymentReceiptUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PaymentReceipt.
+     */
+    data: XOR<PaymentReceiptUpdateInput, PaymentReceiptUncheckedUpdateInput>
+    /**
+     * Choose, which PaymentReceipt to update.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt updateMany
+   */
+  export type PaymentReceiptUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PaymentReceipts.
+     */
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentReceipts to update
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * Limit how many PaymentReceipts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentReceipt updateManyAndReturn
+   */
+  export type PaymentReceiptUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * The data used to update PaymentReceipts.
+     */
+    data: XOR<PaymentReceiptUpdateManyMutationInput, PaymentReceiptUncheckedUpdateManyInput>
+    /**
+     * Filter which PaymentReceipts to update
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * Limit how many PaymentReceipts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PaymentReceipt upsert
+   */
+  export type PaymentReceiptUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PaymentReceipt to update in case it exists.
+     */
+    where: PaymentReceiptWhereUniqueInput
+    /**
+     * In case the PaymentReceipt found by the `where` argument doesn't exist, create a new PaymentReceipt with this data.
+     */
+    create: XOR<PaymentReceiptCreateInput, PaymentReceiptUncheckedCreateInput>
+    /**
+     * In case the PaymentReceipt was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PaymentReceiptUpdateInput, PaymentReceiptUncheckedUpdateInput>
+  }
+
+  /**
+   * PaymentReceipt delete
+   */
+  export type PaymentReceiptDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
+    /**
+     * Filter which PaymentReceipt to delete.
+     */
+    where: PaymentReceiptWhereUniqueInput
+  }
+
+  /**
+   * PaymentReceipt deleteMany
+   */
+  export type PaymentReceiptDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PaymentReceipts to delete
+     */
+    where?: PaymentReceiptWhereInput
+    /**
+     * Limit how many PaymentReceipts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PaymentReceipt without action
+   */
+  export type PaymentReceiptDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PaymentReceipt
+     */
+    select?: PaymentReceiptSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PaymentReceipt
+     */
+    omit?: PaymentReceiptOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PaymentReceiptInclude<ExtArgs> | null
   }
 
 
@@ -16423,6 +20087,52 @@ export namespace Prisma {
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
 
 
+  export const TransactionScalarFieldEnum: {
+    id: 'id',
+    orderId: 'orderId',
+    gatewayTransactionId: 'gatewayTransactionId',
+    amount: 'amount',
+    currency: 'currency',
+    paymentMethod: 'paymentMethod',
+    status: 'status',
+    provider: 'provider',
+    metadata: 'metadata',
+    errorDetails: 'errorDetails',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+  export const PaymentGatewayScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    isEnabled: 'isEnabled',
+    config: 'config',
+    isSandbox: 'isSandbox',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PaymentGatewayScalarFieldEnum = (typeof PaymentGatewayScalarFieldEnum)[keyof typeof PaymentGatewayScalarFieldEnum]
+
+
+  export const PaymentReceiptScalarFieldEnum: {
+    id: 'id',
+    orderId: 'orderId',
+    imageUrl: 'imageUrl',
+    verifiedBy: 'verifiedBy',
+    verifiedAt: 'verifiedAt',
+    status: 'status',
+    rejectionReason: 'rejectionReason',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PaymentReceiptScalarFieldEnum = (typeof PaymentReceiptScalarFieldEnum)[keyof typeof PaymentReceiptScalarFieldEnum]
+
+
   export const ShipmentScalarFieldEnum: {
     id: 'id',
     orderId: 'orderId',
@@ -17187,6 +20897,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     shipment?: XOR<ShipmentNullableScalarRelationFilter, ShipmentWhereInput> | null
+    transactions?: TransactionListRelationFilter
+    receipt?: XOR<PaymentReceiptNullableScalarRelationFilter, PaymentReceiptWhereInput> | null
     coupon?: XOR<CouponNullableScalarRelationFilter, CouponWhereInput> | null
   }
 
@@ -17218,6 +20930,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
     shipment?: ShipmentOrderByWithRelationInput
+    transactions?: TransactionOrderByRelationAggregateInput
+    receipt?: PaymentReceiptOrderByWithRelationInput
     coupon?: CouponOrderByWithRelationInput
   }
 
@@ -17252,6 +20966,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Order"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     shipment?: XOR<ShipmentNullableScalarRelationFilter, ShipmentWhereInput> | null
+    transactions?: TransactionListRelationFilter
+    receipt?: XOR<PaymentReceiptNullableScalarRelationFilter, PaymentReceiptWhereInput> | null
     coupon?: XOR<CouponNullableScalarRelationFilter, CouponWhereInput> | null
   }, "id" | "orderNumber">
 
@@ -17317,6 +21033,235 @@ export namespace Prisma {
     couponId?: StringNullableWithAggregatesFilter<"Order"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Order"> | Date | string
+  }
+
+  export type TransactionWhereInput = {
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    orderId?: StringFilter<"Transaction"> | string
+    gatewayTransactionId?: StringNullableFilter<"Transaction"> | string | null
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    paymentMethod?: StringFilter<"Transaction"> | string
+    status?: StringFilter<"Transaction"> | string
+    provider?: StringNullableFilter<"Transaction"> | string | null
+    metadata?: JsonNullableFilter<"Transaction">
+    errorDetails?: StringNullableFilter<"Transaction"> | string | null
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+  }
+
+  export type TransactionOrderByWithRelationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    gatewayTransactionId?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentMethod?: SortOrder
+    status?: SortOrder
+    provider?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    errorDetails?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    order?: OrderOrderByWithRelationInput
+  }
+
+  export type TransactionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    gatewayTransactionId?: string
+    AND?: TransactionWhereInput | TransactionWhereInput[]
+    OR?: TransactionWhereInput[]
+    NOT?: TransactionWhereInput | TransactionWhereInput[]
+    orderId?: StringFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    paymentMethod?: StringFilter<"Transaction"> | string
+    status?: StringFilter<"Transaction"> | string
+    provider?: StringNullableFilter<"Transaction"> | string | null
+    metadata?: JsonNullableFilter<"Transaction">
+    errorDetails?: StringNullableFilter<"Transaction"> | string | null
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+  }, "id" | "gatewayTransactionId">
+
+  export type TransactionOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    gatewayTransactionId?: SortOrderInput | SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentMethod?: SortOrder
+    status?: SortOrder
+    provider?: SortOrderInput | SortOrder
+    metadata?: SortOrderInput | SortOrder
+    errorDetails?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TransactionCountOrderByAggregateInput
+    _avg?: TransactionAvgOrderByAggregateInput
+    _max?: TransactionMaxOrderByAggregateInput
+    _min?: TransactionMinOrderByAggregateInput
+    _sum?: TransactionSumOrderByAggregateInput
+  }
+
+  export type TransactionScalarWhereWithAggregatesInput = {
+    AND?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    OR?: TransactionScalarWhereWithAggregatesInput[]
+    NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Transaction"> | string
+    orderId?: StringWithAggregatesFilter<"Transaction"> | string
+    gatewayTransactionId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    amount?: FloatWithAggregatesFilter<"Transaction"> | number
+    currency?: StringWithAggregatesFilter<"Transaction"> | string
+    paymentMethod?: StringWithAggregatesFilter<"Transaction"> | string
+    status?: StringWithAggregatesFilter<"Transaction"> | string
+    provider?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    metadata?: JsonNullableWithAggregatesFilter<"Transaction">
+    errorDetails?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+  }
+
+  export type PaymentGatewayWhereInput = {
+    AND?: PaymentGatewayWhereInput | PaymentGatewayWhereInput[]
+    OR?: PaymentGatewayWhereInput[]
+    NOT?: PaymentGatewayWhereInput | PaymentGatewayWhereInput[]
+    id?: StringFilter<"PaymentGateway"> | string
+    name?: StringFilter<"PaymentGateway"> | string
+    isEnabled?: BoolFilter<"PaymentGateway"> | boolean
+    config?: JsonFilter<"PaymentGateway">
+    isSandbox?: BoolFilter<"PaymentGateway"> | boolean
+    createdAt?: DateTimeFilter<"PaymentGateway"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentGateway"> | Date | string
+  }
+
+  export type PaymentGatewayOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    config?: SortOrder
+    isSandbox?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentGatewayWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    name?: string
+    AND?: PaymentGatewayWhereInput | PaymentGatewayWhereInput[]
+    OR?: PaymentGatewayWhereInput[]
+    NOT?: PaymentGatewayWhereInput | PaymentGatewayWhereInput[]
+    isEnabled?: BoolFilter<"PaymentGateway"> | boolean
+    config?: JsonFilter<"PaymentGateway">
+    isSandbox?: BoolFilter<"PaymentGateway"> | boolean
+    createdAt?: DateTimeFilter<"PaymentGateway"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentGateway"> | Date | string
+  }, "id" | "name">
+
+  export type PaymentGatewayOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    config?: SortOrder
+    isSandbox?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PaymentGatewayCountOrderByAggregateInput
+    _max?: PaymentGatewayMaxOrderByAggregateInput
+    _min?: PaymentGatewayMinOrderByAggregateInput
+  }
+
+  export type PaymentGatewayScalarWhereWithAggregatesInput = {
+    AND?: PaymentGatewayScalarWhereWithAggregatesInput | PaymentGatewayScalarWhereWithAggregatesInput[]
+    OR?: PaymentGatewayScalarWhereWithAggregatesInput[]
+    NOT?: PaymentGatewayScalarWhereWithAggregatesInput | PaymentGatewayScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentGateway"> | string
+    name?: StringWithAggregatesFilter<"PaymentGateway"> | string
+    isEnabled?: BoolWithAggregatesFilter<"PaymentGateway"> | boolean
+    config?: JsonWithAggregatesFilter<"PaymentGateway">
+    isSandbox?: BoolWithAggregatesFilter<"PaymentGateway"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentGateway"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PaymentGateway"> | Date | string
+  }
+
+  export type PaymentReceiptWhereInput = {
+    AND?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    OR?: PaymentReceiptWhereInput[]
+    NOT?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    id?: StringFilter<"PaymentReceipt"> | string
+    orderId?: StringFilter<"PaymentReceipt"> | string
+    imageUrl?: StringFilter<"PaymentReceipt"> | string
+    verifiedBy?: StringNullableFilter<"PaymentReceipt"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"PaymentReceipt"> | Date | string | null
+    status?: StringFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableFilter<"PaymentReceipt"> | string | null
+    createdAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+  }
+
+  export type PaymentReceiptOrderByWithRelationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    imageUrl?: SortOrder
+    verifiedBy?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    order?: OrderOrderByWithRelationInput
+  }
+
+  export type PaymentReceiptWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    orderId?: string
+    AND?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    OR?: PaymentReceiptWhereInput[]
+    NOT?: PaymentReceiptWhereInput | PaymentReceiptWhereInput[]
+    imageUrl?: StringFilter<"PaymentReceipt"> | string
+    verifiedBy?: StringNullableFilter<"PaymentReceipt"> | string | null
+    verifiedAt?: DateTimeNullableFilter<"PaymentReceipt"> | Date | string | null
+    status?: StringFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableFilter<"PaymentReceipt"> | string | null
+    createdAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeFilter<"PaymentReceipt"> | Date | string
+    order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
+  }, "id" | "orderId">
+
+  export type PaymentReceiptOrderByWithAggregationInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    imageUrl?: SortOrder
+    verifiedBy?: SortOrderInput | SortOrder
+    verifiedAt?: SortOrderInput | SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PaymentReceiptCountOrderByAggregateInput
+    _max?: PaymentReceiptMaxOrderByAggregateInput
+    _min?: PaymentReceiptMinOrderByAggregateInput
+  }
+
+  export type PaymentReceiptScalarWhereWithAggregatesInput = {
+    AND?: PaymentReceiptScalarWhereWithAggregatesInput | PaymentReceiptScalarWhereWithAggregatesInput[]
+    OR?: PaymentReceiptScalarWhereWithAggregatesInput[]
+    NOT?: PaymentReceiptScalarWhereWithAggregatesInput | PaymentReceiptScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    orderId?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    imageUrl?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    verifiedBy?: StringNullableWithAggregatesFilter<"PaymentReceipt"> | string | null
+    verifiedAt?: DateTimeNullableWithAggregatesFilter<"PaymentReceipt"> | Date | string | null
+    status?: StringWithAggregatesFilter<"PaymentReceipt"> | string
+    rejectionReason?: StringNullableWithAggregatesFilter<"PaymentReceipt"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"PaymentReceipt"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PaymentReceipt"> | Date | string
   }
 
   export type ShipmentWhereInput = {
@@ -18343,6 +22288,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutOrdersInput
     shipment?: ShipmentCreateNestedOneWithoutOrderInput
+    transactions?: TransactionCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptCreateNestedOneWithoutOrderInput
     coupon?: CouponCreateNestedOneWithoutOrdersInput
   }
 
@@ -18373,6 +22320,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     shipment?: ShipmentUncheckedCreateNestedOneWithoutOrderInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptUncheckedCreateNestedOneWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
@@ -18401,6 +22350,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutOrdersNestedInput
     shipment?: ShipmentUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUpdateOneWithoutOrderNestedInput
     coupon?: CouponUpdateOneWithoutOrdersNestedInput
   }
 
@@ -18431,6 +22382,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shipment?: ShipmentUncheckedUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUncheckedUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderCreateManyInput = {
@@ -18511,6 +22464,263 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     timeline?: NullableJsonNullValueInput | InputJsonValue
     couponId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionCreateInput = {
+    id?: string
+    gatewayTransactionId?: string | null
+    amount: number
+    currency?: string
+    paymentMethod: string
+    status: string
+    provider?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutTransactionsInput
+  }
+
+  export type TransactionUncheckedCreateInput = {
+    id?: string
+    orderId: string
+    gatewayTransactionId?: string | null
+    amount: number
+    currency?: string
+    paymentMethod: string
+    status: string
+    provider?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutTransactionsNestedInput
+  }
+
+  export type TransactionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionCreateManyInput = {
+    id?: string
+    orderId: string
+    gatewayTransactionId?: string | null
+    amount: number
+    currency?: string
+    paymentMethod: string
+    status: string
+    provider?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentGatewayCreateInput = {
+    id?: string
+    name: string
+    isEnabled?: boolean
+    config: JsonNullValueInput | InputJsonValue
+    isSandbox?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentGatewayUncheckedCreateInput = {
+    id?: string
+    name: string
+    isEnabled?: boolean
+    config: JsonNullValueInput | InputJsonValue
+    isSandbox?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentGatewayUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    isSandbox?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentGatewayUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    isSandbox?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentGatewayCreateManyInput = {
+    id?: string
+    name: string
+    isEnabled?: boolean
+    config: JsonNullValueInput | InputJsonValue
+    isSandbox?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentGatewayUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    isSandbox?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentGatewayUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    isEnabled?: BoolFieldUpdateOperationsInput | boolean
+    config?: JsonNullValueInput | InputJsonValue
+    isSandbox?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptCreateInput = {
+    id?: string
+    imageUrl: string
+    verifiedBy?: string | null
+    verifiedAt?: Date | string | null
+    status?: string
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    order: OrderCreateNestedOneWithoutReceiptInput
+  }
+
+  export type PaymentReceiptUncheckedCreateInput = {
+    id?: string
+    orderId: string
+    imageUrl: string
+    verifiedBy?: string | null
+    verifiedAt?: Date | string | null
+    status?: string
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    order?: OrderUpdateOneRequiredWithoutReceiptNestedInput
+  }
+
+  export type PaymentReceiptUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptCreateManyInput = {
+    id?: string
+    orderId: string
+    imageUrl: string
+    verifiedBy?: string | null
+    verifiedAt?: Date | string | null
+    status?: string
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderId?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -19698,9 +23908,24 @@ export namespace Prisma {
     isNot?: ShipmentWhereInput | null
   }
 
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
+  }
+
+  export type PaymentReceiptNullableScalarRelationFilter = {
+    is?: PaymentReceiptWhereInput | null
+    isNot?: PaymentReceiptWhereInput | null
+  }
+
   export type CouponNullableScalarRelationFilter = {
     is?: CouponWhereInput | null
     isNot?: CouponWhereInput | null
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type OrderCountOrderByAggregateInput = {
@@ -19822,6 +24047,121 @@ export namespace Prisma {
   export type OrderScalarRelationFilter = {
     is?: OrderWhereInput
     isNot?: OrderWhereInput
+  }
+
+  export type TransactionCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    gatewayTransactionId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentMethod?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    metadata?: SortOrder
+    errorDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionAvgOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type TransactionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    gatewayTransactionId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentMethod?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    errorDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    gatewayTransactionId?: SortOrder
+    amount?: SortOrder
+    currency?: SortOrder
+    paymentMethod?: SortOrder
+    status?: SortOrder
+    provider?: SortOrder
+    errorDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TransactionSumOrderByAggregateInput = {
+    amount?: SortOrder
+  }
+
+  export type PaymentGatewayCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    config?: SortOrder
+    isSandbox?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentGatewayMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    isSandbox?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentGatewayMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    isEnabled?: SortOrder
+    isSandbox?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentReceiptCountOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    imageUrl?: SortOrder
+    verifiedBy?: SortOrder
+    verifiedAt?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentReceiptMaxOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    imageUrl?: SortOrder
+    verifiedBy?: SortOrder
+    verifiedAt?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PaymentReceiptMinOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    imageUrl?: SortOrder
+    verifiedBy?: SortOrder
+    verifiedAt?: SortOrder
+    status?: SortOrder
+    rejectionReason?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type ShipmentCountOrderByAggregateInput = {
@@ -20550,6 +24890,19 @@ export namespace Prisma {
     connect?: ShipmentWhereUniqueInput
   }
 
+  export type TransactionCreateNestedManyWithoutOrderInput = {
+    create?: XOR<TransactionCreateWithoutOrderInput, TransactionUncheckedCreateWithoutOrderInput> | TransactionCreateWithoutOrderInput[] | TransactionUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutOrderInput | TransactionCreateOrConnectWithoutOrderInput[]
+    createMany?: TransactionCreateManyOrderInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type PaymentReceiptCreateNestedOneWithoutOrderInput = {
+    create?: XOR<PaymentReceiptCreateWithoutOrderInput, PaymentReceiptUncheckedCreateWithoutOrderInput>
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutOrderInput
+    connect?: PaymentReceiptWhereUniqueInput
+  }
+
   export type CouponCreateNestedOneWithoutOrdersInput = {
     create?: XOR<CouponCreateWithoutOrdersInput, CouponUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: CouponCreateOrConnectWithoutOrdersInput
@@ -20560,6 +24913,19 @@ export namespace Prisma {
     create?: XOR<ShipmentCreateWithoutOrderInput, ShipmentUncheckedCreateWithoutOrderInput>
     connectOrCreate?: ShipmentCreateOrConnectWithoutOrderInput
     connect?: ShipmentWhereUniqueInput
+  }
+
+  export type TransactionUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<TransactionCreateWithoutOrderInput, TransactionUncheckedCreateWithoutOrderInput> | TransactionCreateWithoutOrderInput[] | TransactionUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutOrderInput | TransactionCreateOrConnectWithoutOrderInput[]
+    createMany?: TransactionCreateManyOrderInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  }
+
+  export type PaymentReceiptUncheckedCreateNestedOneWithoutOrderInput = {
+    create?: XOR<PaymentReceiptCreateWithoutOrderInput, PaymentReceiptUncheckedCreateWithoutOrderInput>
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutOrderInput
+    connect?: PaymentReceiptWhereUniqueInput
   }
 
   export type EnumOrderStatusFieldUpdateOperationsInput = {
@@ -20590,6 +24956,30 @@ export namespace Prisma {
     update?: XOR<XOR<ShipmentUpdateToOneWithWhereWithoutOrderInput, ShipmentUpdateWithoutOrderInput>, ShipmentUncheckedUpdateWithoutOrderInput>
   }
 
+  export type TransactionUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<TransactionCreateWithoutOrderInput, TransactionUncheckedCreateWithoutOrderInput> | TransactionCreateWithoutOrderInput[] | TransactionUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutOrderInput | TransactionCreateOrConnectWithoutOrderInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutOrderInput | TransactionUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: TransactionCreateManyOrderInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutOrderInput | TransactionUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutOrderInput | TransactionUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type PaymentReceiptUpdateOneWithoutOrderNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutOrderInput, PaymentReceiptUncheckedCreateWithoutOrderInput>
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutOrderInput
+    upsert?: PaymentReceiptUpsertWithoutOrderInput
+    disconnect?: PaymentReceiptWhereInput | boolean
+    delete?: PaymentReceiptWhereInput | boolean
+    connect?: PaymentReceiptWhereUniqueInput
+    update?: XOR<XOR<PaymentReceiptUpdateToOneWithWhereWithoutOrderInput, PaymentReceiptUpdateWithoutOrderInput>, PaymentReceiptUncheckedUpdateWithoutOrderInput>
+  }
+
   export type CouponUpdateOneWithoutOrdersNestedInput = {
     create?: XOR<CouponCreateWithoutOrdersInput, CouponUncheckedCreateWithoutOrdersInput>
     connectOrCreate?: CouponCreateOrConnectWithoutOrdersInput
@@ -20608,6 +24998,58 @@ export namespace Prisma {
     delete?: ShipmentWhereInput | boolean
     connect?: ShipmentWhereUniqueInput
     update?: XOR<XOR<ShipmentUpdateToOneWithWhereWithoutOrderInput, ShipmentUpdateWithoutOrderInput>, ShipmentUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<TransactionCreateWithoutOrderInput, TransactionUncheckedCreateWithoutOrderInput> | TransactionCreateWithoutOrderInput[] | TransactionUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutOrderInput | TransactionCreateOrConnectWithoutOrderInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutOrderInput | TransactionUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: TransactionCreateManyOrderInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutOrderInput | TransactionUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutOrderInput | TransactionUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type PaymentReceiptUncheckedUpdateOneWithoutOrderNestedInput = {
+    create?: XOR<PaymentReceiptCreateWithoutOrderInput, PaymentReceiptUncheckedCreateWithoutOrderInput>
+    connectOrCreate?: PaymentReceiptCreateOrConnectWithoutOrderInput
+    upsert?: PaymentReceiptUpsertWithoutOrderInput
+    disconnect?: PaymentReceiptWhereInput | boolean
+    delete?: PaymentReceiptWhereInput | boolean
+    connect?: PaymentReceiptWhereUniqueInput
+    update?: XOR<XOR<PaymentReceiptUpdateToOneWithWhereWithoutOrderInput, PaymentReceiptUpdateWithoutOrderInput>, PaymentReceiptUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type OrderCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<OrderCreateWithoutTransactionsInput, OrderUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutTransactionsInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type OrderUpdateOneRequiredWithoutTransactionsNestedInput = {
+    create?: XOR<OrderCreateWithoutTransactionsInput, OrderUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutTransactionsInput
+    upsert?: OrderUpsertWithoutTransactionsInput
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutTransactionsInput, OrderUpdateWithoutTransactionsInput>, OrderUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type OrderCreateNestedOneWithoutReceiptInput = {
+    create?: XOR<OrderCreateWithoutReceiptInput, OrderUncheckedCreateWithoutReceiptInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutReceiptInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type OrderUpdateOneRequiredWithoutReceiptNestedInput = {
+    create?: XOR<OrderCreateWithoutReceiptInput, OrderUncheckedCreateWithoutReceiptInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutReceiptInput
+    upsert?: OrderUpsertWithoutReceiptInput
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutReceiptInput, OrderUpdateWithoutReceiptInput>, OrderUncheckedUpdateWithoutReceiptInput>
   }
 
   export type OrderCreateNestedOneWithoutShipmentInput = {
@@ -21145,6 +25587,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     shipment?: ShipmentCreateNestedOneWithoutOrderInput
+    transactions?: TransactionCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptCreateNestedOneWithoutOrderInput
     coupon?: CouponCreateNestedOneWithoutOrdersInput
   }
 
@@ -21174,6 +25618,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     shipment?: ShipmentUncheckedCreateNestedOneWithoutOrderInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptUncheckedCreateNestedOneWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutUserInput = {
@@ -22198,6 +26644,70 @@ export namespace Prisma {
     create: XOR<ShipmentCreateWithoutOrderInput, ShipmentUncheckedCreateWithoutOrderInput>
   }
 
+  export type TransactionCreateWithoutOrderInput = {
+    id?: string
+    gatewayTransactionId?: string | null
+    amount: number
+    currency?: string
+    paymentMethod: string
+    status: string
+    provider?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUncheckedCreateWithoutOrderInput = {
+    id?: string
+    gatewayTransactionId?: string | null
+    amount: number
+    currency?: string
+    paymentMethod: string
+    status: string
+    provider?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutOrderInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutOrderInput, TransactionUncheckedCreateWithoutOrderInput>
+  }
+
+  export type TransactionCreateManyOrderInputEnvelope = {
+    data: TransactionCreateManyOrderInput | TransactionCreateManyOrderInput[]
+  }
+
+  export type PaymentReceiptCreateWithoutOrderInput = {
+    id?: string
+    imageUrl: string
+    verifiedBy?: string | null
+    verifiedAt?: Date | string | null
+    status?: string
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptUncheckedCreateWithoutOrderInput = {
+    id?: string
+    imageUrl: string
+    verifiedBy?: string | null
+    verifiedAt?: Date | string | null
+    status?: string
+    rejectionReason?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PaymentReceiptCreateOrConnectWithoutOrderInput = {
+    where: PaymentReceiptWhereUniqueInput
+    create: XOR<PaymentReceiptCreateWithoutOrderInput, PaymentReceiptUncheckedCreateWithoutOrderInput>
+  }
+
   export type CouponCreateWithoutOrdersInput = {
     id?: string
     code: string
@@ -22309,6 +26819,73 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransactionUpsertWithWhereUniqueWithoutOrderInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutOrderInput, TransactionUncheckedUpdateWithoutOrderInput>
+    create: XOR<TransactionCreateWithoutOrderInput, TransactionUncheckedCreateWithoutOrderInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutOrderInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutOrderInput, TransactionUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutOrderInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    orderId?: StringFilter<"Transaction"> | string
+    gatewayTransactionId?: StringNullableFilter<"Transaction"> | string | null
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: StringFilter<"Transaction"> | string
+    paymentMethod?: StringFilter<"Transaction"> | string
+    status?: StringFilter<"Transaction"> | string
+    provider?: StringNullableFilter<"Transaction"> | string | null
+    metadata?: JsonNullableFilter<"Transaction">
+    errorDetails?: StringNullableFilter<"Transaction"> | string | null
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+  }
+
+  export type PaymentReceiptUpsertWithoutOrderInput = {
+    update: XOR<PaymentReceiptUpdateWithoutOrderInput, PaymentReceiptUncheckedUpdateWithoutOrderInput>
+    create: XOR<PaymentReceiptCreateWithoutOrderInput, PaymentReceiptUncheckedCreateWithoutOrderInput>
+    where?: PaymentReceiptWhereInput
+  }
+
+  export type PaymentReceiptUpdateToOneWithWhereWithoutOrderInput = {
+    where?: PaymentReceiptWhereInput
+    data: XOR<PaymentReceiptUpdateWithoutOrderInput, PaymentReceiptUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type PaymentReceiptUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PaymentReceiptUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    imageUrl?: StringFieldUpdateOperationsInput | string
+    verifiedBy?: NullableStringFieldUpdateOperationsInput | string | null
+    verifiedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    rejectionReason?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type CouponUpsertWithoutOrdersInput = {
     update: XOR<CouponUpdateWithoutOrdersInput, CouponUncheckedUpdateWithoutOrdersInput>
     create: XOR<CouponCreateWithoutOrdersInput, CouponUncheckedCreateWithoutOrdersInput>
@@ -22352,6 +26929,278 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type OrderCreateWithoutTransactionsInput = {
+    id?: string
+    orderNumber: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    shippingAddress: string
+    city?: string | null
+    area?: string | null
+    items: JsonNullValueInput | InputJsonValue
+    subtotal: number
+    tax?: number
+    shippingFee?: number
+    discount?: number
+    totalPrice: number
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    paymentMethod?: string | null
+    trackingId?: string | null
+    courier?: string | null
+    notes?: string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOrdersInput
+    shipment?: ShipmentCreateNestedOneWithoutOrderInput
+    receipt?: PaymentReceiptCreateNestedOneWithoutOrderInput
+    coupon?: CouponCreateNestedOneWithoutOrdersInput
+  }
+
+  export type OrderUncheckedCreateWithoutTransactionsInput = {
+    id?: string
+    orderNumber: string
+    userId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    shippingAddress: string
+    city?: string | null
+    area?: string | null
+    items: JsonNullValueInput | InputJsonValue
+    subtotal: number
+    tax?: number
+    shippingFee?: number
+    discount?: number
+    totalPrice: number
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    paymentMethod?: string | null
+    trackingId?: string | null
+    courier?: string | null
+    notes?: string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    couponId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shipment?: ShipmentUncheckedCreateNestedOneWithoutOrderInput
+    receipt?: PaymentReceiptUncheckedCreateNestedOneWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutTransactionsInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutTransactionsInput, OrderUncheckedCreateWithoutTransactionsInput>
+  }
+
+  export type OrderUpsertWithoutTransactionsInput = {
+    update: XOR<OrderUpdateWithoutTransactionsInput, OrderUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<OrderCreateWithoutTransactionsInput, OrderUncheckedCreateWithoutTransactionsInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutTransactionsInput, OrderUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type OrderUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    shippingAddress?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    area?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: JsonNullValueInput | InputJsonValue
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingId?: NullableStringFieldUpdateOperationsInput | string | null
+    courier?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOrdersNestedInput
+    shipment?: ShipmentUpdateOneWithoutOrderNestedInput
+    receipt?: PaymentReceiptUpdateOneWithoutOrderNestedInput
+    coupon?: CouponUpdateOneWithoutOrdersNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutTransactionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    shippingAddress?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    area?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: JsonNullValueInput | InputJsonValue
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingId?: NullableStringFieldUpdateOperationsInput | string | null
+    courier?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    couponId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shipment?: ShipmentUncheckedUpdateOneWithoutOrderNestedInput
+    receipt?: PaymentReceiptUncheckedUpdateOneWithoutOrderNestedInput
+  }
+
+  export type OrderCreateWithoutReceiptInput = {
+    id?: string
+    orderNumber: string
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    shippingAddress: string
+    city?: string | null
+    area?: string | null
+    items: JsonNullValueInput | InputJsonValue
+    subtotal: number
+    tax?: number
+    shippingFee?: number
+    discount?: number
+    totalPrice: number
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    paymentMethod?: string | null
+    trackingId?: string | null
+    courier?: string | null
+    notes?: string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutOrdersInput
+    shipment?: ShipmentCreateNestedOneWithoutOrderInput
+    transactions?: TransactionCreateNestedManyWithoutOrderInput
+    coupon?: CouponCreateNestedOneWithoutOrdersInput
+  }
+
+  export type OrderUncheckedCreateWithoutReceiptInput = {
+    id?: string
+    orderNumber: string
+    userId?: string | null
+    customerName: string
+    customerEmail: string
+    customerPhone: string
+    shippingAddress: string
+    city?: string | null
+    area?: string | null
+    items: JsonNullValueInput | InputJsonValue
+    subtotal: number
+    tax?: number
+    shippingFee?: number
+    discount?: number
+    totalPrice: number
+    status?: $Enums.OrderStatus
+    paymentStatus?: $Enums.PaymentStatus
+    paymentMethod?: string | null
+    trackingId?: string | null
+    courier?: string | null
+    notes?: string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    couponId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shipment?: ShipmentUncheckedCreateNestedOneWithoutOrderInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutReceiptInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutReceiptInput, OrderUncheckedCreateWithoutReceiptInput>
+  }
+
+  export type OrderUpsertWithoutReceiptInput = {
+    update: XOR<OrderUpdateWithoutReceiptInput, OrderUncheckedUpdateWithoutReceiptInput>
+    create: XOR<OrderCreateWithoutReceiptInput, OrderUncheckedCreateWithoutReceiptInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutReceiptInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutReceiptInput, OrderUncheckedUpdateWithoutReceiptInput>
+  }
+
+  export type OrderUpdateWithoutReceiptInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    shippingAddress?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    area?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: JsonNullValueInput | InputJsonValue
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingId?: NullableStringFieldUpdateOperationsInput | string | null
+    courier?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutOrdersNestedInput
+    shipment?: ShipmentUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUpdateManyWithoutOrderNestedInput
+    coupon?: CouponUpdateOneWithoutOrdersNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutReceiptInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    orderNumber?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
+    customerName?: StringFieldUpdateOperationsInput | string
+    customerEmail?: StringFieldUpdateOperationsInput | string
+    customerPhone?: StringFieldUpdateOperationsInput | string
+    shippingAddress?: StringFieldUpdateOperationsInput | string
+    city?: NullableStringFieldUpdateOperationsInput | string | null
+    area?: NullableStringFieldUpdateOperationsInput | string | null
+    items?: JsonNullValueInput | InputJsonValue
+    subtotal?: FloatFieldUpdateOperationsInput | number
+    tax?: FloatFieldUpdateOperationsInput | number
+    shippingFee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    totalPrice?: FloatFieldUpdateOperationsInput | number
+    status?: EnumOrderStatusFieldUpdateOperationsInput | $Enums.OrderStatus
+    paymentStatus?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    paymentMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    trackingId?: NullableStringFieldUpdateOperationsInput | string | null
+    courier?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    timeline?: NullableJsonNullValueInput | InputJsonValue
+    couponId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shipment?: ShipmentUncheckedUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
   export type OrderCreateWithoutShipmentInput = {
     id?: string
     orderNumber: string
@@ -22377,6 +27226,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutOrdersInput
+    transactions?: TransactionCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptCreateNestedOneWithoutOrderInput
     coupon?: CouponCreateNestedOneWithoutOrdersInput
   }
 
@@ -22406,6 +27257,8 @@ export namespace Prisma {
     couponId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptUncheckedCreateNestedOneWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutShipmentInput = {
@@ -22449,6 +27302,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutOrdersNestedInput
+    transactions?: TransactionUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUpdateOneWithoutOrderNestedInput
     coupon?: CouponUpdateOneWithoutOrdersNestedInput
   }
 
@@ -22478,6 +27333,8 @@ export namespace Prisma {
     couponId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    transactions?: TransactionUncheckedUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUncheckedUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderCreateWithoutCouponInput = {
@@ -22506,6 +27363,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutOrdersInput
     shipment?: ShipmentCreateNestedOneWithoutOrderInput
+    transactions?: TransactionCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptCreateNestedOneWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutCouponInput = {
@@ -22534,6 +27393,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     shipment?: ShipmentUncheckedCreateNestedOneWithoutOrderInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutOrderInput
+    receipt?: PaymentReceiptUncheckedCreateNestedOneWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutCouponInput = {
@@ -22828,6 +27689,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shipment?: ShipmentUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUpdateOneWithoutOrderNestedInput
     coupon?: CouponUpdateOneWithoutOrdersNestedInput
   }
 
@@ -22857,6 +27720,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shipment?: ShipmentUncheckedUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUncheckedUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutUserInput = {
@@ -23251,6 +28116,62 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TransactionCreateManyOrderInput = {
+    id?: string
+    gatewayTransactionId?: string | null
+    amount: number
+    currency?: string
+    paymentMethod: string
+    status: string
+    provider?: string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TransactionUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutOrderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    gatewayTransactionId?: NullableStringFieldUpdateOperationsInput | string | null
+    amount?: FloatFieldUpdateOperationsInput | number
+    currency?: StringFieldUpdateOperationsInput | string
+    paymentMethod?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    provider?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata?: NullableJsonNullValueInput | InputJsonValue
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type OrderCreateManyCouponInput = {
     id?: string
     orderNumber: string
@@ -23304,6 +28225,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutOrdersNestedInput
     shipment?: ShipmentUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutCouponInput = {
@@ -23332,6 +28255,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shipment?: ShipmentUncheckedUpdateOneWithoutOrderNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutOrderNestedInput
+    receipt?: PaymentReceiptUncheckedUpdateOneWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutCouponInput = {

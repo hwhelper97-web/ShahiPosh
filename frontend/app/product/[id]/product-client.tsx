@@ -7,8 +7,10 @@ import { ShoppingBag, Heart, Share2, Truck, RotateCcw, ShieldCheck, ChevronRight
 import { ProductCard } from "@/components/product-card";
 import { useCart } from "@/components/cart-context";
 import { useSettings } from "@/components/settings-context";
+import { useRouter } from "next/navigation";
 
 export default function ProductClient({ product }: any) {
+  const router = useRouter();
   const { addToCart } = useCart();
   const { settings } = useSettings();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -16,37 +18,59 @@ export default function ProductClient({ product }: any) {
   const [adding, setAdding] = useState(false);
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
-  let images: string[] = [];
-  let sizes: string[] = [];
+  let images: any[] = [];
+  let sizes: any[] = [];
 
   try {
-    images = typeof product.images === "string" ? JSON.parse(product.images) : product.images;
-    sizes = typeof product.sizes === "string" ? JSON.parse(product.sizes) : product.sizes;
-  } catch {
-    images = ["/placeholder.jpg"];
-    sizes = ["S", "M", "L", "XL"];
+    const rawImages = typeof product.images === "string" ? JSON.parse(product.images) : product.images;
+    images = Array.isArray(rawImages) ? rawImages : [];
+    
+    const rawSizes = typeof product.sizes === "string" ? JSON.parse(product.sizes) : product.sizes;
+    sizes = Array.isArray(rawSizes) ? rawSizes : (product.sizes ? [product.sizes] : []);
+  } catch (err) {
+    console.error("Parse error in ProductClient:", err);
   }
 
-  if (!images || images.length === 0) {
-    images = ["/placeholder.jpg"];
-  } else {
-    images = images.map(img => {
-      const src = typeof img === 'string' ? img : (img as any).url;
-      if (!src) return "/placeholder.jpg";
-      if (src.startsWith("/") || src.startsWith("http")) return src;
-      return `/products/${src}`;
-    });
-  }
+  // Final fallbacks and sanitization
+  if (images.length === 0) images = ["/placeholder.jpg"];
+  if (sizes.length === 0) sizes = ["S", "M", "L", "XL"];
+
+  const sanitizedImages = images.map(img => {
+    const src = typeof img === 'string' ? img : (img?.url || "/placeholder.jpg");
+    if (src.startsWith("/") || src.startsWith("http")) return src;
+    return `/products/${src}`;
+  });
+
+  const isJewelry = product.category?.name?.toLowerCase().includes('jewelry') || 
+                    (typeof product.category === 'string' && product.category.toLowerCase().includes('jewelry'));
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
+    if (!isJewelry && !selectedSize) {
       alert("Please select a size first");
       return;
     }
     setAdding(true);
     const effectivePrice = product.salePrice || product.regularPrice;
-    addToCart({ ...product, price: effectivePrice }, selectedSize, 1);
+    addToCart({ 
+      ...product, 
+      price: effectivePrice,
+      image: sanitizedImages[0] 
+    }, isJewelry ? "Standard" : selectedSize!, 1);
     setTimeout(() => setAdding(false), 1000);
+  };
+
+  const handleOrderNow = () => {
+    if (!isJewelry && !selectedSize) {
+      alert("Please select a size first");
+      return;
+    }
+    const effectivePrice = product.salePrice || product.regularPrice;
+    addToCart({ 
+      ...product, 
+      price: effectivePrice,
+      image: sanitizedImages[0] 
+    }, isJewelry ? "Standard" : selectedSize!, 1);
+    router.push('/checkout');
   };
 
   return (
@@ -67,7 +91,7 @@ export default function ProductClient({ product }: any) {
           <div className="lg:col-span-7 flex flex-col-reverse lg:flex-row gap-6">
             {/* Thumbnails */}
             <div className="flex lg:flex-col gap-4">
-              {images.map((img, idx) => (
+              {sanitizedImages.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImage(idx)}
@@ -92,7 +116,7 @@ export default function ProductClient({ product }: any) {
                   className="w-full h-full"
                 >
                   <Image
-                    src={images[selectedImage]}
+                    src={sanitizedImages[selectedImage]}
                     alt={product.name}
                     fill
                     className="object-cover"
@@ -128,50 +152,56 @@ export default function ProductClient({ product }: any) {
             </p>
 
             {/* Size Selector */}
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <h3 className="text-sm font-bold uppercase tracking-widest">Select Size</h3>
-                <button 
-                  onClick={() => setShowSizeGuide(true)}
-                  className="text-xs font-medium underline underline-offset-4 hover:text-accent transition-luxury"
-                >
-                  Size Guide
-                </button>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                {sizes.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSelectedSize(s)}
-                    className={`w-14 h-14 rounded-2xl flex items-center justify-center text-sm font-medium transition-luxury border-2 ${
-                      selectedSize === s
-                        ? "border-primary bg-primary text-white"
-                        : "border-border hover:border-accent"
-                    }`}
+            {!isJewelry && (
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-sm font-bold uppercase tracking-widest">Select Size</h3>
+                  <button 
+                    onClick={() => setShowSizeGuide(true)}
+                    className="text-xs font-medium underline underline-offset-4 hover:text-accent transition-luxury"
                   >
-                    {s}
+                    Size Guide
                   </button>
-                ))}
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {sizes.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSelectedSize(s)}
+                      className={`w-14 h-14 rounded-2xl flex items-center justify-center text-sm font-medium transition-luxury border-2 ${
+                        selectedSize === s
+                          ? "border-primary bg-primary text-white"
+                          : "border-border hover:border-accent"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Actions */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-5">
               <button 
                 onClick={handleAddToCart}
                 disabled={adding}
-                className="btn-premium w-full py-5 flex items-center justify-center gap-3"
+                className="w-full py-5 bg-black text-white rounded-2xl flex items-center justify-center gap-4 hover:bg-neutral-800 transition-all duration-500 shadow-xl group overflow-hidden relative"
               >
-                <ShoppingBag size={20} />
-                {adding ? "Added to Cart!" : "Add to Cart"}
+                <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                <ShoppingBag size={20} className="relative z-10" />
+                <span className="relative z-10 font-bold uppercase tracking-widest text-[11px]">
+                  {adding ? "Added to Collection" : "Add to Cart"}
+                </span>
               </button>
-              <a
-                href={`https://wa.me/${settings.whatsappNumber}?text=Hello, I'm interested in: ${product.name}`}
-                target="_blank"
-                className="btn-outline w-full py-5 text-center"
+              
+              <button 
+                onClick={handleOrderNow}
+                className="btn-premium w-full py-5 flex items-center justify-center gap-4 shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
-                Order via WhatsApp
-              </a>
+                <ChevronRight size={20} />
+                <span className="font-black uppercase tracking-[0.2em] text-[11px]">Order Now</span>
+              </button>
             </div>
 
             {/* Benefits */}

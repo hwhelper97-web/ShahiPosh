@@ -13,6 +13,13 @@ export function FilterSidebar() {
   const currentMaxPrice = searchParams.get('maxPrice') || '50000';
 
   const [price, setPrice] = useState(currentMaxPrice);
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => setCategories(data));
+  }, []);
 
   const updateFilters = (key: string, value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -30,20 +37,57 @@ export function FilterSidebar() {
       <div>
         <h3 className="text-sm font-bold uppercase tracking-widest mb-6">Categories</h3>
         <div className="flex flex-col gap-4">
-          {['All', 'Men', 'Women', 'Unisex', 'Accessories'].map((cat) => (
-            <Link 
-              key={cat} 
-              href={cat === 'All' ? '/shop' : `/shop?category=${cat}`}
-              className="flex items-center gap-3 group cursor-pointer"
-            >
-              <div className={`w-4 h-4 rounded-full border border-border transition-luxury ${
-                currentCategory === cat ? 'bg-accent border-accent' : 'group-hover:border-accent'
-              }`} />
-              <span className={`text-sm transition-luxury ${
-                currentCategory === cat ? 'text-primary font-bold' : 'text-muted-foreground group-hover:text-primary'
-              }`}>{cat}</span>
-            </Link>
-          ))}
+          <Link 
+            href="/shop"
+            className="flex items-center gap-3 group cursor-pointer"
+          >
+            <div className={`w-4 h-4 rounded-full border border-border transition-luxury ${
+              currentCategory === 'All' ? 'bg-accent border-accent' : 'group-hover:border-accent'
+            }`} />
+            <span className={`text-sm transition-luxury ${
+              currentCategory === 'All' ? 'text-primary font-bold' : 'text-muted-foreground group-hover:text-primary'
+            }`}>All</span>
+          </Link>
+
+          {categories
+            .filter(c => !c.parentId)
+            .map((cat) => (
+              <div key={cat.id} className="space-y-3">
+                <Link 
+                  href={`/shop?category=${cat.slug}`}
+                  className="flex items-center gap-3 group cursor-pointer"
+                >
+                  <div className={`w-4 h-4 rounded-full border border-border transition-luxury ${
+                    currentCategory === cat.slug ? 'bg-accent border-accent' : 'group-hover:border-accent'
+                  }`} />
+                  <span className={`text-sm transition-luxury ${
+                    currentCategory === cat.slug ? 'text-primary font-bold' : 'text-muted-foreground group-hover:text-primary'
+                  }`}>{cat.name}</span>
+                </Link>
+                
+                {/* Subcategories */}
+                <div className="ml-6 space-y-3 border-l border-muted pl-4">
+                  {categories
+                    .filter(sub => sub.parentId === cat.id)
+                    .map(sub => (
+                      <Link 
+                        key={sub.id} 
+                        href={`/shop?category=${sub.slug}`}
+                        className="flex items-center gap-3 group cursor-pointer"
+                      >
+                        <div className={`w-3 h-3 rounded-full border border-border transition-luxury ${
+                          currentCategory === sub.slug ? 'bg-accent border-accent' : 'group-hover:border-accent'
+                        }`} />
+                        <span className={`text-[12px] transition-luxury ${
+                          currentCategory === sub.slug ? 'text-primary font-bold' : 'text-muted-foreground group-hover:text-primary'
+                        }`}>{sub.name}</span>
+                      </Link>
+                    ))
+                  }
+                </div>
+              </div>
+            ))
+          }
         </div>
       </div>
 

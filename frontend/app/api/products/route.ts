@@ -5,6 +5,7 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get('category');
+    const categoryId = searchParams.get('categoryId');
     const sort = searchParams.get('sort');
     const q = searchParams.get('q');
     const isAdmin = searchParams.get('admin') === 'true';
@@ -19,8 +20,20 @@ export async function GET(req: Request) {
       where.isPublished = true;
     }
 
-    if (category && category !== 'All') {
-      where.category = { name: category };
+    if (categoryId) {
+      const subCategories = await prisma.category.findMany({
+        where: { parentId: categoryId },
+        select: { id: true }
+      });
+      const categoryIds = [categoryId, ...subCategories.map(c => c.id)];
+      where.categoryId = { in: categoryIds };
+    } else if (category && category !== 'All') {
+      where.category = {
+        OR: [
+          { name: category },
+          { slug: category }
+        ]
+      };
     }
 
     if (q) {
@@ -42,7 +55,16 @@ export async function GET(req: Request) {
         variants: true
       }
     });
-    return NextResponse.json(products);
+
+    // Parse JSON strings for frontend
+    const parsedProducts = products.map(p => ({
+      ...p,
+      images: typeof p.images === 'string' ? JSON.parse(p.images) : p.images,
+      tags: typeof p.tags === 'string' ? JSON.parse(p.tags) : p.tags,
+      attributes: typeof p.attributes === 'string' ? JSON.parse(p.attributes) : p.attributes,
+    }));
+
+    return NextResponse.json(parsedProducts);
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
@@ -66,11 +88,11 @@ export async function POST(req: Request) {
         description: body.description || '',
         richDescription: body.description || '', // Placeholder for now
         inventory: parseInt(body.inventory) || 0,
-        images: body.images || [], // Prisma Json handles arrays
+        images: JSON.stringify(body.images || []),
         categoryId: body.categoryId,
         status: body.status || "Active",
-        tags: body.tags || [],
-        attributes: body.attributes || {},
+        tags: JSON.stringify(body.tags || []),
+        attributes: JSON.stringify(body.attributes || {}),
       },
     });
     return NextResponse.json(product);

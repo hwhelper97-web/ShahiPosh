@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../frontend/lib/generated/client"
 }
 
 datasource db {
@@ -150,6 +149,8 @@ model Order {
   trackingId      String?
   courier         String?
   shipment        Shipment?
+  transactions    Transaction[]
+  receipt         PaymentReceipt?
   notes           String?
   timeline        Json?       // Array of status changes [{status, timestamp, note}]
   couponId        String?
@@ -160,19 +161,65 @@ model Order {
 
 enum OrderStatus {
   PENDING
+  AWAITING_PAYMENT
+  AWAITING_BANK_VERIFICATION
   CONFIRMED
   PROCESSING
   SHIPPED
   DELIVERED
   RETURNED
   CANCELLED
+  FAILED
 }
 
 enum PaymentStatus {
   UNPAID
+  PENDING
   PAID
-  REFUNDED
+  AWAITING_VERIFICATION
   PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+  EXPIRED
+}
+
+model Transaction {
+  id                String   @id @default(cuid())
+  orderId           String
+  order             Order    @relation(fields: [orderId], references: [id])
+  gatewayTransactionId String? @unique
+  amount            Float
+  currency          String   @default("PKR")
+  paymentMethod     String   // CARD, EASYPAISA, JAZZCASH, BANK_TRANSFER
+  status            String   // INITIATED, SUCCESS, FAILED, PENDING
+  provider          String?  // e.g., PayFast, Stripe, etc.
+  metadata          Json?    // Store raw response from PSP
+  errorDetails      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model PaymentGateway {
+  id          String   @id @default(cuid())
+  name        String   @unique // PayFast, Stripe, Easypaisa_Merchant
+  isEnabled   Boolean  @default(true)
+  config      Json     // Store API Keys, Webhook Secrets (Encrypted in prod)
+  isSandbox   Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PaymentReceipt {
+  id          String   @id @default(cuid())
+  orderId     String   @unique
+  order       Order    @relation(fields: [orderId], references: [id])
+  imageUrl    String
+  verifiedBy  String?
+  verifiedAt  DateTime?
+  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  rejectionReason String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 // PostEx & Shipment Integration

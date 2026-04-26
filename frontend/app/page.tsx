@@ -5,7 +5,6 @@ import { getProducts } from "@/lib/api";
 import { ProductCard } from "@/components/product-card";
 import Hero from "@/components/hero";
 import Collections from "@/components/collections";
-import Testimonials from "@/components/testimonials";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
@@ -23,7 +22,9 @@ export default function HomePage() {
     <main>
       <Hero />
       
-      <Collections />
+      <div id="collections">
+        <Collections />
+      </div>
 
       {/* Featured Products */}
       <section className="py-24 bg-white">
@@ -56,10 +57,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <Testimonials />
-
-      {/* Newsletter Section */}
-      <section className="py-24 bg-primary text-white overflow-hidden relative">
+      <section className="py-24 bg-white">
         <div className="container relative z-10">
           <div className="max-w-xl">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">

@@ -225,6 +225,43 @@ exports.Prisma.OrderScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TransactionScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  gatewayTransactionId: 'gatewayTransactionId',
+  amount: 'amount',
+  currency: 'currency',
+  paymentMethod: 'paymentMethod',
+  status: 'status',
+  provider: 'provider',
+  metadata: 'metadata',
+  errorDetails: 'errorDetails',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentGatewayScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  isEnabled: 'isEnabled',
+  config: 'config',
+  isSandbox: 'isSandbox',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PaymentReceiptScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  imageUrl: 'imageUrl',
+  verifiedBy: 'verifiedBy',
+  verifiedAt: 'verifiedAt',
+  status: 'status',
+  rejectionReason: 'rejectionReason',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.ShipmentScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
@@ -344,19 +381,26 @@ exports.StockStatus = exports.$Enums.StockStatus = {
 
 exports.OrderStatus = exports.$Enums.OrderStatus = {
   PENDING: 'PENDING',
+  AWAITING_PAYMENT: 'AWAITING_PAYMENT',
+  AWAITING_BANK_VERIFICATION: 'AWAITING_BANK_VERIFICATION',
   CONFIRMED: 'CONFIRMED',
   PROCESSING: 'PROCESSING',
   SHIPPED: 'SHIPPED',
   DELIVERED: 'DELIVERED',
   RETURNED: 'RETURNED',
-  CANCELLED: 'CANCELLED'
+  CANCELLED: 'CANCELLED',
+  FAILED: 'FAILED'
 };
 
 exports.PaymentStatus = exports.$Enums.PaymentStatus = {
   UNPAID: 'UNPAID',
+  PENDING: 'PENDING',
   PAID: 'PAID',
+  AWAITING_VERIFICATION: 'AWAITING_VERIFICATION',
+  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED',
   REFUNDED: 'REFUNDED',
-  PARTIALLY_REFUNDED: 'PARTIALLY_REFUNDED'
+  FAILED: 'FAILED',
+  EXPIRED: 'EXPIRED'
 };
 
 exports.DiscountType = exports.$Enums.DiscountType = {
@@ -372,6 +416,9 @@ exports.Prisma.ModelName = {
   Product: 'Product',
   ProductVariant: 'ProductVariant',
   Order: 'Order',
+  Transaction: 'Transaction',
+  PaymentGateway: 'PaymentGateway',
+  PaymentReceipt: 'PaymentReceipt',
   Shipment: 'Shipment',
   Coupon: 'Coupon',
   Review: 'Review',

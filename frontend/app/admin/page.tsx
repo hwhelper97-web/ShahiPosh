@@ -441,12 +441,16 @@ export default function AdminDashboard() {
                 <h3 className="text-2xl font-black tracking-tight mb-10">Quick Actions</h3>
                 <div className="space-y-4">
                   {[
-                    { label: "Book PostEx Shipments", icon: Truck, color: "bg-blue-500" },
-                    { label: "Onboard New Vendor", icon: Store, color: "bg-purple-500" },
-                    { label: "Launch Flash Sale", icon: Flame, color: "bg-orange-500" },
-                    { label: "Generate Tax Ledger", icon: DollarSign, color: "bg-emerald-500" },
+                    { label: "Process Shipments", icon: Truck, color: "bg-blue-500", href: "/admin/orders" },
+                    { label: "Financial Treasury", icon: CreditCard, color: "bg-emerald-500", href: "/admin/payments" },
+                    { label: "Identity Governance", icon: Users, color: "bg-purple-500", href: "/admin/customers" },
+                    { label: "Configure Brand", icon: Store, color: "bg-orange-500", href: "/admin/settings" },
                   ].map((action, i) => (
-                    <button key={i} className="w-full flex items-center justify-between p-6 bg-white/10 hover:bg-white/20 rounded-[2rem] border border-white/10 transition-all group/btn">
+                    <Link 
+                      key={i} 
+                      href={action.href}
+                      className="w-full flex items-center justify-between p-6 bg-white/10 hover:bg-white/20 rounded-[2rem] border border-white/10 transition-all group/btn"
+                    >
                       <div className="flex items-center gap-5">
                         <div className={`w-12 h-12 ${action.color} rounded-2xl flex items-center justify-center shadow-lg group-hover/btn:scale-110 transition-transform`}>
                           <action.icon size={20} />
@@ -454,7 +458,7 @@ export default function AdminDashboard() {
                         <span className="text-xs font-black uppercase tracking-widest">{action.label}</span>
                       </div>
                       <ExternalLink size={14} className="text-white/40 group-hover/btn:text-white" />
-                    </button>
+                    </Link>
                   ))}
                 </div>
                 

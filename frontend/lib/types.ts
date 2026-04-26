@@ -28,4 +28,5 @@ export type OrderPayload = {
   area?: string;
   items: CartItem[];
   totalPrice: number;
+  paymentMethod: string;
 };

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { LayoutDashboard, ShoppingCart, Package, Users, Settings, LogOut, ExternalLink, Shield, FolderTree, TrendingUp, Truck, Store, Database, Megaphone, History, Mail } from 'lucide-react';
+import { LayoutDashboard, ShoppingCart, Package, Users, Settings, LogOut, ExternalLink, Shield, FolderTree, TrendingUp, Truck, Store, Database, Megaphone, History, Mail, CreditCard } from 'lucide-react';
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -25,6 +25,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     { label: 'Products', href: '/admin/products', icon: Package },
     { label: 'Categories', href: '/admin/categories', icon: FolderTree },
     { label: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+    { label: 'Payments', href: '/admin/payments', icon: CreditCard },
     { label: 'Inventory', href: '/admin/inventory', icon: Database },
     { label: 'Messages', href: '/admin/messages', icon: Mail },
     { label: 'Customers', href: '/admin/customers', icon: Users },

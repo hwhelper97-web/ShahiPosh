@@ -40,12 +40,18 @@ export default function CartPage() {
               {cart.map((item: any, i: number) => (
                 <div key={i} className="flex gap-6 p-6 bg-white border border-border rounded-3xl group">
                   <div className="relative w-24 aspect-[3/4] rounded-xl overflow-hidden bg-muted flex-shrink-0">
-                    <Image 
-                      src={item.image || "/placeholder.jpg"} 
-                      alt={item.name} 
-                      fill 
-                      className="object-cover"
-                    />
+                    {(() => {
+                      const src = item.image || "/placeholder.jpg";
+                      const finalSrc = (src.startsWith("/") || src.startsWith("http")) ? src : `/products/${src}`;
+                      return (
+                        <Image 
+                          src={finalSrc} 
+                          alt={item.name} 
+                          fill 
+                          className="object-cover"
+                        />
+                      );
+                    })()}
                   </div>
                   
                   <div className="flex-1 flex flex-col justify-between py-1">

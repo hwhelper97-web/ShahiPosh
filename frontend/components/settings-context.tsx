@@ -21,6 +21,14 @@ type Settings = {
   topBarMessage: string;
   footerAboutText: string;
   maintenanceMode: string;
+  heroBannerImage: string;
+  bankAccountName: string;
+  bankAccountHolder: string;
+  bankAccountNumber: string;
+  easypaisaNumber: string;
+  easypaisaName: string;
+  jazzcashNumber: string;
+  jazzcashName: string;
   [key: string]: string;
 };
 
@@ -43,6 +51,14 @@ const defaultSettings: Settings = {
   topBarMessage: 'FREE SHIPPING ON ALL ORDERS NATIONWIDE!',
   footerAboutText: 'Elevating your style with premium, minimalist fashion. Designed for the modern individual who values quality and elegance.',
   maintenanceMode: 'false',
+  heroBannerImage: '/products/vintage_necklace_1.png',
+  bankAccountName: '',
+  bankAccountHolder: '',
+  bankAccountNumber: '',
+  easypaisaNumber: '',
+  easypaisaName: '',
+  jazzcashNumber: '',
+  jazzcashName: '',
 };
 
 const SettingsContext = createContext<{

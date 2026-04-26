@@ -5,19 +5,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 // RBAC & User Management
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  STAFF
-  VENDOR
-  MANAGER
-  CUSTOMER
-}
+// RBAC & User Management (Enums converted to Strings for SQLite compatibility)
 
 model User {
   id            String     @id @default(cuid())
@@ -25,7 +18,7 @@ model User {
   passwordHash  String
   name          String?
   phone         String?
-  role          Role       @default(CUSTOMER)
+  role          String     @default("CUSTOMER")
   isActive      Boolean    @default(true)
   lastLogin     DateTime?
   vendorProfile Vendor?
@@ -47,7 +40,7 @@ model Vendor {
   banner         String?
   isVerified     Boolean      @default(false)
   commissionRate Float        @default(10.0) // Percentage
-  status         VendorStatus @default(PENDING)
+  status         String       @default("PENDING")
   products       Product[]
   bankAccount    String?
   contactNumber  String?
@@ -56,12 +49,7 @@ model Vendor {
   updatedAt      DateTime     @updatedAt
 }
 
-enum VendorStatus {
-  PENDING
-  APPROVED
-  SUSPENDED
-  REJECTED
-}
+// VendorStatus enum removed for SQLite
 
 // Category Management
 model Category {
@@ -91,11 +79,11 @@ model Product {
   regularPrice    Float
   salePrice       Float?
   costPrice       Float? // For profit analysis
-  stockStatus     StockStatus      @default(IN_STOCK)
+  stockStatus     String           @default("IN_STOCK")
   inventory       Int              @default(0)
   lowStockLevel   Int              @default(5)
-  images          Json // Array of image objects {url, alt}
-  attributes      Json? // Variations: color, size, etc.
+  images          String // Array of image objects {url, alt}
+  attributes      String? // Variations: color, size, etc.
   variants        ProductVariant[]
   categoryId      String
   category        Category         @relation(fields: [categoryId], references: [id])
@@ -103,7 +91,7 @@ model Product {
   vendor          Vendor?          @relation(fields: [vendorId], references: [id])
   isFeatured      Boolean          @default(false)
   isPublished     Boolean          @default(false)
-  tags            Json? // Array of strings
+  tags            String? // Array of strings
   seoTitle        String?
   seoDescription  String?
   reviews         Review[]
@@ -118,14 +106,10 @@ model ProductVariant {
   sku        String  @unique
   price      Float?
   inventory  Int     @default(0)
-  attributes Json // e.g., { "size": "L", "color": "Blue" }
+  attributes String // e.g., { "size": "L", "color": "Blue" }
 }
 
-enum StockStatus {
-  IN_STOCK
-  OUT_OF_STOCK
-  ON_BACKORDER
-}
+// StockStatus enum removed for SQLite
 
 // Order Management
 model Order {
@@ -139,42 +123,27 @@ model Order {
   shippingAddress String
   city            String?
   area            String?
-  items           Json // [{productId, variantId, name, quantity, price}]
+  items           String // [{productId, variantId, name, quantity, price}]
   subtotal        Float
   tax             Float         @default(0)
   shippingFee     Float         @default(0)
   discount        Float         @default(0)
   totalPrice      Float
-  status          OrderStatus   @default(PENDING)
-  paymentStatus   PaymentStatus @default(UNPAID)
+  status          String        @default("PENDING")
+  paymentStatus   String        @default("UNPAID")
   paymentMethod   String?
   trackingId      String?
   courier         String?
   shipment        Shipment?
   notes           String?
-  timeline        Json? // Array of status changes [{status, timestamp, note}]
+  timeline        String? // Array of status changes [{status, timestamp, note}]
   couponId        String?
   coupon          Coupon?       @relation(fields: [couponId], references: [id])
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 }
 
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  RETURNED
-  CANCELLED
-}
-
-enum PaymentStatus {
-  UNPAID
-  PAID
-  REFUNDED
-  PARTIALLY_REFUNDED
-}
+// OrderStatus and PaymentStatus enums removed for SQLite
 
 // PostEx & Shipment Integration
 model Shipment {
@@ -185,7 +154,7 @@ model Shipment {
   courierName     String   @default("PostEx")
   labelUrl        String?
   status          String?
-  bookingResponse Json?
+  bookingResponse String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -195,7 +164,7 @@ model Coupon {
   id            String       @id @default(cuid())
   code          String       @unique
   description   String?
-  discountType  DiscountType
+  discountType  String
   discountValue Float
   minPurchase   Float?
   maxDiscount   Float?
@@ -208,11 +177,7 @@ model Coupon {
   createdAt     DateTime     @default(now())
 }
 
-enum DiscountType {
-  PERCENTAGE
-  FIXED_AMOUNT
-  FREE_SHIPPING
-}
+// DiscountType enum removed for SQLite
 
 // CRM & Reviews
 model Review {
@@ -234,8 +199,8 @@ model AuditLog {
   action    String
   entity    String
   entityId  String?
-  oldData   Json?
-  newData   Json?
+  oldData   String?
+  newData   String?
   ipAddress String?
   createdAt DateTime @default(now())
 }
@@ -243,7 +208,7 @@ model AuditLog {
 model Setting {
   id    String @id @default(cuid())
   key   String @unique
-  value Json
+  value String
 }
 
 model ContactMessage {

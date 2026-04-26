@@ -73,6 +73,7 @@ function AdminOrdersContent() {
 
   const handleStatusUpdate = async (id: string, newStatus: string) => {
     setStatusUpdating(true);
+    const loadingToast = toast.loading(`Transitioning to ${newStatus}...`);
     try {
       const res = await fetch(`${API}/orders/${id}`, {
         method: 'PATCH',
@@ -80,14 +81,16 @@ function AdminOrdersContent() {
         body: JSON.stringify({ status: newStatus })
       });
       if (res.ok) {
-        toast.success(`Order ${newStatus.toLowerCase()}`);
+        toast.success(`Manifest ${newStatus}`, { id: loadingToast });
         await load();
         if (selectedOrder?.id === id) {
           setSelectedOrder((prev: any) => ({ ...prev, status: newStatus }));
         }
+      } else {
+        toast.error("Protocol failed", { id: loadingToast });
       }
     } catch (err) {
-      toast.error("Failed to update status");
+      toast.error("Network synchronization error", { id: loadingToast });
     } finally {
       setStatusUpdating(false);
     }
@@ -96,6 +99,7 @@ function AdminOrdersContent() {
   const handlePostExBooking = async () => {
     if (!selectedOrder) return;
     setBookingLoading(true);
+    const bookingToast = toast.loading("Deploying shipment to PostEx...");
 
     try {
       const res = await fetch('/api/admin/courier/postex/book', {
@@ -110,18 +114,27 @@ function AdminOrdersContent() {
 
       if (res.ok) {
         const data = await res.json();
-        toast.success(`PostEx Booking Created: ${data.trackingNumber}`);
+        
+        // AUTOMATIC STATUS UPGRADE: Set to Shipped
+        await fetch(`${API}/orders/${selectedOrder.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'Shipped' })
+        });
+
+        toast.success(`PostEx Deployment Successful: ${data.trackingNumber}`, { id: bookingToast });
         await load();
+        
         // Refresh selected order data
         const updated = await fetch(`${API}/orders/${selectedOrder.id}`).then(r => r.json());
         setSelectedOrder(updated);
       } else {
         const error = await res.json();
-        toast.error(error.error || 'PostEx connection failed');
+        toast.error(error.error || 'PostEx connection rejected', { id: bookingToast });
       }
     } catch (err) {
       console.error(err);
-      toast.error("An error occurred during booking");
+      toast.error("Logistics system error", { id: bookingToast });
     } finally {
       setBookingLoading(false);
     }
@@ -147,7 +160,8 @@ function AdminOrdersContent() {
       (o.orderNumber?.toLowerCase() || '').includes(searchTerm.toLowerCase()) || 
       (o.id?.toLowerCase() || '').includes(searchTerm.toLowerCase()) || 
       (o.customerName?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (o.customerPhone || o.phone || '').includes(searchTerm);
+      (o.customerPhone || o.phone || '').includes(searchTerm) ||
+      (o.shippingAddress || o.address || '').toLowerCase().includes(searchTerm.toLowerCase());
     return matchesStatus && matchesSearch;
   });
 
@@ -236,49 +250,95 @@ function AdminOrdersContent() {
                 {filteredOrders.map((o) => (
                   <tr key={o.id} className="group hover:bg-muted/20 transition-all duration-300">
                     <td className="px-10 py-8">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary/5 text-primary rounded-xl flex items-center justify-center">
-                          <Hash size={18} />
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center border border-primary/10 shadow-sm">
+                          <Hash size={20} />
                         </div>
                         <div>
-                          <p className="text-sm font-black">#{o.id.slice(-6).toUpperCase()}</p>
-                          <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-1">
-                            <Calendar size={10} />
-                            {new Date(o.createdAt).toLocaleDateString()}
-                          </p>
+                          <p className="text-sm font-black tracking-tight">#{o.id.slice(-6).toUpperCase()}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <Calendar size={10} className="text-muted-foreground/60" />
+                            <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                              {new Date(o.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-10 py-8">
-                      <div className="space-y-1">
-                        <p className="text-sm font-bold">{o.customerName}</p>
-                        <p className="text-[10px] font-medium text-muted-foreground flex items-center gap-1">
-                          <Phone size={10} />
-                          {o.phone}
-                        </p>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <User size={14} className="text-accent" />
+                          <p className="text-sm font-black">{o.customerName}</p>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Phone size={12} />
+                          <p className="text-[11px] font-medium">{o.customerPhone || o.phone}</p>
+                        </div>
+                        <div className="flex items-start gap-2 text-muted-foreground max-w-[200px]">
+                          <MapPin size={12} className="mt-0.5 flex-shrink-0" />
+                          <p className="text-[10px] leading-tight font-medium line-clamp-2">{o.shippingAddress || o.address}, {o.city}</p>
+                        </div>
                       </div>
                     </td>
                     <td className="px-10 py-8">
-                      <div className="space-y-1">
-                        <p className="text-sm font-black">{settings.currency} {o.totalPrice.toLocaleString()}</p>
-                        <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 flex items-center gap-1">
-                          <CreditCard size={10} />
-                          COD Payment
-                        </p>
+                      <div className="space-y-2">
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-[10px] font-bold text-muted-foreground/60">{settings.currency}</span>
+                          <p className="text-lg font-black tracking-tighter">{o.totalPrice.toLocaleString()}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className={`px-2 py-1 rounded-md border flex items-center gap-1.5 ${
+                            o.paymentMethod === 'CARD' ? 'bg-blue-50 border-blue-100 text-blue-600' :
+                            o.paymentMethod === 'EASYPAISA' ? 'bg-green-50 border-green-100 text-green-600' :
+                            o.paymentMethod === 'JAZZCASH' ? 'bg-orange-50 border-orange-100 text-orange-600' :
+                            o.paymentMethod === 'BANK_TRANSFER' ? 'bg-purple-50 border-purple-100 text-purple-600' :
+                            'bg-muted/50 border-border text-muted-foreground'
+                          }`}>
+                            <CreditCard size={10} />
+                            <p className="text-[8px] font-black uppercase tracking-widest">
+                              {o.paymentMethod?.replace('_', ' ') || 'COD'}
+                            </p>
+                          </div>
+                          <div className={`px-2 py-1 rounded-md border text-[8px] font-black uppercase tracking-widest ${
+                            o.paymentStatus === 'PAID' ? 'bg-emerald-50 border-emerald-100 text-emerald-600' : 'bg-red-50 border-red-100 text-red-600'
+                          }`}>
+                            {o.paymentStatus || 'UNPAID'}
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td className="px-10 py-8">
-                       <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border ${getStatusColor(o.status)}`}>
-                         {o.status}
-                       </span>
+                       <div className="flex flex-wrap gap-1.5 max-w-[240px]">
+                         {[
+                           { name: 'Pending', color: 'bg-orange-500' },
+                           { name: 'Confirmed', color: 'bg-blue-600' },
+                           { name: 'Shipped', color: 'bg-purple-600' },
+                           { name: 'Delivered', color: 'bg-green-600' },
+                           { name: 'Cancelled', color: 'bg-red-600' }
+                         ].map((s) => (
+                           <button
+                             key={s.name}
+                             disabled={statusUpdating}
+                             onClick={() => handleStatusUpdate(o.id, s.name)}
+                             className={`px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest transition-all ${
+                               o.status === s.name 
+                                 ? `${s.color} text-white shadow-lg scale-105 border-transparent` 
+                                 : 'bg-muted/40 text-muted-foreground/60 hover:bg-muted hover:text-primary border border-border/50'
+                             }`}
+                           >
+                             {s.name}
+                           </button>
+                         ))}
+                       </div>
                     </td>
                     <td className="px-10 py-8 text-right">
                        <div className="flex justify-end gap-2">
                          <button 
                           onClick={() => setSelectedOrder(o)} 
-                          className="w-10 h-10 bg-white border border-border rounded-xl shadow-sm hover:text-accent hover:border-accent transition-all flex items-center justify-center group/btn"
+                          className="w-12 h-12 bg-white border-2 border-border rounded-2xl shadow-sm hover:text-accent hover:border-accent transition-all flex items-center justify-center group/btn"
                          >
-                           <Eye size={18} className="group-hover/btn:scale-110 transition-transform" />
+                           <Eye size={20} className="group-hover/btn:scale-110 transition-transform" />
                          </button>
                        </div>
                     </td>
@@ -344,7 +404,7 @@ function AdminOrdersContent() {
                      </p>
                      <div className="bg-muted/30 rounded-[2rem] p-8 space-y-2">
                         <p className="text-xl font-bold">{selectedOrder.customerName}</p>
-                        <p className="text-sm font-medium text-muted-foreground">{selectedOrder.phone}</p>
+                        <p className="text-sm font-medium text-muted-foreground">{selectedOrder.customerPhone || selectedOrder.phone}</p>
                      </div>
                    </div>
                    <div className="space-y-4">
@@ -353,7 +413,7 @@ function AdminOrdersContent() {
                        Shipping Destination
                      </p>
                      <div className="bg-muted/30 rounded-[2rem] p-8 space-y-2">
-                        <p className="text-sm text-muted-foreground leading-relaxed font-medium">{selectedOrder.address}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed font-medium">{selectedOrder.shippingAddress || selectedOrder.address}</p>
                         {(selectedOrder.city || selectedOrder.area) && (
                           <div className="flex gap-2 pt-2">
                             <span className="bg-white px-3 py-1 rounded-lg text-[9px] font-bold uppercase border border-border">{selectedOrder.city}</span>
@@ -391,8 +451,16 @@ function AdminOrdersContent() {
 
                    <div className="pt-6 border-t border-border flex justify-between items-end">
                       <div className="space-y-1">
-                        <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Total Valuation (COD)</p>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Total Valuation</span>
+                          <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest ${
+                            selectedOrder.paymentStatus === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+                          }`}>
+                            {selectedOrder.paymentStatus || 'UNPAID'}
+                          </span>
+                        </div>
                         <p className="text-4xl font-black tracking-tighter">{settings.currency} {selectedOrder.totalPrice.toLocaleString()}</p>
+                        <p className="text-[10px] font-bold text-accent uppercase tracking-[0.2em]">{selectedOrder.paymentMethod?.replace('_', ' ') || 'Cash on Delivery'}</p>
                       </div>
                       <button 
                         onClick={() => deleteOrder(selectedOrder.id)}

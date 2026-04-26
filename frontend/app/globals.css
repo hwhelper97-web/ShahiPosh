@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@100;300;400;500;600;700;900&family=Amiri:wght@400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,10 +23,22 @@
 body {
   @apply bg-background text-foreground antialiased selection:bg-accent/30;
   font-family: 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.font-arabic {
+  font-family: 'Amiri', serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  @apply tracking-tight font-semibold;
+  font-family: 'Cormorant Garamond', serif;
+  @apply tracking-tight font-bold;
+  letter-spacing: -0.02em;
+}
+
+.font-logo {
+  font-family: 'Cormorant Garamond', serif;
+  @apply italic font-light;
 }
 
 /* 🧊 Premium Layout */

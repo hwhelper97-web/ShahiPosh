@@ -7,7 +7,14 @@ export async function GET() {
     const orders = await prisma.order.findMany({
       orderBy: { createdAt: 'desc' },
     });
-    return NextResponse.json(orders);
+
+    const parsedOrders = orders.map(o => ({
+      ...o,
+      items: typeof o.items === 'string' ? JSON.parse(o.items) : o.items,
+      timeline: typeof o.timeline === 'string' ? JSON.parse(o.timeline) : o.timeline,
+    }));
+
+    return NextResponse.json(parsedOrders);
   } catch (err) {
     return NextResponse.json({ error: 'Failed to fetch orders' }, { status: 500 });
   }
@@ -27,7 +34,7 @@ export async function POST(req: Request) {
         customerEmail: body.customerEmail || 'guest@example.com',
         customerPhone: body.phone || body.customerPhone || '0000000000',
         shippingAddress: body.address || body.shippingAddress || 'No Address',
-        items: body.items || [],
+        items: JSON.stringify(body.items || []),
         subtotal: body.subtotal || body.totalPrice || 0,
         totalPrice: body.totalPrice || 0,
         status: 'PENDING',

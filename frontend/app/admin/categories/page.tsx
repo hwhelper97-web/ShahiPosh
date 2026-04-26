@@ -21,6 +21,10 @@ interface Category {
   name: string;
   description: string | null;
   image: string | null;
+  parentId: string | null;
+  parent?: {
+    name: string;
+  } | null;
   _count?: {
     products: number;
   };
@@ -35,7 +39,8 @@ export default function CategoriesPage() {
   const [form, setForm] = useState({ 
     name: '', 
     description: '', 
-    image: '' 
+    image: '',
+    parentId: ''
   });
 
   const load = async () => {
@@ -69,7 +74,7 @@ export default function CategoriesPage() {
       if (res.ok) {
         setIsAdding(false);
         setEditingId(null);
-        setForm({ name: '', description: '', image: '' });
+        setForm({ name: '', description: '', image: '', parentId: '' });
         await load();
       }
     } catch (err) {
@@ -106,7 +111,8 @@ export default function CategoriesPage() {
     setForm({
       name: c.name,
       description: c.description || '',
-      image: c.image || ''
+      image: c.image || '',
+      parentId: c.parentId || ''
     });
     setEditingId(c.id);
     setIsAdding(true);
@@ -139,7 +145,7 @@ export default function CategoriesPage() {
               } else {
                 setIsAdding(true);
                 setEditingId(null);
-                setForm({ name: '', description: '', image: '' });
+                setForm({ name: '', description: '', image: '', parentId: '' });
               }
             }}
             className="btn-premium flex items-center gap-3 py-4 px-8 shadow-xl hover:shadow-accent/20 transition-all duration-500 group"
@@ -154,15 +160,33 @@ export default function CategoriesPage() {
         {isAdding ? (
           <div className="bg-white rounded-[3rem] border border-border p-12 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-700">
             <form onSubmit={saveCategory} className="space-y-8 max-w-2xl mx-auto">
-              <div className="space-y-2">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-6">Category Name</label>
-                <input 
-                  required 
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  placeholder="e.g. Traditional Wear" 
-                  className="w-full bg-muted/50 border-2 border-transparent rounded-2xl px-8 py-4 text-sm focus:border-accent focus:bg-white transition-all outline-none" 
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-6">Category Name</label>
+                  <input 
+                    required 
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="e.g. Traditional Wear" 
+                    className="w-full bg-muted/50 border-2 border-transparent rounded-2xl px-8 py-4 text-sm focus:border-accent focus:bg-white transition-all outline-none" 
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-6">Parent Category (Optional)</label>
+                  <select 
+                    value={form.parentId}
+                    onChange={(e) => setForm({ ...form, parentId: e.target.value })}
+                    className="w-full bg-muted/50 border-2 border-transparent rounded-2xl px-8 py-4 text-sm focus:border-accent focus:bg-white transition-all outline-none appearance-none cursor-pointer"
+                  >
+                    <option value="">Main Category (None)</option>
+                    {categories
+                      .filter(c => c.id !== editingId)
+                      .map(c => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))
+                    }
+                  </select>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -197,7 +221,7 @@ export default function CategoriesPage() {
                 {form.image && (
                   <div className="relative w-40 h-40 bg-muted rounded-2xl overflow-hidden border-2 border-border shadow-md mx-auto mt-6">
                     <Image 
-                      src={form.image.startsWith('http') || form.image.startsWith('/') ? form.image : `/categories/${form.image}`} 
+                      src={form.image ? (form.image.startsWith('http') || form.image.startsWith('/') ? form.image : `/categories/${form.image}`) : '/placeholder.jpg'} 
                       alt="Preview" 
                       fill 
                       className="object-cover"
@@ -226,7 +250,7 @@ export default function CategoriesPage() {
                 <div className="h-48 bg-muted relative overflow-hidden">
                   {category.image ? (
                     <Image 
-                      src={category.image.startsWith('http') || category.image.startsWith('/') ? category.image : `/categories/${category.image}`} 
+                      src={category.image ? (category.image.startsWith('http') || category.image.startsWith('/') ? category.image : `/categories/${category.image}`) : '/placeholder.jpg'} 
                       alt={category.name} 
                       fill 
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -254,11 +278,18 @@ export default function CategoriesPage() {
                   </div>
                 </div>
                 <div className="p-8 space-y-2">
-                  <div className="flex justify-between items-start">
-                    <h3 className="text-xl font-bold tracking-tight">{category.name}</h3>
-                    <span className="text-[10px] font-black bg-primary/5 text-primary px-3 py-1 rounded-full border border-primary/10">
-                      {category._count?.products || 0} ITEMS
-                    </span>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-xl font-bold tracking-tight">{category.name}</h3>
+                      <span className="text-[10px] font-black bg-primary/5 text-primary px-3 py-1 rounded-full border border-primary/10">
+                        {category._count?.products || 0} ITEMS
+                      </span>
+                    </div>
+                    {category.parent && (
+                      <span className="text-[9px] font-bold text-accent uppercase tracking-widest">
+                        Subcategory of: {category.parent.name}
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                     {category.description || 'No description provided for this collection.'}

@@ -1,7 +1,8 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin, ShieldCheck, Crown } from 'lucide-react';
 import { useSettings } from './settings-context';
 
 export default function Footer() {
@@ -14,7 +15,27 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           {/* Brand Info */}
           <div className="flex flex-col gap-6">
-            <h2 className="text-2xl font-bold tracking-tighter">{settings.storeName}</h2>
+            <Link href="/" className="group relative flex flex-col items-start w-fit">
+              <div className="flex items-baseline relative">
+                {/* Wordmark Part 1: Shahi */}
+                <span 
+                  style={{ fontFamily: "'Outfit', sans-serif" }} 
+                  className="text-2xl font-black tracking-[-0.05em] text-primary uppercase relative"
+                >
+                  Shahi
+                  <span className="absolute -top-0.5 right-[1px] w-1 h-1 bg-accent rounded-full" />
+                </span>
+                
+                {/* Wordmark Part 2: Posh */}
+                <span 
+                  style={{ fontFamily: "'Playfair Display', serif" }} 
+                  className="text-2xl font-light text-accent italic tracking-tighter -ml-1"
+                >
+                  Posh
+                </span>
+              </div>
+              <div className="w-full h-[1.5px] bg-accent/20 mt-1" />
+            </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
               {settings.footerAboutText}
             </p>
@@ -46,11 +67,11 @@ export default function Footer() {
           <div className="flex flex-col gap-6">
             <h3 className="text-sm font-bold uppercase tracking-widest text-primary">Shop</h3>
             <ul className="flex flex-col gap-4 text-sm text-muted-foreground">
-              <li><Link href="/shop?category=men" className="hover:text-accent transition-luxury">Men's Collection</Link></li>
-              <li><Link href="/shop?category=women" className="hover:text-accent transition-luxury">Women's Collection</Link></li>
-              <li><Link href="/shop?category=kids" className="hover:text-accent transition-luxury">Kids' Wear</Link></li>
-              <li><Link href="/shop?category=accessories" className="hover:text-accent transition-luxury">Accessories</Link></li>
-              <li><Link href="/shop?category=new" className="hover:text-accent transition-luxury">New Arrivals</Link></li>
+              <li><Link href="/shop?category=embroidered-dupatta" className="hover:text-accent transition-luxury">Embroidered Dupatta</Link></li>
+              <li><Link href="/shop?category=luxury-khaddar-shawl" className="hover:text-accent transition-luxury">Luxury Khaddar Shawl</Link></li>
+              <li><Link href="/shop?category=chunri-dupatta" className="hover:text-accent transition-luxury">Chunri Dupatta</Link></li>
+              <li><Link href="/shop?category=velvet-embroidered-shawl" className="hover:text-accent transition-luxury">Velvet Embroidered Shawl</Link></li>
+              <li><Link href="/shop?category=vintage-jewelry" className="hover:text-accent transition-luxury">Vintage Jewelry</Link></li>
             </ul>
           </div>
 

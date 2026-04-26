@@ -6,6 +6,7 @@ async function getProduct(id: string) {
   try {
     const product = await prisma.product.findUnique({
       where: { id },
+      include: { category: true }
     });
     return product;
   } catch (error) {

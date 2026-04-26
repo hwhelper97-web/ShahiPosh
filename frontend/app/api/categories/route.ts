@@ -5,6 +5,9 @@ export async function GET() {
   try {
     const categories = await prisma.category.findMany({
       include: {
+        parent: {
+          select: { name: true }
+        },
         _count: {
           select: { products: true }
         }
@@ -26,7 +29,8 @@ export async function POST(req: Request) {
         name: body.name,
         slug: slug,
         description: body.description,
-        image: body.image
+        image: body.image,
+        parentId: body.parentId || null
       }
     });
     return NextResponse.json(category);
