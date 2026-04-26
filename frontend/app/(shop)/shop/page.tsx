@@ -18,48 +18,59 @@ async function ShopContent({ searchParams }: { searchParams: any }) {
   const products = await getProducts(params);
 
   return (
-    <div className="container">
+    <div className="container px-5 md:px-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
-        <div>
-          <h1 className="text-5xl font-bold tracking-tighter mb-4">The Collection</h1>
-          <p className="text-muted-foreground">Discover our latest pieces, crafted for the modern wardrobe.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-12 md:mb-20">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-[1px] bg-accent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Archives</span>
+          </div>
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none">The Collection</h1>
+          <p className="text-sm md:text-base text-muted-foreground max-w-md font-medium">Discover our latest pieces, crafted for the modern wardrobe with artisanal excellence.</p>
         </div>
         
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <SearchInput />
-          <button className="p-3 bg-muted rounded-full hover:bg-accent hover:text-white transition-luxury lg:hidden">
-            <SlidersHorizontal size={20} />
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+          <div className="w-full sm:w-80">
+            <SearchInput />
+          </div>
+          <button className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-muted rounded-2xl hover:bg-accent hover:text-white transition-luxury lg:hidden text-[10px] font-black uppercase tracking-widest">
+            <SlidersHorizontal size={18} />
+            Filters
           </button>
         </div>
       </div>
 
       {/* Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
-        <FilterSidebar />
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 md:gap-16">
+        <div className="hidden lg:block">
+          <FilterSidebar />
+        </div>
 
         {/* Product Grid */}
         <div className="lg:col-span-3">
           {products.length === 0 ? (
-            <div className="py-20 text-center bg-muted/30 rounded-[3rem] border border-dashed border-border">
-              <p className="text-muted-foreground">No products found matching your criteria.</p>
+            <div className="py-24 text-center bg-muted/30 rounded-[3.5rem] border-2 border-dashed border-border/50">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">No matches in our archives.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-x-4 md:gap-x-10 gap-y-12 md:gap-y-20">
               {products.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
           )}
 
-          {/* Pagination Placeholder */}
-          <div className="mt-20 flex justify-center gap-2">
-            <button className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury bg-primary text-white">1</button>
-            <button className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">2</button>
+          {/* Pagination */}
+          <div className="mt-24 flex justify-center items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center text-xs font-black shadow-xl shadow-primary/20">1</div>
+            <div className="w-12 h-12 rounded-2xl bg-white border-2 border-border flex items-center justify-center text-xs font-black hover:border-accent hover:text-accent transition-all cursor-pointer">2</div>
+            <div className="w-12 h-12 rounded-2xl bg-white border-2 border-border flex items-center justify-center text-xs font-black hover:border-accent hover:text-accent transition-all cursor-pointer">→</div>
           </div>
         </div>
       </div>
     </div>
+
   );
 }
 

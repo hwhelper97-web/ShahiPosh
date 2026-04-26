@@ -45,58 +45,61 @@ export function ProductCard({ product }: { product: Product }) {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      className="group"
+      className="group relative"
     >
-      <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-2xl mb-4">
-        <Link href={`/product/${product.id}`}>
+      <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-[2rem] mb-4 shadow-sm active:scale-[0.98] transition-transform">
+        <Link href={`/product/${product.id}`} className="block h-full">
           <Image
             src={imageSrc}
             alt={product.name}
             fill
-            className="object-cover transition-luxury group-hover:scale-105"
+            className="object-cover transition-luxury md:group-hover:scale-105"
+            sizes="(max-width: 768px) 50vw, 33vw"
           />
         </Link>
 
-        {/* Hover Actions */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 opacity-0 translate-y-4 transition-luxury group-hover:opacity-100 group-hover:translate-y-0">
-          <button className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-accent hover:text-white transition-luxury">
-            <ShoppingCart size={18} />
-          </button>
-          <Link href={`/product/${product.id}`} className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-accent hover:text-white transition-luxury">
-            <Eye size={18} />
-          </Link>
-          <button className="w-10 h-10 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:bg-accent hover:text-white transition-luxury">
-            <Heart size={18} />
+        {/* Action Overlay - Optimized for Touch (Always visible or easy to tap on mobile) */}
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-2 md:opacity-0 md:translate-y-4 md:transition-luxury md:group-hover:opacity-100 md:group-hover:translate-y-0">
+          <div className="flex gap-2">
+            <button className="w-9 h-9 md:w-11 md:h-11 rounded-full bg-white/90 backdrop-blur-md text-primary flex items-center justify-center shadow-lg active:bg-accent active:text-white transition-all">
+              <Heart size={16} />
+            </button>
+          </div>
+          <button className="flex-1 h-9 md:h-11 rounded-full bg-primary text-white text-[9px] md:text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg active:bg-accent transition-all">
+            <ShoppingCart size={14} />
+            <span className="hidden sm:inline">Add</span>
           </button>
         </div>
 
         {/* Badge */}
-        <div className="absolute top-4 left-4">
-          <span className="bg-white/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-black/5">
-            New
-          </span>
-        </div>
+        {product.salePrice && (
+          <div className="absolute top-4 left-4">
+            <span className="bg-accent text-white text-[8px] md:text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-lg">
+              Sale
+            </span>
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col gap-1.5 px-1">
+        <p className="text-[9px] md:text-[10px] text-accent font-black uppercase tracking-[0.2em]">
+          {product.category?.name || product.category || "Exquisite"}
+        </p>
         <Link href={`/product/${product.id}`} className="hover:text-accent transition-luxury">
-          <h3 className="text-sm font-medium tracking-tight">
+          <h3 className="text-sm md:text-lg font-extrabold tracking-tighter leading-tight line-clamp-1">
             {product.name}
           </h3>
         </Link>
-        <p className="text-xs text-muted-foreground uppercase tracking-widest">
-          {product.category?.name || product.category}
-        </p>
-        <p className="text-sm font-bold mt-1">
+        <div className="flex items-center gap-2 mt-0.5">
           {product.salePrice ? (
-            <span className="flex items-center gap-2">
-              <span className="text-accent">{settings.currency} {product.salePrice.toLocaleString()}</span>
-              <span className="text-[10px] text-muted-foreground line-through decoration-muted-foreground/30">{settings.currency} {product.regularPrice.toLocaleString()}</span>
-            </span>
+            <>
+              <span className="text-sm md:text-base font-black text-primary">{settings.currency} {product.salePrice.toLocaleString()}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground line-through opacity-50">{settings.currency} {product.regularPrice.toLocaleString()}</span>
+            </>
           ) : (
-            <span>{settings.currency} {(product.regularPrice || 0).toLocaleString()}</span>
+            <span className="text-sm md:text-base font-black text-primary">{settings.currency} {(product.regularPrice || 0).toLocaleString()}</span>
           )}
-        </p>
+        </div>
       </div>
     </motion.div>
   );
