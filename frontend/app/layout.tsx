@@ -5,9 +5,10 @@ import { Metadata } from "next";
 import LayoutShell from "@/components/layout-shell";
 
 export const metadata: Metadata = {
-  title: "SHAHIPOSH | Premium Minimalist Fashion",
-  description: "Discover the ShahiPosh experience. High-quality, minimalist clothing for the modern individual.",
+  title: "SHAHIPOSH | Timeless Elegance & Handcrafted Luxury",
+  description: "Explore SHAHIPOSH for curated luxury, featuring exquisite handcrafted shawls, artisanal dupattas, and bespoke jewelry pieces.",
 };
+
 
 export default function RootLayout({
   children,
