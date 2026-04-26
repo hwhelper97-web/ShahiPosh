@@ -17,9 +17,10 @@ export async function GET() {
     // 2. Insert Super Admin using RAW SQL
     await prisma.$executeRawUnsafe(
       `INSERT INTO "User" ("id", "email", "passwordHash", "name", "role", "isActive", "updatedAt") 
-       VALUES ($1, $2, $3, $4, $5, $6, NOW())`,
+       VALUES ($1, $2, $3, $4, $5::text::"Role", $6, NOW())`,
       adminId, adminEmail, hashedPassword, 'Admin User', 'SUPER_ADMIN', true
     );
+
 
     // 3. Create Categories using RAW SQL
     const categoriesData = [
