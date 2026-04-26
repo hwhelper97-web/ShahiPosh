@@ -5,12 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && prisma db push --accept-data-loss && prisma db seed && next build",
-
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "@vercel/blob": "^2.3.3",
     "axios": "^1.15.2",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
