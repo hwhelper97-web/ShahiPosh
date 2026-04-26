@@ -3,7 +3,7 @@
 import { useCart } from "@/components/cart-context";
 import Image from "next/image";
 import Link from "next/link";
-import { Trash2, ShoppingBag, ArrowRight, Minus, Plus } from "lucide-react";
+import { Trash2, ShoppingBag, ArrowRight, Minus, Plus, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSettings } from "@/components/settings-context";
 
