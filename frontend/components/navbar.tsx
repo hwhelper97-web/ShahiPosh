@@ -33,8 +33,10 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', href: '/' },
     { name: 'Shop', href: '/shop' },
+    { name: 'Categories', href: '/shop#categories' },
     { name: 'About', href: '/about' },
   ];
+
 
   // Calculate total height of top bars
   const ayatBarHeight = 32; // h-8 = 32px
