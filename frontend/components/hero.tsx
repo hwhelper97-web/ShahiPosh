@@ -30,17 +30,30 @@ export default function Hero() {
         />
       </motion.div>
 
-      <div className="container relative z-20 h-full flex flex-col justify-end pb-12 md:pb-24 items-start">
+      <div className="container relative z-20 h-full flex flex-col justify-end pb-16 md:pb-24 items-start px-5 md:px-8">
         <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="max-w-2xl space-y-6 md:space-y-10"
         >
-          <Link href="#collections" className="btn-premium px-12 md:px-16 py-5 md:py-6 text-[10px] md:text-xs uppercase tracking-[0.4em] shadow-3xl bg-accent text-white border-none hover:bg-black hover:scale-105 transition-all duration-700">
+          <div className="space-y-4 md:space-y-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-[1px] bg-accent" />
+              <span className="text-[10px] md:text-[12px] font-black uppercase tracking-[0.4em] text-accent">Signature Series</span>
+            </div>
+            <h1 className="text-white text-5xl md:text-8xl font-black tracking-tighter leading-[0.9] drop-shadow-2xl">
+              Timeless <br />
+              <span className="text-accent italic font-serif font-light">Elegance.</span>
+            </h1>
+          </div>
+
+          <Link href="#categories" className="btn-premium px-10 md:px-16 py-4 md:py-6 text-[10px] md:text-xs uppercase tracking-[0.4em] bg-white text-primary border-none hover:bg-accent hover:text-white transition-all duration-700 shadow-2xl">
             Explore Collection
           </Link>
         </motion.div>
       </div>
+
 
       {/* 🧊 Glass Indicator */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2">

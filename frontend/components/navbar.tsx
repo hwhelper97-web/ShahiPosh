@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ShoppingBag, Search, User, Menu, X, Heart, Crown } from 'lucide-react';
+import { ShoppingBag, Search, User, Menu, X, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SearchOverlay from './search-overlay';
 import { useSettings } from './settings-context';
@@ -38,40 +37,32 @@ export default function Navbar() {
     { name: 'Contact', href: '/contact' },
   ];
 
-
-
-
-  // Calculate total height of top bars
-  const ayatBarHeight = 32; // h-8 = 32px
-  const promoBarHeight = settings.topBarMessage ? 32 : 0;
-  const totalTopOffset = ayatBarHeight + promoBarHeight;
-
   return (
     <>
-      {/* 1. Ayat ul Kursi Scrolling Bar */}
-      <div className="relative w-full bg-gradient-to-r from-primary via-accent to-primary text-white py-1.5 z-[60] overflow-hidden border-b border-accent/20 shadow-lg">
-        <div className="whitespace-nowrap animate-marquee-reverse inline-block font-arabic text-[14px] md:text-[16px] drop-shadow-md">
-          <span className="mx-8 opacity-90 hover:opacity-100 transition-opacity">اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ</span>
-          <span className="mx-8 opacity-90 hover:opacity-100 transition-opacity">اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ</span>
+      {/* 1. Ayat ul Kursi Scrolling Bar - Optimized for Mobile Performance */}
+      <div className="relative w-full bg-gradient-to-r from-primary via-accent to-primary text-white py-2 z-[60] overflow-hidden border-b border-accent/20">
+        <div className="whitespace-nowrap animate-marquee-reverse inline-block font-arabic text-[12px] md:text-[15px]">
+          <span className="mx-4 md:mx-8">اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ</span>
+          <span className="mx-4 md:mx-8">اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ وَلَا يَئُودُهُ حِفْظُهُمَا وَهُوَ الْعَلِيُّ الْعَظِيمُ</span>
         </div>
       </div>
 
       {/* 2. Top Announcement Bar */}
       {settings.topBarMessage && (
-        <div className="relative w-full bg-accent text-white py-2 z-[60] text-[9px] md:text-[10px] font-bold uppercase tracking-[0.2em] text-center">
+        <div className="relative w-full bg-accent text-white py-2 z-[60] text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] text-center px-4">
           {settings.topBarMessage}
         </div>
       )}
 
       <nav
-        className={`relative w-full z-50 transition-all duration-300 py-5 md:py-6 bg-white border-b border-border shadow-sm`}
+        className={`sticky top-0 w-full z-50 transition-all duration-300 py-4 md:py-6 bg-white/95 backdrop-blur-md border-b border-border shadow-sm`}
       >
-        <div className="container px-4 md:px-6">
-          <div className="flex items-center justify-between">
-            {/* MOBILE ONLY: Menu Toggle (Left) */}
+        <div className="container">
+          <div className="flex items-center justify-between gap-4">
+            {/* MOBILE: Menu Toggle (Left) - Thumb-friendly touch target */}
             <div className="flex md:hidden flex-1 justify-start">
               <button
-                className="hover:text-accent transition-luxury"
+                className="w-10 h-10 flex items-center justify-center hover:text-accent transition-luxury"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 aria-label="Toggle Menu"
               >
@@ -79,78 +70,54 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* 🏆 FULL WORDMARK LUXURY LOGO: Left on Desktop, Center on Mobile */}
-            <div className="flex flex-[2] md:flex-initial justify-center md:justify-start">
+            {/* 🏆 LUXURY LOGO: Optimized Scale for Mobile */}
+            <div className="flex-initial md:flex-initial">
               <Link href="/" className="group relative flex flex-col items-center md:items-start">
-                <div className="flex items-baseline relative">
-                  {/* Wordmark Part 1: Shahi */}
-                  <span 
-                    className="text-2xl md:text-4xl font-bold tracking-tight text-primary uppercase relative font-logo"
-                  >
+                <div className="flex items-baseline relative scale-90 sm:scale-100 origin-center md:origin-left transition-transform">
+                  <span className="text-xl md:text-3xl font-black tracking-tight text-primary uppercase font-logo">
                     Shahi
-                    {/* Decorative Dot over 'i' */}
-                    <span className="absolute -top-1 right-[2px] w-1 h-1 md:w-1.5 md:h-1.5 bg-accent rounded-full shadow-[0_0_10px_rgba(197,160,89,0.5)] transition-all duration-500 group-hover:scale-150" />
+                    <span className="absolute -top-1 right-[1px] w-1 h-1 bg-accent rounded-full animate-pulse shadow-[0_0_8px_rgba(197,160,89,0.4)]" />
                   </span>
-                  
-                  {/* Wordmark Part 2: Posh */}
-                  <span 
-                    className="text-2xl md:text-4xl font-light text-accent italic tracking-tighter -ml-1 md:-ml-2 font-logo"
-                  >
+                  <span className="text-xl md:text-3xl font-light text-accent italic tracking-tighter -ml-1 font-logo">
                     Posh
                   </span>
                 </div>
-
-                {/* ✨ CSS Royal Underline */}
-                <div className="relative w-full h-[2px] md:h-[3px] mt-1 md:mt-2 overflow-hidden rounded-full">
-                  <div className="absolute inset-0 bg-muted/20" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-full bg-accent group-hover:w-full transition-all duration-700" />
-                </div>
-
-                {/* Subtitle / Tagline (Hidden on smaller screens) */}
-                <span className="hidden md:block text-[8px] font-black uppercase tracking-[0.5em] text-muted-foreground/40 mt-1 pl-1 transition-colors duration-500 group-hover:text-accent">
-                  Luxury Artisanship
-                </span>
               </Link>
             </div>
 
             {/* DESKTOP NAVIGATION: Center */}
-            <div className="hidden md:flex flex-1 justify-center items-center gap-8 lg:gap-10">
+            <div className="hidden md:flex flex-1 justify-center items-center gap-6 lg:gap-10">
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-[14px] font-medium uppercase tracking-[0.08em] hover:text-accent transition-luxury whitespace-nowrap"
+                  className="text-[12px] lg:text-[13px] font-bold uppercase tracking-[0.1em] hover:text-accent transition-luxury whitespace-nowrap"
                 >
                   {link.name}
                 </Link>
               ))}
             </div>
 
-            {/* ACTION ICONS: Right (Desktop and Mobile) */}
-            <div className="flex flex-1 items-center justify-end gap-3 md:gap-5">
+            {/* ACTION ICONS: Right - Optimized Touch Targets */}
+            <div className="flex flex-1 items-center justify-end gap-1 md:gap-4">
               {isAdmin && (
-                <Link href="/admin" className="hidden lg:flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-[10px] font-black uppercase tracking-widest border border-accent/20 hover:bg-accent hover:text-white transition-all duration-500">
-                  <span className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse" />
+                <Link href="/admin" className="hidden lg:flex items-center gap-2 px-4 py-2 bg-accent/10 text-accent rounded-full text-[9px] font-black uppercase tracking-widest border border-accent/20">
                   Admin
                 </Link>
               )}
               <button 
                 onClick={() => setIsSearchOpen(true)}
-                className="hover:text-accent transition-luxury hidden sm:block"
+                className="w-10 h-10 flex items-center justify-center hover:text-accent transition-luxury hidden sm:flex"
               >
-                <Search size={20} strokeWidth={2} />
+                <Search size={20} />
               </button>
-              <Link href="/wishlist" className="hover:text-accent transition-luxury hidden sm:block">
-                <Heart size={20} strokeWidth={2} />
+              <Link href="/wishlist" className="w-10 h-10 hidden sm:flex items-center justify-center hover:text-accent transition-luxury">
+                <Heart size={20} />
               </Link>
-              <Link href="/dashboard" className="hover:text-accent transition-luxury hidden sm:block">
-                <User size={20} strokeWidth={2} />
-              </Link>
-              <Link href="/cart" className="relative group">
-                <ShoppingBag size={20} strokeWidth={2} className="group-hover:text-accent transition-luxury" />
+              <Link href="/cart" className="relative group w-10 h-10 flex items-center justify-center">
+                <ShoppingBag size={20} className="group-hover:text-accent transition-luxury" />
                 {cartItemsCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-accent text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center text-white animate-in zoom-in">
+                  <span className="absolute top-1 right-1 bg-accent text-[8px] font-black w-4 h-4 rounded-full flex items-center justify-center text-white shadow-sm">
                     {cartItemsCount}
                   </span>
                 )}
@@ -159,53 +126,68 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu Overlay */}
+        {/* Mobile Menu Overlay - Native Feel */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, x: -100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              className="md:hidden fixed top-0 left-0 w-full h-screen bg-white z-[100] p-8 overflow-y-auto"
-            >
-              <div className="flex justify-between items-center mb-12">
-                <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="group relative flex flex-col items-start">
-                  <div className="flex items-baseline relative">
-                    <span className="text-2xl font-bold tracking-tight text-primary uppercase relative font-logo">
-                      Shahi
-                      <span className="absolute -top-0.5 right-[1px] w-1 h-1 bg-accent rounded-full" />
-                    </span>
-                    <span className="text-2xl font-light text-accent italic tracking-tighter -ml-1 font-logo">
-                      Posh
-                    </span>
+            <>
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[90]"
+              />
+              <motion.div
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                className="md:hidden fixed top-0 left-0 w-[85%] max-w-[400px] h-screen bg-white z-[100] shadow-2xl flex flex-col"
+              >
+                <div className="p-6 border-b border-border flex justify-between items-center bg-[#faf9f6]">
+                  <div className="flex items-baseline scale-90">
+                    <span className="text-xl font-black text-primary uppercase font-logo">Shahi</span>
+                    <span className="text-xl font-light text-accent italic -ml-1 font-logo">Posh</span>
                   </div>
-                  <div className="w-full h-[2px] bg-accent/20 mt-1" />
-                </Link>
-                <button onClick={() => setIsMobileMenuOpen(false)}>
-                  <X size={28} />
-                </button>
-              </div>
-              <div className="flex flex-col gap-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    href={link.href}
+                  <button 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-[14px] font-medium uppercase tracking-[0.08em] hover:text-accent transition-luxury"
+                    className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
                   >
-                    {link.name}
-                  </Link>
-                ))}
-                <div className="pt-8 border-t border-border mt-4 flex flex-col gap-6">
-                  <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest">
-                    <User size={20} /> My Account
-                  </Link>
-                  <Link href="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 text-sm font-bold uppercase tracking-widest">
-                    <Heart size={20} /> Wishlist
-                  </Link>
+                    <X size={20} />
+                  </button>
                 </div>
-              </div>
-            </motion.div>
+                
+                <div className="flex-1 overflow-y-auto py-8 px-6 space-y-1">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="block py-4 text-lg font-extrabold uppercase tracking-widest text-primary hover:text-accent transition-colors"
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                  <div className="pt-8 border-t border-border mt-6 space-y-4">
+                    <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 py-3 text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors">
+                      <User size={20} className="text-accent" /> My Account
+                    </Link>
+                    <Link href="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 py-3 text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors">
+                      <Heart size={20} className="text-accent" /> Wishlist
+                    </Link>
+                    <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 py-3 text-sm font-bold uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-colors">
+                      <Search size={20} className="text-accent" /> Search Shop
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="p-8 bg-[#faf9f6] border-t border-border">
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 text-center">
+                    Luxury Artisanship Since 2024
+                  </p>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </nav>
