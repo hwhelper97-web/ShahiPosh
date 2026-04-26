@@ -126,13 +126,13 @@ export default function CheckoutPage() {
 
   return (
     <div className="bg-background min-h-screen pt-32 pb-20">
-      <div className="container max-w-7xl">
-        {/* Step Progress */}
-        <div className="max-w-3xl mx-auto mb-20">
-          <div className="flex justify-between relative">
-            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-border -translate-y-1/2 z-0" />
+      <div className="container px-5 md:px-8">
+        {/* Step Progress - Optimized for 320px+ */}
+        <div className="max-w-4xl mx-auto mb-16 md:mb-24">
+          <div className="flex justify-between relative px-2">
+            <div className="absolute top-[22px] md:top-6 left-0 w-full h-[2px] bg-border z-0" />
             <div 
-              className="absolute top-1/2 left-0 h-0.5 bg-accent -translate-y-1/2 z-0 transition-all duration-700" 
+              className="absolute top-[22px] md:top-6 left-0 h-[2px] bg-accent z-0 transition-all duration-1000 ease-out" 
               style={{ width: `${(step / (steps.length - 1)) * 100}%` }}
             />
             {steps.map((s, i) => {
@@ -141,12 +141,12 @@ export default function CheckoutPage() {
               const current = i === step;
               return (
                 <div key={i} className="relative z-10 flex flex-col items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-500 border-4 ${
-                    active ? 'bg-accent border-accent text-white' : 'bg-white border-border text-muted-foreground'
-                  } ${current ? 'scale-125 shadow-xl ring-8 ring-accent/10' : ''}`}>
-                    <Icon size={20} />
+                  <div className={`w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center transition-all duration-500 border-2 md:border-4 ${
+                    active ? 'bg-primary border-primary text-white' : 'bg-white border-border text-muted-foreground'
+                  } ${current ? 'scale-110 md:scale-125 shadow-xl ring-4 md:ring-8 ring-accent/10' : ''}`}>
+                    <Icon size={current ? 20 : 16} className={current ? 'animate-pulse' : ''} />
                   </div>
-                  <span className={`text-[10px] font-black uppercase tracking-widest ${active ? 'text-primary' : 'text-muted-foreground'}`}>
+                  <span className={`text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] hidden sm:block ${active ? 'text-primary' : 'text-muted-foreground'}`}>
                     {s.title}
                   </span>
                 </div>
@@ -154,6 +154,7 @@ export default function CheckoutPage() {
             })}
           </div>
         </div>
+
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
           {/* Checkout Form */}

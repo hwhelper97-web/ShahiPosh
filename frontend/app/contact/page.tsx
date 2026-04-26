@@ -41,77 +41,70 @@ export default function ContactPage() {
 
   return (
     <div className="bg-background pt-32 pb-20">
-      <div className="container">
-        <div className="text-center max-w-2xl mx-auto mb-20">
-          <span className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-4 block">Get In Touch</span>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-none">
+      <div className="container px-5 md:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="w-8 h-[1px] bg-accent" />
+            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Liaison</span>
+          </div>
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter mb-8 leading-[0.9]">
             We'd Love to <br />
-            <span className="text-accent italic font-serif">Hear From You.</span>
+            <span className="text-accent italic font-serif font-light">Hear From You.</span>
           </h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            Have a question about our products, sizing, or an order? Our dedicated support team is here to help you.
+          <p className="text-sm md:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto font-medium">
+            Have a question about our artisanal products, bespoke sizing, or an existing order? Our dedicated vault support is here to assist.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20">
           {/* Contact Info */}
-          <div className="lg:col-span-5 space-y-12">
-            <div className="space-y-8">
+          <div className="lg:col-span-5 space-y-10 md:space-y-16">
+            <div className="space-y-8 md:space-y-12">
               <div className="flex gap-6 items-start group">
-                <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-accent group-hover:text-white transition-luxury">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white border border-border flex items-center justify-center flex-shrink-0 shadow-sm group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   <Mail size={24} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Email Us</h3>
-                  <p className="text-muted-foreground hover:text-primary transition-luxury">{settings.storeEmail}</p>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-2 text-primary">Secure Mail</h3>
+                  <p className="text-sm md:text-base text-muted-foreground font-bold hover:text-accent transition-colors">{settings.storeEmail}</p>
                 </div>
               </div>
 
               <div className="flex gap-6 items-start group">
-                <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-accent group-hover:text-white transition-luxury">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white border border-border flex items-center justify-center flex-shrink-0 shadow-sm group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   <Phone size={24} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Call Us</h3>
-                  <p className="text-muted-foreground hover:text-primary transition-luxury">{settings.storePhone}</p>
-                  <p className="text-muted-foreground text-xs mt-1">Mon - Sat: 9:00 AM - 6:00 PM</p>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-2 text-primary">Direct Line</h3>
+                  <p className="text-sm md:text-base text-muted-foreground font-bold hover:text-accent transition-colors">{settings.storePhone}</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-accent mt-2">Available Mon - Sat</p>
                 </div>
               </div>
 
               <div className="flex gap-6 items-start group">
-                <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-accent group-hover:text-white transition-luxury">
+                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-white border border-border flex items-center justify-center flex-shrink-0 shadow-sm group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   <MapPin size={24} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold uppercase tracking-widest mb-2">Visit Us</h3>
-                  <p className="text-muted-foreground whitespace-pre-line">{settings.storeAddress}</p>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-2 text-primary">Main Atelier</h3>
+                  <p className="text-sm md:text-base text-muted-foreground font-bold whitespace-pre-line leading-relaxed">{settings.storeAddress}</p>
                 </div>
               </div>
             </div>
 
-            <div className="pt-10 border-t border-border">
-              <h3 className="text-sm font-bold uppercase tracking-widest mb-6">Follow Our Journey</h3>
+            <div className="pt-12 border-t border-border">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.3em] mb-8 text-primary">Digital Presence</h3>
               <div className="flex gap-4">
-                {settings.instagramUrl && (
-                  <a href={settings.instagramUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                    <Instagram size={20} />
+                {[
+                  { icon: Instagram, url: settings.instagramUrl },
+                  { icon: Facebook, url: settings.facebookUrl },
+                  { icon: Twitter, url: settings.twitterUrl },
+                  { icon: Youtube, url: settings.youtubeUrl }
+                ].map((social, i) => social.url && (
+                  <a key={i} href={social.url} target="_blank" className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-white border border-border flex items-center justify-center hover:bg-accent hover:text-white transition-all shadow-sm active:scale-90">
+                    <social.icon size={20} />
                   </a>
-                )}
-                {settings.facebookUrl && (
-                  <a href={settings.facebookUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                    <Facebook size={20} />
-                  </a>
-                )}
-                {settings.twitterUrl && (
-                  <a href={settings.twitterUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                    <Twitter size={20} />
-                  </a>
-                )}
-                {settings.youtubeUrl && (
-                  <a href={settings.youtubeUrl} target="_blank" className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                    <Youtube size={20} />
-                  </a>
-                )}
+                ))}
               </div>
             </div>
           </div>
@@ -120,66 +113,75 @@ export default function ContactPage() {
           <div className="lg:col-span-7">
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white p-12 rounded-[3rem] shadow-xl border border-border"
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="bg-white p-8 md:p-16 rounded-[3rem] shadow-2xl border border-border relative overflow-hidden group"
             >
-              <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-bl-full translate-x-10 -translate-y-10 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-1000" />
+              
+              <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Your Name</label>
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-2">Your Identity</label>
                     <input 
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="John Doe" 
-                      className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
+                      placeholder="Name" 
+                      className="w-full bg-[#faf9f6] border border-border rounded-2xl px-6 py-4 md:py-5 text-sm focus:ring-2 focus:ring-accent/20 outline-none transition-all shadow-inner font-bold" 
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Email Address</label>
+                  <div className="space-y-3">
+                    <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-2">Communication Link</label>
                     <input 
                       required
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="john@example.com" 
-                      className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
+                      placeholder="Email" 
+                      className="w-full bg-[#faf9f6] border border-border rounded-2xl px-6 py-4 md:py-5 text-sm focus:ring-2 focus:ring-accent/20 outline-none transition-all shadow-inner font-bold" 
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Subject</label>
-                  <select 
-                    value={formData.subject}
-                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury appearance-none"
-                  >
-                    <option>General Inquiry</option>
-                    <option>Order Support</option>
-                    <option>Wholesale</option>
-                    <option>Press & Media</option>
-                  </select>
+                <div className="space-y-3">
+                  <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-2">Inquiry Type</label>
+                  <div className="relative">
+                    <select 
+                      value={formData.subject}
+                      onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                      className="w-full bg-[#faf9f6] border border-border rounded-2xl px-6 py-4 md:py-5 text-sm focus:ring-2 focus:ring-accent/20 outline-none transition-all shadow-inner font-bold appearance-none cursor-pointer"
+                    >
+                      <option>General Inquiry</option>
+                      <option>Order Support</option>
+                      <option>Bespoke Request</option>
+                      <option>Wholesale</option>
+                      <option>Press & Media</option>
+                    </select>
+                    <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
+                      <Send size={14} className="rotate-90" />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-4">Your Message</label>
+                <div className="space-y-3">
+                  <label className="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground ml-2">Message Content</label>
                   <textarea 
                     required
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="How can we help you?" 
+                    placeholder="How may we assist you today?" 
                     rows={6}
-                    className="w-full bg-muted border-none rounded-2xl px-6 py-4 text-sm focus:ring-1 focus:ring-accent transition-luxury" 
+                    className="w-full bg-[#faf9f6] border border-border rounded-3xl px-6 py-6 text-sm focus:ring-2 focus:ring-accent/20 outline-none transition-all shadow-inner font-medium leading-relaxed" 
                   />
                 </div>
 
                 <button 
                   disabled={loading}
-                  className="btn-premium w-full py-5 flex items-center justify-center gap-3 disabled:opacity-50"
+                  className="btn-premium w-full py-5 md:py-6 flex items-center justify-center gap-4 disabled:opacity-50 group/btn shadow-xl shadow-accent/10"
                 >
-                  <Send size={18} />
-                  {loading ? 'Sending...' : 'Send Message'}
+                  <Send size={18} className="group-hover/btn:-translate-y-1 group-hover/btn:translate-x-1 transition-transform" />
+                  <span className="font-black uppercase tracking-[0.2em] text-[11px]">{loading ? 'Transmitting...' : 'Send Message'}</span>
                 </button>
               </form>
             </motion.div>
@@ -187,17 +189,22 @@ export default function ContactPage() {
         </div>
       </div>
 
-      {/* Map Section Placeholder */}
-      <section className="container mt-32">
-        <div className="w-full h-[400px] bg-muted rounded-[3rem] overflow-hidden relative">
-          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-            <p className="text-sm font-bold uppercase tracking-widest flex items-center gap-2">
-              <MapPin size={20} />
-              Interactive Map Placeholder
+      {/* Map Section - Premium Framing */}
+      <section className="container px-5 md:px-8 mt-24 md:mt-40">
+        <div className="w-full h-[400px] md:h-[600px] bg-muted rounded-[3.5rem] overflow-hidden relative shadow-inner border border-border">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 pointer-events-none z-10" />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground z-0 space-y-4">
+            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg animate-pulse">
+              <MapPin size={28} className="text-accent" />
+            </div>
+            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-primary/40">
+              Interactive Atelier Map
             </p>
           </div>
         </div>
       </section>
+    </div>
+
     </div>
   );
 }

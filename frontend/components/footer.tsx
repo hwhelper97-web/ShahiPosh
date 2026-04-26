@@ -10,113 +10,93 @@ export default function Footer() {
   const { settings } = useSettings();
 
   return (
-    <footer className="bg-muted pt-20 pb-10">
-      <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+    <footer className="bg-muted pt-20 md:pt-32 pb-10">
+      <div className="container px-5 md:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-16 mb-20">
           {/* Brand Info */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <Link href="/" className="group relative flex flex-col items-start w-fit">
-              <div className="flex items-baseline relative">
-                {/* Wordmark Part 1: Shahi */}
-                <span 
-                  style={{ fontFamily: "'Outfit', sans-serif" }} 
-                  className="text-2xl font-black tracking-[-0.05em] text-primary uppercase relative"
-                >
+              <div className="flex items-baseline relative scale-110 origin-left">
+                <span className="text-2xl font-black tracking-tight text-primary uppercase font-logo">
                   Shahi
-                  <span className="absolute -top-0.5 right-[1px] w-1 h-1 bg-accent rounded-full" />
+                  <span className="absolute -top-0.5 right-[1px] w-1 h-1 bg-accent rounded-full shadow-[0_0_8px_rgba(197,160,89,0.4)]" />
                 </span>
-                
-                {/* Wordmark Part 2: Posh */}
-                <span 
-                  style={{ fontFamily: "'Playfair Display', serif" }} 
-                  className="text-2xl font-light text-accent italic tracking-tighter -ml-1"
-                >
+                <span className="text-2xl font-light text-accent italic tracking-tighter -ml-1 font-logo">
                   Posh
                 </span>
               </div>
-              <div className="w-full h-[1.5px] bg-accent/20 mt-1" />
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium">
               {settings.footerAboutText}
             </p>
             <div className="flex gap-4">
-              {settings.instagramUrl && (
-                <a href={settings.instagramUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Instagram size={18} />
+              {[
+                { icon: Instagram, url: settings.instagramUrl },
+                { icon: Facebook, url: settings.facebookUrl },
+                { icon: Twitter, url: settings.twitterUrl },
+                { icon: Youtube, url: settings.youtubeUrl }
+              ].map((social, i) => social.url && (
+                <a key={i} href={social.url} target="_blank" className="w-12 h-12 rounded-2xl bg-white border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-all shadow-sm active:scale-90">
+                  <social.icon size={20} />
                 </a>
-              )}
-              {settings.facebookUrl && (
-                <a href={settings.facebookUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Facebook size={18} />
-                </a>
-              )}
-              {settings.twitterUrl && (
-                <a href={settings.twitterUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Twitter size={18} />
-                </a>
-              )}
-              {settings.youtubeUrl && (
-                <a href={settings.youtubeUrl} target="_blank" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-luxury">
-                  <Youtube size={18} />
-                </a>
-              )}
+              ))}
             </div>
           </div>
 
           {/* Quick Links */}
-          <div className="flex flex-col gap-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-primary">Shop</h3>
-            <ul className="flex flex-col gap-4 text-sm text-muted-foreground">
-              <li><Link href="/shop?category=embroidered-dupatta" className="hover:text-accent transition-luxury">Embroidered Dupatta</Link></li>
-              <li><Link href="/shop?category=luxury-khaddar-shawl" className="hover:text-accent transition-luxury">Luxury Khaddar Shawl</Link></li>
-              <li><Link href="/shop?category=chunri-dupatta" className="hover:text-accent transition-luxury">Chunri Dupatta</Link></li>
-              <li><Link href="/shop?category=velvet-embroidered-shawl" className="hover:text-accent transition-luxury">Velvet Embroidered Shawl</Link></li>
-              <li><Link href="/shop?category=vintage-jewelry" className="hover:text-accent transition-luxury">Vintage Jewelry</Link></li>
+          <div className="flex flex-col gap-8">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Shop</h3>
+            <ul className="flex flex-col gap-5 text-sm text-muted-foreground font-medium">
+              <li><Link href="/shop?category=embroidered-dupatta" className="hover:text-accent transition-colors">Embroidered Dupatta</Link></li>
+              <li><Link href="/shop?category=luxury-khaddar-shawl" className="hover:text-accent transition-colors">Luxury Khaddar Shawl</Link></li>
+              <li><Link href="/shop?category=chunri-dupatta" className="hover:text-accent transition-colors">Chunri Dupatta</Link></li>
+              <li><Link href="/shop?category=velvet-embroidered-shawl" className="hover:text-accent transition-colors">Velvet Embroidered Shawl</Link></li>
+              <li><Link href="/shop?category=vintage-jewelry" className="hover:text-accent transition-colors">Vintage Jewelry</Link></li>
             </ul>
           </div>
 
           {/* Support */}
-          <div className="flex flex-col gap-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-primary">Support</h3>
-            <ul className="flex flex-col gap-4 text-sm text-muted-foreground">
-              <li><Link href="/contact" className="hover:text-accent transition-luxury">Contact Us</Link></li>
-              <li><Link href="/policies/shipping" className="hover:text-accent transition-luxury">Shipping Policy</Link></li>
-              <li><Link href="/policies/returns" className="hover:text-accent transition-luxury">Returns & Exchanges</Link></li>
-              <li><Link href="/faq" className="hover:text-accent transition-luxury">FAQs</Link></li>
-              <li><Link href="/size-guide" className="hover:text-accent transition-luxury">Size Guide</Link></li>
+          <div className="flex flex-col gap-8">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Support</h3>
+            <ul className="flex flex-col gap-5 text-sm text-muted-foreground font-medium">
+              <li><Link href="/contact" className="hover:text-accent transition-colors">Contact Us</Link></li>
+              <li><Link href="/policies/shipping" className="hover:text-accent transition-colors">Shipping Policy</Link></li>
+              <li><Link href="/policies/returns" className="hover:text-accent transition-colors">Returns & Exchanges</Link></li>
+              <li><Link href="/faq" className="hover:text-accent transition-colors">FAQs</Link></li>
+              <li><Link href="/size-guide" className="hover:text-accent transition-colors">Size Guide</Link></li>
             </ul>
           </div>
 
           {/* Newsletter */}
-          <div className="flex flex-col gap-6">
-            <h3 className="text-sm font-bold uppercase tracking-widest text-primary">Newsletter</h3>
-            <p className="text-muted-foreground text-sm">Subscribe to receive updates, access to exclusive deals, and more.</p>
-            <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-8">
+            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Newsletter</h3>
+            <p className="text-muted-foreground text-sm font-medium leading-relaxed">Subscribe to receive updates, access to exclusive drops, and more.</p>
+            <div className="flex flex-col gap-4">
               <input 
                 type="email" 
-                placeholder="Enter your email" 
-                className="bg-background border border-border rounded-full px-6 py-3 text-sm focus:outline-none focus:border-accent transition-luxury"
+                placeholder="Vault Email Address" 
+                className="bg-white border border-border rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-accent transition-all shadow-inner"
               />
-              <button className="btn-premium w-full">Subscribe</button>
+              <button className="btn-premium w-full shadow-lg">Subscribe</button>
             </div>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs text-muted-foreground">
-            © {currentYear} {settings.storeName}. All rights reserved.
+        <div className="pt-10 border-t border-border flex flex-col lg:flex-row justify-between items-center gap-8">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+            © {currentYear} {settings.storeName}. All Rights Reserved.
           </p>
-          <div className="flex items-center gap-8 text-xs text-muted-foreground">
-            <Link href="/policies/privacy" className="hover:text-primary transition-luxury">Privacy Policy</Link>
-            <Link href="/policies/terms" className="hover:text-primary transition-luxury">Terms of Service</Link>
-            {/* Secure Admin Access Icon */}
-            <Link href="/admin/login" className="flex items-center gap-1 hover:text-primary transition-luxury ml-4">
-              <ShieldCheck size={14} />
-              <span>Admin Login</span>
+          <div className="flex flex-wrap justify-center items-center gap-6 md:gap-10 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
+            <Link href="/policies/privacy" className="hover:text-primary transition-colors">Privacy</Link>
+            <Link href="/policies/terms" className="hover:text-primary transition-colors">Terms</Link>
+            <Link href="/admin/login" className="flex items-center gap-2 px-4 py-2 bg-white rounded-xl border border-border hover:text-primary transition-colors">
+              <ShieldCheck size={14} className="text-accent" />
+              <span>Vault Access</span>
             </Link>
           </div>
         </div>
       </div>
     </footer>
+
   );
 }
