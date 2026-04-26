@@ -8,25 +8,23 @@ export async function GET() {
   try {
     console.log('Starting Manual Database Setup...');
     
-    // 1. Create Super Admin
+    // 1. Create Super Admin (Safe approach: Delete then Create)
+    const adminEmail = 'abidtanha1@gmail.com';
     const adminPassword = '@Black0x22@';
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
     
-    const admin = await prisma.user.upsert({
-      where: { email: 'abidtanha1@gmail.com' },
-      update: {
-        passwordHash: hashedPassword,
-        role: 'SUPER_ADMIN',
-        isActive: true
-      },
-      create: {
-        email: 'abidtanha1@gmail.com',
+    await prisma.user.deleteMany({ where: { email: adminEmail } });
+    
+    const admin = await prisma.user.create({
+      data: {
+        email: adminEmail,
         passwordHash: hashedPassword,
         name: 'Admin User',
         role: 'SUPER_ADMIN',
         isActive: true
       }
     });
+
 
     // 2. Create Categories
     const categoriesData = [
