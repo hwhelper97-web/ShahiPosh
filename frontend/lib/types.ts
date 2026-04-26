@@ -22,11 +22,14 @@ export type CartItem = Product & {
 
 export type OrderPayload = {
   customerName: string;
+  customerEmail: string;
   phone: string;
   address: string;
   city?: string;
   area?: string;
-  items: CartItem[];
+  items: any[];
   totalPrice: number;
   paymentMethod: string;
+  paymentDetails?: any;
 };
+

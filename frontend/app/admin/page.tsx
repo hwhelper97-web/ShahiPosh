@@ -19,6 +19,7 @@ import {
   TrendingUp,
   Activity,
   AlertCircle,
+  CreditCard,
   Store,
   Layers,
   BrainCircuit,

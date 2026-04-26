@@ -24,7 +24,7 @@ export async function GET() {
     // 2. Market Segmentation (Sales by Category)
     const salesByCategory: Record<string, number> = {};
     orders.forEach(order => {
-      const items = order.items as any[];
+      const items = JSON.parse(order.items as string) as any[];
       items.forEach(item => {
         // Find category from products list (or item metadata if available)
         const product = products.find(p => p.id === item.id);
@@ -36,7 +36,7 @@ export async function GET() {
     // 3. Inventory Intelligence (Hot Items & Low Stock)
     const productSales: Record<string, { name: string, count: number, revenue: number, image: string }> = {};
     orders.forEach(order => {
-      const items = order.items as any[];
+      const items = JSON.parse(order.items as string) as any[];
       items.forEach(item => {
         if (!productSales[item.id]) {
           productSales[item.id] = { 

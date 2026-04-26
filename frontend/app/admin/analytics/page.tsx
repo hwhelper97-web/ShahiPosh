@@ -218,7 +218,8 @@ export default function AnalyticsPage() {
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[idx % COLORS.length] }} />
                       <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">{item.name}</span>
                     </div>
-                    <span className="text-xs font-black">{settings.currency}{item.value.toLocaleString()}</span>
+                    <span className="text-xs font-black">{settings.currency}{(item.value as number || 0).toLocaleString()}</span>
+
                   </div>
                 ))}
              </div>
