@@ -12,7 +12,8 @@ export default function DiagnosticsPage() {
     try {
       const tests = [
         { name: 'API Availability', url: '/api/settings' },
-        { name: 'Products Database', url: '/api/products' },
+        { name: 'Storefront Products (Visible)', url: '/api/products' },
+        { name: 'Total Database Products', url: '/api/products?admin=true' },
         { name: 'Categories Database', url: '/api/categories' },
       ];
 
