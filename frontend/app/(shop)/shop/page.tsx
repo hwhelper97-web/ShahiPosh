@@ -1,21 +1,49 @@
-import { getProducts } from '@/lib/api';
 import { ProductCard } from '@/components/product-card';
 import { SlidersHorizontal } from 'lucide-react';
 import { SearchInput } from '@/components/search-input';
 import { FilterSidebar } from '@/components/filter-sidebar';
 import { Suspense } from 'react';
+import prisma from '@/lib/prisma';
 
 async function ShopContent({ searchParams }: { searchParams: any }) {
   const paramsObj = await searchParams;
 
-  const params = new URLSearchParams();
-  if (paramsObj.category) params.set('category', paramsObj.category);
-  if (paramsObj.sort) params.set('sort', paramsObj.sort);
-  if (paramsObj.q) params.set('q', paramsObj.q);
-  if (paramsObj.minPrice) params.set('minPrice', paramsObj.minPrice);
-  if (paramsObj.maxPrice) params.set('maxPrice', paramsObj.maxPrice);
+  const category = paramsObj.category;
+  const sort = paramsObj.sort;
+  const q = paramsObj.q;
+  const minPrice = parseFloat(paramsObj.minPrice || '0');
+  const maxPrice = parseFloat(paramsObj.maxPrice || '999999');
 
-  const products = await getProducts(params);
+  let where: any = {
+    isPublished: true,
+    regularPrice: { gte: minPrice, lte: maxPrice }
+  };
+
+  if (category && category !== 'All') {
+    where.category = {
+      OR: [
+        { name: category },
+        { slug: category }
+      ]
+    };
+  }
+
+  if (q) {
+    where.OR = [
+      { name: { contains: q, mode: 'insensitive' } },
+      { description: { contains: q, mode: 'insensitive' } }
+    ];
+  }
+
+  let orderBy: any = { createdAt: 'desc' };
+  if (sort === 'price_low') orderBy = { regularPrice: 'asc' };
+  if (sort === 'price_high') orderBy = { regularPrice: 'desc' };
+
+  const products = await prisma.product.findMany({
+    where,
+    orderBy,
+    include: { category: true }
+  });
 
   return (
     <div className="container px-5 md:px-8">

@@ -1,48 +1,18 @@
-'use client';
-
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import prisma from '@/lib/prisma';
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-}
-
-export default function Collections() {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/categories')
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) {
-          setCategories(data);
-        } else {
-          setCategories([]);
-        }
-      })
-      .catch(() => setCategories([]))
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) return (
-    <div className="py-24 flex flex-col items-center justify-center gap-4">
-      <div className="w-12 h-12 border-4 border-accent/20 border-t-accent rounded-full animate-spin" />
-      <p className="text-[10px] font-black uppercase tracking-widest text-accent animate-pulse">Syncing Collections...</p>
-    </div>
-  );
+export default async function Collections() {
+  const categories = await prisma.category.findMany({
+    where: { parentId: null },
+    orderBy: { order: 'asc' }
+  });
 
   return (
     <section id="categories" className="py-20 md:py-32 bg-[#faf9f6]">
-      <div className="container">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6 px-4 md:px-0">
+      <div className="container px-4 md:px-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-[1px] bg-accent" />
@@ -57,15 +27,10 @@ export default function Collections() {
           </Link>
         </div>
 
-        {/* Mobile Horizontal Scroll / Desktop Grid - Now 4 columns */}
-        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-12 md:pb-0 px-4 md:px-0 snap-x no-scrollbar">
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-12 md:pb-0 snap-x no-scrollbar">
           {categories.map((item, idx) => (
-            <motion.div
+            <div
               key={item.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              viewport={{ once: true }}
               className="min-w-[70vw] md:min-w-0 snap-center relative overflow-hidden rounded-[2rem] group cursor-pointer shadow-lg"
             >
               <div className="aspect-[4/5] bg-muted relative overflow-hidden">
@@ -87,7 +52,7 @@ export default function Collections() {
                   Explore
                 </Link>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

@@ -1,22 +1,16 @@
-'use client';
-
-import { useEffect, useState } from "react";
-import { getProducts } from "@/lib/api";
 import { ProductCard } from "@/components/product-card";
 import Hero from "@/components/hero";
 import Collections from "@/components/collections";
-import { motion } from "framer-motion";
 import Link from "next/link";
+import prisma from "@/lib/prisma";
 
-export default function HomePage() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    getProducts()
-      .then(setProducts)
-      .finally(() => setLoading(false));
-  }, []);
+export default async function HomePage() {
+  const products = await prisma.product.findMany({
+    where: { isPublished: true },
+    orderBy: { createdAt: 'desc' },
+    take: 8,
+    include: { category: true }
+  });
 
   return (
     <main>
@@ -45,7 +39,7 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-10 gap-y-12 md:gap-y-20">
-            {loading ? (
+            {products.length === 0 ? (
               Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="animate-pulse space-y-4">
                   <div className="aspect-[3/4] bg-muted rounded-[2.5rem]" />
@@ -54,16 +48,13 @@ export default function HomePage() {
                 </div>
               ))
             ) : (
-              products.slice(0, 8).map((p) => (
+              products.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))
             )}
           </div>
         </div>
       </section>
-
-
-
     </main>
   );
 }
