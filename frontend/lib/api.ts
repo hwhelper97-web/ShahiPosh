@@ -12,24 +12,30 @@ const getBaseUrl = () => {
 const API = '/api';
 
 export async function getProducts(params?: URLSearchParams): Promise<Product[]> {
-  const suffix = params ? `?${params.toString()}` : '';
-  const baseUrl = getBaseUrl();
-  const url = `${baseUrl}${API}/products${suffix}`;
-  
-  if (typeof window === 'undefined') {
-    console.log(`[Server Fetch] getProducts: ${url}`);
+  try {
+    const suffix = params ? `?${params.toString()}` : '';
+    const baseUrl = getBaseUrl();
+    const url = `${baseUrl}${API}/products${suffix}`;
+    
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) return [];
+    return res.json();
+  } catch (err) {
+    console.error('getProducts error:', err);
+    return [];
   }
-
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch products');
-  return res.json();
 }
 
-export async function getProduct(id: string): Promise<Product> {
-  const baseUrl = getBaseUrl();
-  const res = await fetch(`${baseUrl}${API}/products/${id}`, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch product');
-  return res.json();
+export async function getProduct(id: string): Promise<Product | null> {
+  try {
+    const baseUrl = getBaseUrl();
+    const res = await fetch(`${baseUrl}${API}/products/${id}`, { cache: 'no-store' });
+    if (!res.ok) return null;
+    return res.json();
+  } catch (err) {
+    console.error('getProduct error:', err);
+    return null;
+  }
 }
 
 export async function createOrder(payload: OrderPayload) {
