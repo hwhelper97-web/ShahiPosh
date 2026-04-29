@@ -39,11 +39,17 @@ async function ShopContent({ searchParams }: { searchParams: any }) {
   if (sort === 'price_low') orderBy = { regularPrice: 'asc' };
   if (sort === 'price_high') orderBy = { regularPrice: 'desc' };
 
-  const products = await prisma.product.findMany({
-    where,
-    orderBy,
-    include: { category: true }
-  }) as any[];
+  let products = [];
+  try {
+    products = await prisma.product.findMany({
+      where,
+      orderBy,
+      include: { category: true }
+    });
+  } catch (err) {
+    console.error("Direct fetch failed:", err);
+    products = [];
+  } as any[];
 
   return (
     <div className="container px-5 md:px-8">

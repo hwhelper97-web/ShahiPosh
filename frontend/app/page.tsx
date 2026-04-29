@@ -5,12 +5,18 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export default async function HomePage() {
-  const products = await prisma.product.findMany({
-    where: { isPublished: true },
-    orderBy: { createdAt: 'desc' },
-    take: 8,
-    include: { category: true }
-  }) as any[];
+  let products = [];
+  try {
+    products = await prisma.product.findMany({
+      where: { isPublished: true },
+      orderBy: { createdAt: 'desc' },
+      take: 8,
+      include: { category: true }
+    });
+  } catch (err) {
+    console.error("Home direct fetch failed:", err);
+    products = [];
+  } as any[];
 
   return (
     <main>
