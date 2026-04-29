@@ -8,6 +8,8 @@ import SearchOverlay from './search-overlay';
 import { useSettings } from './settings-context';
 import { useCart } from './cart-context';
 
+import Logo from './logo';
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -55,7 +57,7 @@ export default function Navbar() {
       )}
 
       <nav
-        className={`sticky top-0 w-full z-50 transition-all duration-300 py-4 md:py-6 bg-white/95 backdrop-blur-md border-b border-border shadow-sm`}
+        className={`sticky top-0 w-full z-50 transition-all duration-300 py-2 md:py-4 bg-white/95 backdrop-blur-md border-b border-border shadow-sm`}
       >
         <div className="container">
           <div className="flex items-center justify-between gap-4">
@@ -70,19 +72,9 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* 🏆 LUXURY LOGO: Optimized Scale for Mobile */}
-            <div className="flex-initial md:flex-initial">
-              <Link href="/" className="group relative flex flex-col items-center md:items-start">
-                <div className="flex items-baseline relative scale-90 sm:scale-100 origin-center md:origin-left transition-transform">
-                  <span className="text-xl md:text-3xl font-black tracking-tight text-primary uppercase font-logo">
-                    Shahi
-                    <span className="absolute -top-1 right-[1px] w-1 h-1 bg-accent rounded-full animate-pulse shadow-[0_0_8px_rgba(197,160,89,0.4)]" />
-                  </span>
-                  <span className="text-xl md:text-3xl font-light text-accent italic tracking-tighter -ml-1 font-logo">
-                    Posh
-                  </span>
-                </div>
-              </Link>
+            {/* 🏆 LUXURY LOGO */}
+            <div className="flex-initial">
+              <Logo size="sm" />
             </div>
 
             {/* DESKTOP NAVIGATION: Center */}
@@ -105,7 +97,7 @@ export default function Navbar() {
                   Admin
                 </Link>
               )}
-              <button 
+              <button
                 onClick={() => setIsSearchOpen(true)}
                 className="w-10 h-10 flex items-center justify-center hover:text-accent transition-luxury hidden sm:flex"
               >
@@ -130,7 +122,7 @@ export default function Navbar() {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <>
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -142,21 +134,21 @@ export default function Navbar() {
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="md:hidden fixed top-0 left-0 w-[85%] max-w-[400px] h-screen bg-white z-[100] shadow-2xl flex flex-col"
+                className="md:hidden fixed top-0 left-0 w-[85%] max-w-[400px] h-screen bg-white z-[100] shadow-2xl flex flex-col overscroll-contain"
               >
                 <div className="p-6 border-b border-border flex justify-between items-center bg-[#faf9f6]">
                   <div className="flex items-baseline scale-90">
                     <span className="text-xl font-black text-primary uppercase font-logo">Shahi</span>
                     <span className="text-xl font-light text-accent italic -ml-1 font-logo">Posh</span>
                   </div>
-                  <button 
+                  <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"
                   >
                     <X size={20} />
                   </button>
                 </div>
-                
+
                 <div className="flex-1 overflow-y-auto py-8 px-6 space-y-1">
                   {navLinks.map((link) => (
                     <Link

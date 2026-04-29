@@ -7,61 +7,42 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// RBAC & User Management
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  STAFF
-  VENDOR
-  MANAGER
-  CUSTOMER
-}
-
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String     @id @default(cuid())
+  email         String     @unique
   passwordHash  String
   name          String?
   phone         String?
-  role          Role      @default(CUSTOMER)
-  isActive      Boolean   @default(true)
+  role          String     @default("CUSTOMER")
+  isActive      Boolean    @default(true)
   lastLogin     DateTime?
-  vendorProfile Vendor?
-  orders        Order[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   auditLogs     AuditLog[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  orders        Order[]
+  vendorProfile Vendor?
 }
 
-// Multi-Vendor Support
 model Vendor {
-  id              String        @id @default(cuid())
-  userId          String        @unique
-  user            User          @relation(fields: [userId], references: [id])
-  storeName       String        @unique
-  slug            String        @unique
-  description     String?
-  logo            String?
-  banner          String?
-  isVerified      Boolean       @default(false)
-  commissionRate  Float         @default(10.0) // Percentage
-  status          VendorStatus  @default(PENDING)
-  products        Product[]
-  bankAccount     String?
-  contactNumber   String?
-  address         String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id             String       @id @default(cuid())
+  userId         String       @unique
+  storeName      String       @unique
+  slug           String       @unique
+  description    String?
+  logo           String?
+  banner         String?
+  isVerified     Boolean      @default(false)
+  commissionRate Float        @default(10.0)
+  status         VendorStatus @default(PENDING)
+  bankAccount    String?
+  contactNumber  String?
+  address        String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  products       Product[]
+  user           User         @relation(fields: [userId], references: [id])
 }
 
-enum VendorStatus {
-  PENDING
-  APPROVED
-  SUSPENDED
-  REJECTED
-}
-
-// Category Management
 model Category {
   id          String     @id @default(cuid())
   name        String
@@ -69,164 +50,89 @@ model Category {
   description String?
   image       String?
   parentId    String?
-  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
-  children    Category[] @relation("SubCategories")
-  products    Product[]
   order       Int        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  products    Product[]
 }
 
-// Product Management
 model Product {
-  id              String      @id @default(cuid())
+  id              String           @id @default(cuid())
   name            String
-  slug            String      @unique
+  slug            String           @unique
   description     String
   richDescription String?
-  sku             String      @unique
-  status          String      @default("Active")
+  sku             String           @unique
+  status          String           @default("Active")
   regularPrice    Float
   salePrice       Float?
-  costPrice       Float?      // For profit analysis
-  stockStatus     StockStatus @default(IN_STOCK)
-  inventory       Int         @default(0)
-  lowStockLevel   Int         @default(5)
-  images          Json        // Array of image objects {url, alt}
-  attributes      Json?       // Variations: color, size, etc.
-  variants        ProductVariant[]
+  costPrice       Float?
+  stockStatus     StockStatus      @default(IN_STOCK)
+  inventory       Int              @default(0)
+  lowStockLevel   Int              @default(5)
+  images          Json
+  attributes      Json?
   categoryId      String
-  category        Category    @relation(fields: [categoryId], references: [id])
   vendorId        String?
-  vendor          Vendor?     @relation(fields: [vendorId], references: [id])
-  isFeatured      Boolean     @default(false)
-  isPublished     Boolean     @default(false)
-  tags            Json?       // Array of strings
+  isFeatured      Boolean          @default(false)
+  isPublished     Boolean          @default(false)
+  tags            Json?
   seoTitle        String?
   seoDescription  String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  category        Category         @relation(fields: [categoryId], references: [id])
+  vendor          Vendor?          @relation(fields: [vendorId], references: [id])
+  variants        ProductVariant[]
   reviews         Review[]
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
 }
 
 model ProductVariant {
-  id         String   @id @default(cuid())
+  id         String  @id @default(cuid())
   productId  String
-  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  sku        String   @unique
+  sku        String  @unique
   price      Float?
-  inventory  Int      @default(0)
-  attributes Json     // e.g., { "size": "L", "color": "Blue" }
+  inventory  Int     @default(0)
+  attributes Json
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-enum StockStatus {
-  IN_STOCK
-  OUT_OF_STOCK
-  ON_BACKORDER
-}
-
-// Order Management
 model Order {
-  id              String      @id @default(cuid())
-  orderNumber     String      @unique
+  id              String    @id @default(cuid())
+  orderNumber     String    @unique
   userId          String?
-  user            User?       @relation(fields: [userId], references: [id])
   customerName    String
   customerEmail   String
   customerPhone   String
   shippingAddress String
   city            String?
   area            String?
-  items           Json        // [{productId, variantId, name, quantity, price}]
+  items           Json
   subtotal        Float
-  tax             Float       @default(0)
-  shippingFee     Float       @default(0)
-  discount        Float       @default(0)
+  tax             Float     @default(0)
+  shippingFee     Float     @default(0)
+  discount        Float     @default(0)
   totalPrice      Float
-  status          OrderStatus @default(PENDING)
-  paymentStatus   PaymentStatus @default(UNPAID)
+  status          String    @default("PENDING")
+  paymentStatus   String    @default("UNPAID")
   paymentMethod   String?
   trackingId      String?
   courier         String?
-  shipment        Shipment?
-  transactions    Transaction[]
-  receipt         PaymentReceipt?
   notes           String?
-  timeline        Json?       // Array of status changes [{status, timestamp, note}]
+  timeline        Json?
   couponId        String?
-  coupon          Coupon?     @relation(fields: [couponId], references: [id])
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  coupon          Coupon?   @relation(fields: [couponId], references: [id])
+  user            User?     @relation(fields: [userId], references: [id])
+  shipment        Shipment?
 }
 
-enum OrderStatus {
-  PENDING
-  AWAITING_PAYMENT
-  AWAITING_BANK_VERIFICATION
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  RETURNED
-  CANCELLED
-  FAILED
-}
-
-enum PaymentStatus {
-  UNPAID
-  PENDING
-  PAID
-  AWAITING_VERIFICATION
-  PARTIALLY_REFUNDED
-  REFUNDED
-  FAILED
-  EXPIRED
-}
-
-model Transaction {
-  id                String   @id @default(cuid())
-  orderId           String
-  order             Order    @relation(fields: [orderId], references: [id])
-  gatewayTransactionId String? @unique
-  amount            Float
-  currency          String   @default("PKR")
-  paymentMethod     String   // CARD, EASYPAISA, JAZZCASH, BANK_TRANSFER
-  status            String   // INITIATED, SUCCESS, FAILED, PENDING
-  provider          String?  // e.g., PayFast, Stripe, etc.
-  metadata          Json?    // Store raw response from PSP
-  errorDetails      String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-}
-
-model PaymentGateway {
-  id          String   @id @default(cuid())
-  name        String   @unique // PayFast, Stripe, Easypaisa_Merchant
-  isEnabled   Boolean  @default(true)
-  config      Json     // Store API Keys, Webhook Secrets (Encrypted in prod)
-  isSandbox   Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model PaymentReceipt {
-  id          String   @id @default(cuid())
-  orderId     String   @unique
-  order       Order    @relation(fields: [orderId], references: [id])
-  imageUrl    String
-  verifiedBy  String?
-  verifiedAt  DateTime?
-  status      String   @default("PENDING") // PENDING, APPROVED, REJECTED
-  rejectionReason String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-// PostEx & Shipment Integration
 model Shipment {
   id              String   @id @default(cuid())
   orderId         String   @unique
-  order           Order    @relation(fields: [orderId], references: [id])
   trackingNumber  String?  @unique
   courierName     String   @default("PostEx")
   labelUrl        String?
@@ -234,49 +140,40 @@ model Shipment {
   bookingResponse Json?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  order           Order    @relation(fields: [orderId], references: [id])
 }
 
-// Marketing & Promotions
 model Coupon {
-  id              String    @id @default(cuid())
-  code            String    @unique
-  description     String?
-  discountType    DiscountType
-  discountValue   Float
-  minPurchase     Float?
-  maxDiscount     Float?
-  startDate       DateTime?
-  endDate         DateTime?
-  usageLimit      Int?
-  usageCount      Int       @default(0)
-  isActive        Boolean   @default(true)
-  orders          Order[]
-  createdAt       DateTime  @default(now())
+  id            String       @id @default(cuid())
+  code          String       @unique
+  description   String?
+  discountType  DiscountType
+  discountValue Float
+  minPurchase   Float?
+  maxDiscount   Float?
+  startDate     DateTime?
+  endDate       DateTime?
+  usageLimit    Int?
+  usageCount    Int          @default(0)
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  orders        Order[]
 }
 
-enum DiscountType {
-  PERCENTAGE
-  FIXED_AMOUNT
-  FREE_SHIPPING
-}
-
-// CRM & Reviews
 model Review {
-  id        String   @id @default(cuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  rating    Int
-  comment   String?
-  userName  String
+  id         String   @id @default(cuid())
+  productId  String
+  rating     Int
+  comment    String?
+  userName   String
   isApproved Boolean  @default(false)
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  product    Product  @relation(fields: [productId], references: [id])
 }
 
-// System Integrity
 model AuditLog {
   id        String   @id @default(cuid())
   userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
   action    String
   entity    String
   entityId  String?
@@ -284,6 +181,7 @@ model AuditLog {
   newData   Json?
   ipAddress String?
   createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 model Setting {
@@ -298,6 +196,51 @@ model ContactMessage {
   email     String
   subject   String
   message   String
-  status    String   @default("UNREAD") // UNREAD, READ, REPLIED
+  status    String   @default("UNREAD")
   createdAt DateTime @default(now())
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  VENDOR
+  MANAGER
+  CUSTOMER
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  ON_BACKORDER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  RETURNED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
 }

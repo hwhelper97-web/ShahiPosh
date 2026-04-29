@@ -57,8 +57,8 @@ export default function Collections() {
           </Link>
         </div>
 
-        {/* Mobile Horizontal Scroll / Desktop Grid */}
-        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 overflow-x-auto md:overflow-x-visible pb-12 md:pb-0 px-4 md:px-0 snap-x no-scrollbar">
+        {/* Mobile Horizontal Scroll / Desktop Grid - Now 4 columns */}
+        <div className="flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-x-visible pb-12 md:pb-0 px-4 md:px-0 snap-x no-scrollbar">
           {categories.map((item, idx) => (
             <motion.div
               key={item.id}
@@ -66,9 +66,9 @@ export default function Collections() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
-              className="min-w-[85vw] md:min-w-0 snap-center relative overflow-hidden rounded-[3rem] group cursor-pointer shadow-xl"
+              className="min-w-[70vw] md:min-w-0 snap-center relative overflow-hidden rounded-[2rem] group cursor-pointer shadow-lg"
             >
-              <div className="aspect-[4/5] md:aspect-[3/4] bg-muted relative overflow-hidden">
+              <div className="aspect-[4/5] bg-muted relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10 opacity-70 group-hover:opacity-90 transition-opacity duration-700" />
                 <Image
                   src={item.image ? (item.image.startsWith('http') || item.image.startsWith('/') ? item.image : `/categories/${item.image}`) : '/products/traditional_shawl_hero.png'}
@@ -78,13 +78,13 @@ export default function Collections() {
                 />
               </div>
               
-              <div className="absolute bottom-0 left-0 w-full p-8 md:p-10 z-20">
-                <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
-                  <p className="text-accent text-[10px] font-black uppercase tracking-[0.4em] mb-3 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Handcrafted</p>
-                  <h3 className="text-white text-3xl md:text-4xl font-extrabold mb-8 tracking-tighter leading-tight">{item.name}</h3>
+              <div className="absolute bottom-0 left-0 w-full p-6 md:p-8 z-20">
+                <div className="translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                  <p className="text-accent text-[8px] font-black uppercase tracking-[0.4em] mb-2 opacity-0 group-hover:opacity-100 transition-opacity delay-100">Handcrafted</p>
+                  <h3 className="text-white text-xl md:text-2xl font-extrabold mb-6 tracking-tighter leading-tight">{item.name}</h3>
                 </div>
-                <Link href={`/shop?category=${item.slug}`} className="inline-flex items-center gap-3 bg-white text-primary px-10 py-5 rounded-[1.5rem] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-accent hover:text-white transition-all duration-500 shadow-2xl opacity-0 group-hover:opacity-100">
-                  Explore Collection
+                <Link href={`/shop?category=${item.slug}`} className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-accent hover:text-white transition-all duration-500 shadow-2xl opacity-0 group-hover:opacity-100">
+                  Explore
                 </Link>
               </div>
             </motion.div>

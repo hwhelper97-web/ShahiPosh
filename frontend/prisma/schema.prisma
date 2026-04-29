@@ -1,17 +1,11 @@
 generator client {
-  provider        = "prisma-client-js"
-  engineType      = "library"
-  previewFeatures = ["driverAdapters"]
-  binaryTargets   = ["native", "rhel-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-// RBAC & User Management
-// RBAC & User Management (Enums converted to Strings for SQLite compatibility)
 
 model User {
   id            String     @id @default(cuid())
@@ -22,37 +16,33 @@ model User {
   role          String     @default("CUSTOMER")
   isActive      Boolean    @default(true)
   lastLogin     DateTime?
-  vendorProfile Vendor?
-  orders        Order[]
-  auditLogs     AuditLog[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  auditLogs     AuditLog[]
+  orders        Order[]
+  vendorProfile Vendor?
 }
 
-// Multi-Vendor Support
 model Vendor {
   id             String       @id @default(cuid())
   userId         String       @unique
-  user           User         @relation(fields: [userId], references: [id])
   storeName      String       @unique
   slug           String       @unique
   description    String?
   logo           String?
   banner         String?
   isVerified     Boolean      @default(false)
-  commissionRate Float        @default(10.0) // Percentage
-  status         String       @default("PENDING")
-  products       Product[]
+  commissionRate Float        @default(10.0)
+  status         VendorStatus @default(PENDING)
   bankAccount    String?
   contactNumber  String?
   address        String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  products       Product[]
+  user           User         @relation(fields: [userId], references: [id])
 }
 
-// VendorStatus enum removed for SQLite
-
-// Category Management
 model Category {
   id          String     @id @default(cuid())
   name        String
@@ -60,15 +50,14 @@ model Category {
   description String?
   image       String?
   parentId    String?
-  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
-  children    Category[] @relation("SubCategories")
-  products    Product[]
   order       Int        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  parent      Category?  @relation("SubCategories", fields: [parentId], references: [id])
+  children    Category[] @relation("SubCategories")
+  products    Product[]
 }
 
-// Product Management
 model Product {
   id              String           @id @default(cuid())
   name            String
@@ -79,93 +68,86 @@ model Product {
   status          String           @default("Active")
   regularPrice    Float
   salePrice       Float?
-  costPrice       Float? // For profit analysis
-  stockStatus     String           @default("IN_STOCK")
+  costPrice       Float?
+  stockStatus     StockStatus      @default(IN_STOCK)
   inventory       Int              @default(0)
   lowStockLevel   Int              @default(5)
-  images          String // Array of image objects {url, alt}
-  attributes      String? // Variations: color, size, etc.
-  variants        ProductVariant[]
+  images          Json
+  attributes      Json?
   categoryId      String
-  category        Category         @relation(fields: [categoryId], references: [id])
   vendorId        String?
-  vendor          Vendor?          @relation(fields: [vendorId], references: [id])
   isFeatured      Boolean          @default(false)
   isPublished     Boolean          @default(false)
-  tags            String? // Array of strings
+  tags            Json?
   seoTitle        String?
   seoDescription  String?
-  reviews         Review[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+  category        Category         @relation(fields: [categoryId], references: [id])
+  vendor          Vendor?          @relation(fields: [vendorId], references: [id])
+  variants        ProductVariant[]
+  reviews         Review[]
 }
 
 model ProductVariant {
   id         String  @id @default(cuid())
   productId  String
-  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   sku        String  @unique
   price      Float?
   inventory  Int     @default(0)
-  attributes String // e.g., { "size": "L", "color": "Blue" }
+  attributes Json
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
-// StockStatus enum removed for SQLite
-
-// Order Management
 model Order {
-  id              String        @id @default(cuid())
-  orderNumber     String        @unique
+  id              String    @id @default(cuid())
+  orderNumber     String    @unique
   userId          String?
-  user            User?         @relation(fields: [userId], references: [id])
   customerName    String
   customerEmail   String
   customerPhone   String
   shippingAddress String
   city            String?
   area            String?
-  items           String // [{productId, variantId, name, quantity, price}]
+  items           Json
   subtotal        Float
-  tax             Float         @default(0)
-  shippingFee     Float         @default(0)
-  discount        Float         @default(0)
+  tax             Float     @default(0)
+  shippingFee     Float     @default(0)
+  discount        Float     @default(0)
   totalPrice      Float
-  status          String        @default("PENDING")
-  paymentStatus   String        @default("UNPAID")
+  status          String    @default("PENDING")
+  paymentStatus   String    @default("UNPAID")
   paymentMethod   String?
   trackingId      String?
   courier         String?
-  shipment        Shipment?
   notes           String?
-  timeline        String? // Array of status changes [{status, timestamp, note}]
+  timeline        Json?
   couponId        String?
-  coupon          Coupon?       @relation(fields: [couponId], references: [id])
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  coupon          Coupon?   @relation(fields: [couponId], references: [id])
+  user            User?     @relation(fields: [userId], references: [id])
+  shipment        Shipment?
 }
 
-// OrderStatus and PaymentStatus enums removed for SQLite
-
-// PostEx & Shipment Integration
 model Shipment {
   id              String   @id @default(cuid())
   orderId         String   @unique
-  order           Order    @relation(fields: [orderId], references: [id])
   trackingNumber  String?  @unique
   courierName     String   @default("PostEx")
   labelUrl        String?
   status          String?
-  bookingResponse String?
+  bookingResponse Json?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  order           Order    @relation(fields: [orderId], references: [id])
 }
 
-// Marketing & Promotions
 model Coupon {
   id            String       @id @default(cuid())
   code          String       @unique
   description   String?
-  discountType  String
+  discountType  DiscountType
   discountValue Float
   minPurchase   Float?
   maxDiscount   Float?
@@ -174,42 +156,38 @@ model Coupon {
   usageLimit    Int?
   usageCount    Int          @default(0)
   isActive      Boolean      @default(true)
-  orders        Order[]
   createdAt     DateTime     @default(now())
+  orders        Order[]
 }
 
-// DiscountType enum removed for SQLite
-
-// CRM & Reviews
 model Review {
   id         String   @id @default(cuid())
   productId  String
-  product    Product  @relation(fields: [productId], references: [id])
   rating     Int
   comment    String?
   userName   String
   isApproved Boolean  @default(false)
   createdAt  DateTime @default(now())
+  product    Product  @relation(fields: [productId], references: [id])
 }
 
-// System Integrity
 model AuditLog {
   id        String   @id @default(cuid())
   userId    String?
-  user      User?    @relation(fields: [userId], references: [id])
   action    String
   entity    String
   entityId  String?
-  oldData   String?
-  newData   String?
+  oldData   Json?
+  newData   Json?
   ipAddress String?
   createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
 }
 
 model Setting {
   id    String @id @default(cuid())
   key   String @unique
-  value String
+  value Json
 }
 
 model ContactMessage {
@@ -218,6 +196,51 @@ model ContactMessage {
   email     String
   subject   String
   message   String
-  status    String   @default("UNREAD") // UNREAD, READ, REPLIED
+  status    String   @default("UNREAD")
   createdAt DateTime @default(now())
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+  VENDOR
+  MANAGER
+  CUSTOMER
+}
+
+enum VendorStatus {
+  PENDING
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+enum StockStatus {
+  IN_STOCK
+  OUT_OF_STOCK
+  ON_BACKORDER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  RETURNED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+  FREE_SHIPPING
 }

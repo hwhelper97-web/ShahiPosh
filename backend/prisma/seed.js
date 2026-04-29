@@ -32,6 +32,7 @@ async function main() {
     }
   });
 
+  /*
   const vendor = await prisma.vendor.create({
     data: {
       userId: vendorUser.id,
@@ -102,6 +103,7 @@ async function main() {
     }
   });
   console.log('✅ Created Products');
+  */
 
   // 5. Create Orders
   const order1 = await prisma.order.create({

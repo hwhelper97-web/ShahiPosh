@@ -3,6 +3,25 @@ import { CartProvider } from "@/components/cart-context";
 import { SettingsProvider } from "@/components/settings-context";
 import { Metadata } from "next";
 import LayoutShell from "@/components/layout-shell";
+import { Outfit, Cinzel, Bodoni_Moda } from 'next/font/google';
+
+const outfit = Outfit({ 
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+const cinzel = Cinzel({ 
+  subsets: ['latin'],
+  variable: '--font-cinzel',
+  display: 'swap',
+});
+
+const bodoni = Bodoni_Moda({ 
+  subsets: ['latin'],
+  variable: '--font-bodoni',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: "SHAHIPOSH | Timeless Elegance & Handcrafted Luxury",
@@ -17,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className="flex flex-col min-h-screen">
+      <body className={`${outfit.variable} ${cinzel.variable} ${bodoni.variable} font-sans flex flex-col min-h-screen`}>
         <CartProvider>
           <SettingsProvider>
             <LayoutShell>{children}</LayoutShell>

@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Youtube, Mail, Phone, MapPin, ShieldCheck, Crown } from 'lucide-react';
+import { Facebook, Instagram, Twitter, Youtube, ShieldCheck } from 'lucide-react';
 import { useSettings } from './settings-context';
+import Logo from './logo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -15,17 +15,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-16 mb-20">
           {/* Brand Info */}
           <div className="flex flex-col gap-8">
-            <Link href="/" className="group relative flex flex-col items-start w-fit">
-              <div className="flex items-baseline relative scale-110 origin-left">
-                <span className="text-2xl font-black tracking-tight text-primary uppercase font-logo">
-                  Shahi
-                  <span className="absolute -top-0.5 right-[1px] w-1 h-1 bg-accent rounded-full shadow-[0_0_8px_rgba(197,160,89,0.4)]" />
-                </span>
-                <span className="text-2xl font-light text-accent italic tracking-tighter -ml-1 font-logo">
-                  Posh
-                </span>
-              </div>
-            </Link>
+            <Logo size="md" className="!items-start" />
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium">
               {settings.footerAboutText}
             </p>
