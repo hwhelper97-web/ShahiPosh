@@ -89,9 +89,14 @@ function AdminProductsContent() {
       try {
         const res = await fetch('/api/upload', { method: 'POST', body: formData });
         const data = await res.json();
-        if (res.ok) uploadedImages.push(data.url); // Use full URL for Vercel Blob preview
+        if (res.ok) {
+          uploadedImages.push(data.url);
+        } else {
+          toast.error(data.message || "Upload failed. Check Vercel Token.");
+        }
       } catch (err) {
         console.error('Upload error:', err);
+        toast.error("Network error during upload.");
       }
     }
 
