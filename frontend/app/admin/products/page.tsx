@@ -415,7 +415,7 @@ function AdminProductsContent() {
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 mt-6">
                       {form.images.map((img, idx) => (
                         <div key={idx} className="relative aspect-[3/4] bg-muted rounded-2xl overflow-hidden group border border-border shadow-sm">
-                          <Image src={getImageUrl(img)} alt="Preview" fill className="object-cover" />
+                          <Image src={getImageUrl(img)} alt="Preview" fill className="object-cover" sizes="100px" />
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                             <button 
                               type="button" 
@@ -461,7 +461,7 @@ function AdminProductsContent() {
                   <div className="space-y-6">
                     <div className="aspect-[3/4] bg-white/10 rounded-[2.5rem] overflow-hidden relative border border-white/10 shadow-inner">
                       {form.images.length > 0 ? (
-                        <Image src={getImageUrl(form.images[0])} alt="Preview" fill className="object-cover" />
+                        <Image src={getImageUrl(form.images[0])} alt="Preview" fill className="object-cover" sizes="(max-width: 768px) 100vw, 400px" />
                       ) : (
                         <div className="w-full h-full flex flex-col items-center justify-center gap-4 text-white/30 italic">
                           <ImageIcon size={40} strokeWidth={1} />
@@ -571,6 +571,7 @@ function AdminProductsContent() {
                                 alt={p.name} 
                                 fill 
                                 className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                sizes="64px"
                               />
                             </div>
                             <div className="space-y-1">
