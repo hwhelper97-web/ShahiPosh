@@ -138,11 +138,11 @@ export default function ProductClient({ product }: any) {
               <div className="flex items-center gap-4">
                 {product.salePrice ? (
                   <>
-                    <p className="text-3xl font-black text-accent">{settings.currency} {product.salePrice.toLocaleString()}</p>
-                    <p className="text-lg text-muted-foreground line-through font-medium">{settings.currency} {product.regularPrice.toLocaleString()}</p>
+                    <p className="text-3xl font-black text-accent">{settings.currency} {product.salePrice?.toLocaleString() || "0"}</p>
+                    <p className="text-lg text-muted-foreground line-through font-medium">{settings.currency} {product.regularPrice?.toLocaleString() || "0"}</p>
                   </>
                 ) : (
-                  <p className="text-3xl font-black">{settings.currency} {(product.regularPrice || 0).toLocaleString()}</p>
+                  <p className="text-3xl font-black">{settings.currency} {(product.regularPrice || 0).toLocaleString() || "0"}</p>
                 )}
               </div>
             </div>

@@ -93,11 +93,11 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="flex items-center gap-2 mt-0.5">
           {product.salePrice ? (
             <>
-              <span className="text-sm md:text-base font-black text-primary">{settings.currency} {product.salePrice.toLocaleString()}</span>
-              <span className="text-[10px] md:text-xs text-muted-foreground line-through opacity-50">{settings.currency} {product.regularPrice.toLocaleString()}</span>
+              <span className="text-sm md:text-base font-black text-primary">{settings.currency} {product.salePrice?.toLocaleString() || "0"}</span>
+              <span className="text-[10px] md:text-xs text-muted-foreground line-through opacity-50">{settings.currency} {product.regularPrice?.toLocaleString() || "0"}</span>
             </>
           ) : (
-            <span className="text-sm md:text-base font-black text-primary">{settings.currency} {(product.regularPrice || 0).toLocaleString()}</span>
+            <span className="text-sm md:text-base font-black text-primary">{settings.currency} {(product.regularPrice || 0).toLocaleString() || "0"}</span>
           )}
         </div>
       </div>
