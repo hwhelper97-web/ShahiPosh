@@ -62,38 +62,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Newsletter - Premium High Contrast */}
-      <section className="py-20 md:py-32 bg-primary overflow-hidden relative">
-        <div className="container px-5 md:px-8 relative z-10">
-          <div className="max-w-2xl space-y-10">
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-[1px] bg-accent" />
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-accent">Newsletter</span>
-              </div>
-              <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-white leading-[0.9]">
-                Join the <span className="text-accent italic font-serif font-light">Insider.</span>
-              </h2>
-              <p className="text-sm md:text-lg text-white/60 max-w-md font-medium leading-relaxed">
-                Subscribe to get early access to new drops, exclusive offers, and the latest style news directly to your vault.
-              </p>
-            </div>
 
-            <form className="flex flex-col sm:flex-row gap-4 max-w-md">
-              <input 
-                type="email" 
-                placeholder="Exquisite Email Address" 
-                className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-8 py-5 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-accent transition-all shadow-inner"
-              />
-              <button className="btn-premium bg-accent text-white hover:bg-white hover:text-primary px-10">Subscribe</button>
-            </form>
-          </div>
-        </div>
-        
-        {/* Abstract Branding Elements */}
-        <div className="absolute right-[-10%] top-[-10%] w-[50%] h-[120%] bg-white/5 skew-x-12 -z-0 blur-3xl pointer-events-none" />
-        <div className="absolute left-[-5%] bottom-[-5%] w-[30%] h-[60%] bg-accent/5 -skew-x-12 -z-0 blur-2xl pointer-events-none" />
-      </section>
 
     </main>
   );

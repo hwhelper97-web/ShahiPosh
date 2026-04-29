@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <footer className="bg-muted pt-20 md:pt-32 pb-10">
       <div className="container px-5 md:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-16 mb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-16 mb-20">
           {/* Brand Info */}
           <div className="flex flex-col gap-8">
             <Logo size="md" className="!items-start" />
@@ -57,19 +57,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter */}
-          <div className="flex flex-col gap-8">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Newsletter</h3>
-            <p className="text-muted-foreground text-sm font-medium leading-relaxed">Subscribe to receive updates, access to exclusive drops, and more.</p>
-            <div className="flex flex-col gap-4">
-              <input 
-                type="email" 
-                placeholder="Vault Email Address" 
-                className="bg-white border border-border rounded-2xl px-6 py-4 text-sm focus:outline-none focus:border-accent transition-all shadow-inner"
-              />
-              <button className="btn-premium w-full shadow-lg">Subscribe</button>
-            </div>
-          </div>
+
         </div>
 
         <div className="pt-10 border-t border-border flex flex-col lg:flex-row justify-between items-center gap-8">
