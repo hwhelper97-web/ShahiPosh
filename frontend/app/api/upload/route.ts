@@ -14,17 +14,32 @@ export async function POST(request: Request) {
 
     const filename = `${Date.now()}-${file.name.replace(/\s+/g, '-')}`;
 
+    const isProduction = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+
     // 1. Try Vercel Blob if token is present
     if (process.env.BLOB_READ_WRITE_TOKEN) {
       try {
         const blob = await put(filename, file, { access: 'public' });
         return NextResponse.json({ message: 'Uploaded to Vercel', filename, url: blob.url });
       } catch (err) {
-        console.warn('Vercel Blob failed, falling back to local storage:', err);
+        console.warn('Vercel Blob failed:', err);
+        if (isProduction) {
+          return NextResponse.json({ 
+            message: 'Cloud upload failed. Please check your BLOB_READ_WRITE_TOKEN in Vercel.', 
+            error: String(err) 
+          }, { status: 500 });
+        }
       }
     }
 
-    // 2. Local Fallback (Development)
+    // 2. Local Fallback (Development Only)
+    if (isProduction) {
+      return NextResponse.json({ 
+        message: 'Storage configuration missing. Please add BLOB_READ_WRITE_TOKEN to Vercel Environment Variables.',
+        tip: 'Go to Vercel Dashboard -> Settings -> Environment Variables'
+      }, { status: 500 });
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     
