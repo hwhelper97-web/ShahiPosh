@@ -43,7 +43,7 @@ async function ShopContent({ searchParams }: { searchParams: any }) {
     where,
     orderBy,
     include: { category: true }
-  });
+  }) as any[];
 
   return (
     <div className="container px-5 md:px-8">

@@ -10,7 +10,7 @@ export default async function HomePage() {
     orderBy: { createdAt: 'desc' },
     take: 8,
     include: { category: true }
-  });
+  }) as any[];
 
   return (
     <main>
