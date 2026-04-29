@@ -21,8 +21,16 @@ export async function POST(request: Request) {
       try {
         const blob = await put(filename, file, { access: 'public' });
         return NextResponse.json({ message: 'Uploaded to Vercel', filename, url: blob.url });
-      } catch (err) {
+      } catch (err: any) {
         console.warn('Vercel Blob failed:', err);
+        
+        if (err.message?.includes('private store')) {
+          return NextResponse.json({ 
+            message: 'Vercel Blob Access Error: Your store is set to Private. Please change it to Public in the Vercel Dashboard (Storage -> Settings).',
+            error: 'Store Access Mismatch'
+          }, { status: 500 });
+        }
+
         if (isProduction) {
           return NextResponse.json({ 
             message: 'Cloud upload failed. Please check your BLOB_READ_WRITE_TOKEN in Vercel.', 

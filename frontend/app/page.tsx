@@ -5,7 +5,7 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 
 export default async function HomePage() {
-  let products = [];
+  let products: any[] = [];
   try {
     products = await prisma.product.findMany({
       where: { isPublished: true },
@@ -16,7 +16,7 @@ export default async function HomePage() {
   } catch (err) {
     console.error("Home direct fetch failed:", err);
     products = [];
-  } as any[];
+  }
 
   return (
     <main>
