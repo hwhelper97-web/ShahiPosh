@@ -207,10 +207,11 @@ function AdminProductsContent() {
   const getImageUrl = (img: any) => {
     if (!img) return "/placeholder.jpg";
     
-    // Handle case where img is the object from DB {url: "...", alt: "..."}
-    let src = typeof img === 'string' ? img : (img.url || "");
+    // Safety for production: Detect and rescue broken local paths
+    const isProduction = typeof window !== 'undefined' && (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1'));
     
-    // If it's a JSON string of an object, try to parse it
+    let src = typeof img === 'string' ? img : (img?.url || "");
+    
     if (typeof src === 'string' && src.startsWith('{')) {
       try {
         const parsed = JSON.parse(src);
@@ -219,6 +220,10 @@ function AdminProductsContent() {
     }
 
     if (!src || typeof src !== 'string') return "/placeholder.jpg";
+    
+    // RESCUE: If on production and path is /uploads/, it's a broken local test image
+    if (isProduction && src.startsWith('/uploads/')) return "/placeholder.jpg";
+
     if (src.startsWith("/") || src.startsWith("http")) return src;
     return `/products/${src}`;
   };

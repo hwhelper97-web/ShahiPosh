@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                       <p className="text-xs font-black truncate w-40">{item.name}</p>
                       <p className="text-[10px] text-muted-foreground font-bold mt-1">Available: <span className="text-red-500">{item.stock} units</span></p>
                     </div>
-                    <Link href={`/admin/products/${item.id}`} className="p-3 bg-white rounded-xl shadow-sm text-red-500 hover:bg-red-50 transition-colors">
+                    <Link href="/admin/products" className="p-3 bg-white rounded-xl shadow-sm text-red-500 hover:bg-red-50 transition-colors">
                       <AlertCircle size={16} />
                     </Link>
                   </div>
