@@ -37,6 +37,7 @@ backend/prisma/dev.db
 
 # uploads
 backend/uploads
+frontend/public/uploads
 
 # coverage
 coverage
