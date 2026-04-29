@@ -122,6 +122,11 @@ function AdminProductsContent() {
     const url = editingId ? `${API}/products/${editingId}` : `${API}/products`;
     const method = editingId ? 'PATCH' : 'POST';
 
+    if (!form.categoryId) {
+      toast.error("Please select a valid category");
+      return;
+    }
+
     try {
       const res = await fetch(url, {
         method,

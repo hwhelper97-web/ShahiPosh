@@ -60,13 +60,14 @@ export async function PATCH(
         regularPrice: body.price !== undefined ? parseFloat(body.price) : undefined,
         salePrice: body.discountPrice !== undefined ? (body.discountPrice ? parseFloat(body.discountPrice) : null) : undefined,
         description: body.description,
-        images: body.images !== undefined ? JSON.stringify(body.images) : undefined,
+        images: body.images !== undefined ? body.images : undefined,
         categoryId: body.categoryId,
         inventory: body.inventory !== undefined ? parseInt(body.inventory) : undefined,
         status: body.status,
+        isPublished: true, // Ensure it becomes visible when updated
         sku: body.sku,
-        tags: body.tags !== undefined ? JSON.stringify(body.tags) : undefined,
-        attributes: body.attributes !== undefined ? JSON.stringify(body.attributes) : undefined
+        tags: body.tags !== undefined ? body.tags : undefined,
+        attributes: body.attributes !== undefined ? body.attributes : undefined
       },
     });
     

@@ -75,8 +75,9 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     
-    // Generate slug if not provided
-    const slug = body.slug || body.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+    // Generate unique slug
+    const timestamp = Date.now().toString().slice(-4);
+    const slug = body.slug || `${body.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '')}-${timestamp}`;
 
     const product = await prisma.product.create({
       data: {
@@ -86,13 +87,14 @@ export async function POST(req: Request) {
         regularPrice: parseFloat(body.price),
         salePrice: body.discountPrice ? parseFloat(body.discountPrice) : null,
         description: body.description || '',
-        richDescription: body.description || '', // Placeholder for now
-        inventory: parseInt(body.inventory) || 0,
-        images: JSON.stringify(body.images || []),
+        richDescription: body.description || '', 
+        inventory: body.inventory !== undefined ? parseInt(body.inventory) : undefined,
+        images: body.images || [], 
         categoryId: body.categoryId,
         status: body.status || "Active",
-        tags: JSON.stringify(body.tags || []),
-        attributes: JSON.stringify(body.attributes || {}),
+        isPublished: true, 
+        tags: body.tags || [],
+        attributes: body.attributes || {},
       },
     });
     return NextResponse.json(product);
