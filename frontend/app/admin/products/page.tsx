@@ -89,7 +89,7 @@ function AdminProductsContent() {
       try {
         const res = await fetch('/api/upload', { method: 'POST', body: formData });
         const data = await res.json();
-        if (res.ok) uploadedImages.push(data.filename);
+        if (res.ok) uploadedImages.push(data.url); // Use full URL for Vercel Blob preview
       } catch (err) {
         console.error('Upload error:', err);
       }
@@ -461,10 +461,12 @@ function AdminProductsContent() {
                       <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-accent">{form.category || 'Collection'}</p>
                       <h4 className="text-2xl font-bold tracking-tight line-clamp-1">{form.name || 'Product Title'}</h4>
                       <div className="flex items-center gap-3">
-                        <p className="text-xl font-black">{settings.currency} {(Number(form.price) || 0).toLocaleString()}</p>
+                        <p className="text-xl font-black">
+                          {settings.currency} {(Number(form.discountPrice) || Number(form.price) || 0).toLocaleString()}
+                        </p>
                         {form.discountPrice && (
                           <p className="text-sm text-white/40 line-through font-medium">
-                            {settings.currency} {(Number(form.discountPrice)).toLocaleString()}
+                            {settings.currency} {(Number(form.price)).toLocaleString()}
                           </p>
                         )}
                       </div>
@@ -581,10 +583,12 @@ function AdminProductsContent() {
                         </td>
                         <td className="px-10 py-8">
                           <div className="space-y-1">
-                            <p className="text-base font-black tracking-tight">{settings.currency} {(p.regularPrice || 0).toLocaleString()}</p>
+                            <p className="text-base font-black tracking-tight">
+                              {settings.currency} {(p.salePrice || p.regularPrice || 0).toLocaleString()}
+                            </p>
                             {p.salePrice && (
                               <p className="text-[10px] text-muted-foreground line-through font-bold">
-                                {settings.currency} {(p.salePrice || 0).toLocaleString()}
+                                {settings.currency} {(p.regularPrice || 0).toLocaleString()}
                               </p>
                             )}
                           </div>
