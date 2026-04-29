@@ -137,10 +137,7 @@ export default function Navbar() {
                 className="md:hidden fixed top-0 left-0 w-[85%] max-w-[400px] h-screen bg-white z-[100] shadow-2xl flex flex-col overscroll-contain"
               >
                 <div className="p-6 border-b border-border flex justify-between items-center bg-[#faf9f6]">
-                  <div className="flex items-baseline scale-90">
-                    <span className="text-xl font-black text-primary uppercase font-logo">Shahi</span>
-                    <span className="text-xl font-light text-accent italic -ml-1 font-logo">Posh</span>
-                  </div>
+                  <Logo size="sm" onClick={() => setIsMobileMenuOpen(false)} />
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm"

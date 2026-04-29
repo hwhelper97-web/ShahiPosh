@@ -5,9 +5,10 @@ import Link from 'next/link';
 interface LogoProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  onClick?: () => void;
 }
 
-export default function Logo({ className = "", size = 'md' }: LogoProps) {
+export default function Logo({ className = "", size = 'md', onClick }: LogoProps) {
   const sizes = {
     sm: {
       diamond: 'w-10 h-10',
@@ -41,7 +42,7 @@ export default function Logo({ className = "", size = 'md' }: LogoProps) {
   const s = sizes[size];
 
   return (
-    <Link href="/" className={`flex flex-col items-center group ${className}`}>
+    <Link href="/" onClick={onClick} className={`flex flex-col items-center group ${className}`}>
       {/* 💎 The Diamond Monogram */}
       <div className="relative mb-2">
         <div className={`${s.diamond} border border-accent rotate-45 flex items-center justify-center transition-luxury group-hover:scale-105`}>
