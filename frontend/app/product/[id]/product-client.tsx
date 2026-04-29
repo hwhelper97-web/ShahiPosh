@@ -133,7 +133,9 @@ export default function ProductClient({ product }: any) {
           {/* Right: Product Info */}
           <div className="lg:col-span-5 space-y-10">
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-4">{product.category?.name || product.category}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-accent mb-4">
+                {typeof product.category === 'object' ? (product.category?.name || "Premium") : (product.category || "Premium")}
+              </p>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4">{product.name}</h1>
               <div className="flex items-center gap-4">
                 {product.salePrice ? (

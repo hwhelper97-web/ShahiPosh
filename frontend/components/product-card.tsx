@@ -29,11 +29,18 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   let imageSrc = "/placeholder.jpg";
+  const isProduction = typeof window !== 'undefined' && (window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1'));
+
   if (images?.[0]) {
     const firstImg = typeof images[0] === 'string' ? images[0] : (images[0] as any).url;
     if (firstImg) {
       if (firstImg.startsWith("/") || firstImg.startsWith("http")) {
-        imageSrc = firstImg;
+        // Safety: If we are on live site and image points to local /uploads, it will 404/400
+        if (isProduction && firstImg.startsWith('/uploads/')) {
+          imageSrc = "/placeholder.jpg";
+        } else {
+          imageSrc = firstImg;
+        }
       } else {
         imageSrc = `/products/${firstImg}`;
       }
@@ -83,7 +90,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="flex flex-col gap-1.5 px-1">
         <p className="text-[9px] md:text-[10px] text-accent font-black uppercase tracking-[0.2em]">
-          {product.category?.name || product.category || "Exquisite"}
+          {typeof product.category === 'object' ? (product.category?.name || "Exquisite") : (product.category || "Exquisite")}
         </p>
         <Link href={`/product/${product.id}`} className="hover:text-accent transition-luxury">
           <h3 className="text-sm md:text-lg font-extrabold tracking-tighter leading-tight line-clamp-1">
