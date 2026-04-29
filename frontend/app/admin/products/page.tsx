@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, Suspense, useCallback } from 'react';
+import { useEffect, useState, Suspense, useCallback, Fragment } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AdminShell } from '@/components/admin-shell';
 import { Product } from '@/lib/types';
@@ -199,12 +199,20 @@ function AdminProductsContent() {
     }));
   };
 
-  const getImageUrl = (filename: any) => {
-    if (!filename) return "/placeholder.jpg";
+  const getImageUrl = (img: any) => {
+    if (!img) return "/placeholder.jpg";
     
-    // Handle object format {url: "...", alt: "..."}
-    const src = typeof filename === 'string' ? filename : (filename.url || "");
+    // Handle case where img is the object from DB {url: "...", alt: "..."}
+    let src = typeof img === 'string' ? img : (img.url || "");
     
+    // If it's a JSON string of an object, try to parse it
+    if (typeof src === 'string' && src.startsWith('{')) {
+      try {
+        const parsed = JSON.parse(src);
+        src = parsed.url || src;
+      } catch (e) {}
+    }
+
     if (!src || typeof src !== 'string') return "/placeholder.jpg";
     if (src.startsWith("/") || src.startsWith("http")) return src;
     return `/products/${src}`;
@@ -344,15 +352,15 @@ function AdminProductsContent() {
                         {categories
                           .filter(c => !c.parentId) // Main categories
                           .map(parent => (
-                            <>
-                              <option key={parent.id} value={parent.id} className="font-bold">{parent.name}</option>
+                            <Fragment key={parent.id}>
+                              <option value={parent.id} className="font-bold">{parent.name}</option>
                               {categories
                                 .filter(c => c.parentId === parent.id) // Subcategories
                                 .map(sub => (
                                   <option key={sub.id} value={sub.id}>&nbsp;&nbsp;-- {sub.name}</option>
                                 ))
                               }
-                            </>
+                            </Fragment>
                           ))
                         }
                       </select>
