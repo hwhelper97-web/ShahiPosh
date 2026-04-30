@@ -10,8 +10,7 @@ export async function GET() {
           { name: { contains: 'asdasdas', mode: 'insensitive' } },
           { name: { contains: 'test', mode: 'insensitive' } },
           { id: 'cmoknfxk00001l8042grwpr19' },
-          { id: 'cmokngvpn0001la04zfw9brne' },
-          { categoryId: null }
+          { id: 'cmokngvpn0001la04zfw9brne' }
         ]
       }
     });
