@@ -40,8 +40,12 @@ export async function DELETE(
       where: { id: id },
     });
     return NextResponse.json({ message: 'Product deleted' });
-  } catch (error) {
-    return NextResponse.json({ message: 'Failed to delete product' }, { status: 500 });
+  } catch (error: any) {
+    console.error("Delete failed for ID:", id, error);
+    return NextResponse.json({ 
+      message: 'Failed to delete product',
+      error: error.message 
+    }, { status: 500 });
   }
 }
 
