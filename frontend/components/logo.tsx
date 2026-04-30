@@ -58,8 +58,8 @@ export default function Logo({ className = "", size = 'md', onClick }: LogoProps
 
       {/* 🏷️ Main Brand Name */}
       <div className={`flex items-baseline ${s.spacing}`}>
-        <span className={`${s.shahi} font-logo text-primary uppercase tracking-[0.1em] font-black`}>SHAHI</span>
-        <span className={`${s.posh} font-serif text-accent italic tracking-tighter`}>posh</span>
+        <span className={`${s.shahi} font-logo text-primary uppercase tracking-[0.15em] font-black`}>SHAHI</span>
+        <span className={`${s.posh} font-serif text-accent uppercase italic tracking-[0.05em]`}>POSH</span>
       </div>
     </Link>
   );
