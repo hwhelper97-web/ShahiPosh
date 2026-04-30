@@ -4,6 +4,8 @@ import Collections from "@/components/collections";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 
+export const revalidate = 0;
+
 export default async function HomePage() {
   let products: any[] = [];
   try {

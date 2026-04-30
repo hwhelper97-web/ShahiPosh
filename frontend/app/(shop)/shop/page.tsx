@@ -5,6 +5,8 @@ import { FilterSidebar } from '@/components/filter-sidebar';
 import { Suspense } from 'react';
 import prisma from '@/lib/prisma';
 
+export const revalidate = 0;
+
 async function ShopContent({ searchParams }: { searchParams: any }) {
   const paramsObj = await searchParams;
 
