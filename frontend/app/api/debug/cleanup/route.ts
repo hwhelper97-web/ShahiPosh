@@ -9,7 +9,9 @@ export async function GET() {
         OR: [
           { name: { contains: 'asdasdas', mode: 'insensitive' } },
           { name: { contains: 'test', mode: 'insensitive' } },
-          { id: 'cmoknfxk00001l8042grwpr19' } // Specific ID from your logs
+          { id: 'cmoknfxk00001l8042grwpr19' },
+          { id: 'cmokngvpn0001la04zfw9brne' },
+          { categoryId: null }
         ]
       }
     });
