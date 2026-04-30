@@ -92,7 +92,8 @@ function AdminProductsContent() {
         if (res.ok) {
           uploadedImages.push(data.url);
         } else {
-          toast.error(data.message || "Upload failed. Check Vercel Token.");
+          const detailedError = data.error ? `: ${data.error}` : "";
+          toast.error(`${data.message}${detailedError}`);
         }
       } catch (err) {
         console.error('Upload error:', err);
